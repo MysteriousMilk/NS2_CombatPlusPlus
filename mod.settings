@@ -1,0 +1,7 @@
+name        = "Combat++"
+source_dir  = "source/"
+output_dir  = "output/"
+description = [=[Combat++]=]
+image       = "preview.jpg"
+tag_modtype = "Custom Game Mode"
+tag_support = ""

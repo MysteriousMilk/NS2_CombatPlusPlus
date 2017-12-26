@@ -1,0 +1,7 @@
+modEntry = {
+	Client = "lua/CPPClient.lua",
+	Server = "lua/CPPServer.lua",
+	Shared = "lua/CPPShared.lua",
+	FileHooks = "lua/CPPFileHooks.lua",
+	Priority = 25
+}

@@ -1,0 +1,1 @@
+AddClientUIScriptForClass("Marine", "GUICombatMarineStatus")
