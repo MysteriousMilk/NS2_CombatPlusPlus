@@ -1,6 +1,13 @@
---[[
- * A table of tech Ids is passed in.
-]]
+local ns2_Player_CopyPlayerDataFrom = Player.CopyPlayerDataFrom
+function Player:CopyPlayerDataFrom(player)
+
+    ns2_Player_CopyPlayerDataFrom(self, player)
+
+    self.currentCreateStructureTechId = player.currentCreateStructureTechId
+
+end
+
+-- A table of tech Ids is passed in.
 function Player:ProcessBuyAction(techIds)
 
   ASSERT(type(techIds) == "table")
@@ -8,9 +15,9 @@ function Player:ProcessBuyAction(techIds)
 
   local techId = techIds[1]
 
-  local cost = GetCostByTechId(techId)
+  local cost = CombatPlusPlus_GetCostByTechId(techId)
   local canAfford = cost <= self.combatSkillPoints
-  local hasRequiredRank = GetRequiredRankByTechId(techId) <= self.combatRank
+  local hasRequiredRank = CombatPlusPlus_GetRequiredRankByTechId(techId) <= self.combatRank
 
   if canAfford and hasRequiredRank then
 

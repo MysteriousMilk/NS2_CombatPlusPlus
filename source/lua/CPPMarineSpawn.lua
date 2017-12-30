@@ -92,6 +92,7 @@ function CPPMarineSpawn:OnCreate()
     end
 
     self.queuedPlayerId = Entity.invalidId
+    self.hasSpawnEffectBeenTriggered = false
 
 end
 
@@ -121,6 +122,7 @@ local function MarineSpawnUpdate(self)
     if self:GetIsPowered() then
 
         local remainingSpawnTime = self:GetSpawnTime()
+
         if self.queuedPlayerId ~= Entity.invalidId then
 
             local queuedPlayer = Shared.GetEntity(self.queuedPlayerId)
@@ -145,7 +147,9 @@ local function MarineSpawnUpdate(self)
         end
 
         if remainingSpawnTime == 0 then
+
             self:FinishSpawn()
+
         end
 
     end
@@ -245,6 +249,8 @@ local function SpawnPlayer(self)
 
         local success, player = team:ReplaceRespawnPlayer(queuedPlayer, self:GetOrigin(), queuedPlayer:GetAngles())
         if success then
+
+            player:TriggerEffects("infantry_portal_spawn")
 
             local weapon = player:GetWeapon(Rifle.kMapName)
             if weapon then

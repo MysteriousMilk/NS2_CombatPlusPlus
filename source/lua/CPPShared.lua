@@ -14,6 +14,7 @@ end
 
 Script.Load("lua/CPPUtilities.lua")
 Script.Load("lua/CPPMarineSpawn.lua")
+Script.Load("lua/Weapon/Marine/CPPMarineDropStructureAbility.lua")
 
 --if Server then
 --    Script.Load("lua/Server.lua")

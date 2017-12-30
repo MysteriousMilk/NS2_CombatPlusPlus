@@ -1,64 +1,39 @@
+local ns2_Marine_CopyPlayerDataFrom = Marine.CopyPlayerDataFrom
+function Marine:CopyPlayerDataFrom(player)
+
+    ns2_Marine_CopyPlayerDataFrom(self, player)
+
+    local playerInRR = player:GetTeamNumber() == kNeutralTeamType
+
+    if not playerInRR and GetGamerules():GetGameStarted() then
+
+        self.purchasedPistol = player.purchasedPistol
+        self.purchasedWelder = player.purchasedWelder
+
+    end
+
+end
 
 function Marine:InitWeapons()
 
     Player.InitWeapons(self)
 
-    if not self.permanentTechItems then
-
-      self.permanentTechItems = {}
-      self.permanentTechItems[kTechId.Pistol] = { MapName = Pistol.kMapName, Purchased = false }
-      self.permanentTechItems[kTechId.Welder] = { MapName = Welder.kMapName, Purchased = false }
-
-    end
-
     self:GiveItem(Rifle.kMapName)
-    --self:GiveItem(Pistol.kMapName)
     self:GiveItem(Axe.kMapName)
-    --self:GiveItem(Welder.kMapName)
     self:GiveItem(Builder.kMapName)
 
-    local hasPistol = false
-    local hasWelder = false
-
-    for k, techItem in ipairs(self.permanentTechItems) do
-      Shared.Message("blah")
-      Shared.Message(string.format("Permanent Tech Items [%s, %s]", techItem.MapName, techItem.Purchased))
-
-      if techItem.Purchased then
-
-        self.GetItem(techItem.MapName)
-
-        if techItem.MapName == Pistol.kMapName then
-          hasPistol = true
-        elseif techItem.MapName == Welder.kMapName then
-          hasWelder = true
-        end
-
-      end
-
-    end
-
-    if hasPistol then
-      self:SetQuickSwitchTarget(Pistol.kMapName)
-    elseif hasWelder then
-      self:SetQuickSwitchTarget(Welder.kMapName)
-    else
-      self:SetQuickSwitchTarget(Axe.kMapName)
-    end
-
+    self:SetQuickSwitchTarget(Axe.kMapName)
     self:SetActiveWeapon(Rifle.kMapName)
 
 end
 
 local function UpdatePermanentTechItems(self, techId)
 
-  if techId == kTechId.Pistol then
-    self.permanentTechItems[techId].Purchased = true
-    Shared.Message(string.format("Setting purchased for %s to true", self.permanentTechItems[techId].MapName))
-  elseif techId == kTechId.Welder then
-    self.permanentTechItems[techId].Purchased = true
-    Shared.Message(string.format("Setting purchased for %s to true", self.permanentTechItems[techId].MapName))
-  end
+    if techId == kTechId.Pistol then
+        self.purchasedPistol = true
+    elseif techId == kTechId.Welder then
+        self.purchasedWelder = true
+    end
 
 end
 
@@ -84,7 +59,7 @@ local function BuyExo(self, techId)
 
         if spawnPoint then
 
-            self.combatSkillPoints = self.combatSkillPoints - GetCostByTechId(techId)
+            self:SpendSkillPoints(CombatPlusPlus_GetCostByTechId(techId))
             local weapons = self:GetWeapons()
             for i = 1, #weapons do
                 weapons[i]:SetParent(nil)
@@ -122,6 +97,9 @@ end
 
 kIsExoTechId = { [kTechId.Exosuit] = true, [kTechId.DualMinigunExosuit] = true,
                  [kTechId.ClawRailgunExosuit] = true, [kTechId.DualRailgunExosuit] = true }
+kIsMarineStructureTechId = { [kTechId.Armory] = true, [kTechId.PhaseGate] = true,
+                             [kTechId.Observatory] = true, [kTechId.Sentry] = true,
+                             [kTechId.RoboticsFactory] = true }
 function Marine:AttemptToBuy(techIds)
 
     local techId = techIds[1]
@@ -139,11 +117,23 @@ function Marine:AttemptToBuy(techIds)
         if techId == kTechId.Jetpack then
 
             -- Need to apply this here since we change the class.
-            self.combatSkillPoints = self.combatSkillPoints - GetCostByTechId(techId)
+            self:SpendSkillPoints(CombatPlusPlus_GetCostByTechId(techId))
             self:GiveJetpack()
 
         elseif kIsExoTechId[techId] then
+
             BuyExo(self, techId)
+
+        elseif kIsMarineStructureTechId[techId] then
+
+            self:SetCreateStructureTechId(techId)
+            self:SetActiveWeapon(Builder.kMapName)
+
+            local weapon = self:GetActiveWeapon()
+            if weapon and weapon:isa("Builder") then
+                weapon:SetBuilderMode(kBuilderMode.Create)
+            end
+
         else
 
             -- Make sure we're ready to deploy new weapon so we switch to it properly.

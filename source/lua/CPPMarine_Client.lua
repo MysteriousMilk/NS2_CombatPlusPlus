@@ -1,3 +1,4 @@
+-- Copied because its local and 'UpdateClientEffects' calls this
 local function UpdatePoisonedEffect(self)
 
     local feedbackUI = ClientUI.GetScript("GUIPoisonedFeedback")
@@ -123,6 +124,11 @@ function Marine:OnCountDownEnd()
     ns2_Marine_OnCountDownEnd(self)
     ClientUI.SetScriptVisibility("GUICombatMarineStatus", "Countdown", true)
 
+    --local script = ClientUI.GetScript("GUICombatMarineStatus")
+    --if script then
+    --    script:Reset()
+    --end
+
 end
 
 function Marine:Buy()
@@ -133,16 +139,32 @@ function Marine:Buy()
       if not self.buyMenu then
 
           self.buyMenu = GetGUIManager():CreateGUIScript("CPPGUICombatMarineBuyMenu")
-
           self:TriggerEffects("marine_buy_menu_open")
 
       else
 
-        Shared.Message("Calling Close Menu")
         self:CloseMenu()
 
       end
 
   end
+
+end
+
+local ns2_Marine_UpdateGhostModel = Marine.UpdateGhostModel
+function Marine:UpdateGhostModel()
+
+    ns2_Marine_UpdateGhostModel(self)
+
+    local weapon = self:GetActiveWeapon()
+
+    if weapon and weapon:isa("Builder") and weapon:GetBuilderMode() == kBuilderMode.Create then
+
+        self.currentTechId = self:GetCreateStructureTechId()
+        self.ghostStructureCoords = weapon:GetGhostModelCoords()
+        self.ghostStructureValid = weapon:GetIsPlacementValid()
+        self.showGhostModel = weapon:GetShowGhostModel()
+
+    end
 
 end

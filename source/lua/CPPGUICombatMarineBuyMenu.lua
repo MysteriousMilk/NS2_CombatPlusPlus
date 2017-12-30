@@ -4,21 +4,37 @@ class 'CPPGUICombatMarineBuyMenu' (GUIAnimatedScript)
 
 CPPGUICombatMarineBuyMenu.kBackgroundColor = Color(0.05, 0.05, 0.1, 0.6)
 CPPGUICombatMarineBuyMenu.kBackgroundCenterColor = Color(0.06, 0.06, 0.12, 0.8)
-CPPGUICombatMarineBuyMenu.kBackgroundTexture = PrecacheAsset("ui/combatui_marine_buy_bkg.dds")
 CPPGUICombatMarineBuyMenu.kBackgroundSize = Vector(1024, 1024, 0)
+
+CPPGUICombatMarineBuyMenu.kLogoTexture = PrecacheAsset("ui/logo_marine.dds")
+CPPGUICombatMarineBuyMenu.kLogoSize = Vector(256, 256, 0)
 
 CPPGUICombatMarineBuyMenu.kButtonTexture = PrecacheAsset("ui/combatui_buymenu_button.dds")
 CPPGUICombatMarineBuyMenu.kButtonSize = Vector(200, 64, 0)
+
+CPPGUICombatMarineBuyMenu.kButtonLargeTexture = PrecacheAsset("ui/combatui_buymenu_button_large.dds")
+CPPGUICombatMarineBuyMenu.kButtonLargeSize = Vector(128, 192, 0)
+
 CPPGUICombatMarineBuyMenu.kButtonPadding = Vector(10, 20, 0)
+CPPGUICombatMarineBuyMenu.kButtonLargePadding = Vector(20, 40, 0)
 
-CPPGUICombatMarineBuyMenu.kIconTexture = PrecacheAsset("ui/combatui_weapon_icons.dds")
-CPPGUICombatMarineBuyMenu.kSelectorTexture = PrecacheAsset("ui/marine_buymenu_selector.dds")
+CPPGUICombatMarineBuyMenu.kWeaponIconTexture = PrecacheAsset("ui/combatui_marine_weapon_icons.dds")
+CPPGUICombatMarineBuyMenu.kStructureIconTexture = PrecacheAsset("ui/combatui_marine_structure_icons_large.dds")
+CPPGUICombatMarineBuyMenu.kTechIconTexture = PrecacheAsset("ui/combatui_marine_tech_icons.dds")
+CPPGUICombatMarineBuyMenu.kConsumableIconTexture = PrecacheAsset("ui/combatui_marine_consumable_icons.dds")
+CPPGUICombatMarineBuyMenu.kUpgradeIconTexture = PrecacheAsset("ui/combatui_marine_upgrade_icons.dds")
 
+CPPGUICombatMarineBuyMenu.kResIconTexture = PrecacheAsset("ui/pres_icon_big.dds")
+
+CPPGUICombatMarineBuyMenu.kTitleFont = Fonts.kAgencyFB_Large
 CPPGUICombatMarineBuyMenu.kHeaderFont = Fonts.kAgencyFB_Medium
 CPPGUICombatMarineBuyMenu.kTextColor = Color(kMarineFontColor)
 
 CPPGUICombatMarineBuyMenu.kBtnColor = Color(1, 1, 1, 0.7)
 CPPGUICombatMarineBuyMenu.kBtnHighlightColor = Color(0.5, 0.5, 1.0, 0.7)
+
+CPPGUICombatMarineBuyMenu.kBlueHighlight = Color(0.6, 0.6, 1, 1)
+CPPGUICombatMarineBuyMenu.kRedHighlight = Color(1, 0.3, 0.3, 1)
 
 CPPGUICombatMarineBuyMenu.kButtonsPerRow = 4
 
@@ -58,19 +74,217 @@ local function GetWeaponIconPixelCoordinates(itemTechId, enabled)
 
 end
 
+local smallIconHeight = 64
+local smallIconWidth = 64
+local gTechIconIndex
+local function GetTechIconPixelCoordinates(itemTechId, enabled)
+
+  if not gTechIconIndex then
+
+    gTechIconIndex = {}
+    gTechIconIndex[kTechId.Welder] = 0
+    gTechIconIndex[kTechId.LayMines] = 1
+    gTechIconIndex[kTechId.ClusterGrenade] = 2
+    gTechIconIndex[kTechId.GasGrenade] = 3
+    gTechIconIndex[kTechId.PulseGrenade] = 4
+    gTechIconIndex[kTechId.Jetpack] = 5
+    gTechIconIndex[kTechId.DualMinigunExosuit] = 6
+
+  end
+
+  local x1 = 0
+  local x2 = smallIconWidth
+  if not enabled then
+    x1 = smallIconWidth
+    x2 = smallIconWidth * 2
+  end
+
+  local index = gTechIconIndex[itemTechId]
+  if not index then
+      index = 0
+  end
+
+  local y1 = index * smallIconHeight
+  local y2 = (index + 1) * smallIconHeight
+
+  return x1, y1, x2, y2
+
+end
+
+local gUpgradeIconIndex
+local function GetUpgradeIconPixelCoordinates(itemTechId)
+
+  if not gUpgradeIconIndex then
+
+    gUpgradeIconIndex = {}
+    gUpgradeIconIndex[kTechId.Armor1] = 0
+    gUpgradeIconIndex[kTechId.Armor2] = 1
+    gUpgradeIconIndex[kTechId.Armor3] = 2
+    gUpgradeIconIndex[kTechId.Weapons1] = 3
+    gUpgradeIconIndex[kTechId.Weapons2] = 4
+    gUpgradeIconIndex[kTechId.Weapons3] = 5
+
+  end
+
+  local x1 = 0
+  local x2 = smallIconWidth
+
+  local index = gUpgradeIconIndex[itemTechId]
+  if not index then
+      index = 0
+  end
+
+  local y1 = index * smallIconHeight
+  local y2 = (index + 1) * smallIconHeight
+
+  return x1, y1, x2, y2
+
+end
+
+local gConsumableIconIndex
+local function GetConsumableIconPixelCoordinates(itemTechId, enabled)
+
+  if not gConsumableIconIndex then
+
+    gConsumableIconIndex = {}
+    gConsumableIconIndex[kTechId.MedPack] = 0
+    gConsumableIconIndex[kTechId.AmmoPack] = 1
+    gConsumableIconIndex[kTechId.CatPack] = 2
+    gConsumableIconIndex[kTechId.Scan] = 3
+
+  end
+
+  local x1 = 0
+  local x2 = smallIconWidth
+  if not enabled then
+    x1 = smallIconWidth
+    x2 = smallIconWidth * 2
+  end
+
+  local index = gConsumableIconIndex[itemTechId]
+  if not index then
+      index = 0
+  end
+
+  local y1 = index * smallIconHeight
+  local y2 = (index + 1) * smallIconHeight
+
+  return x1, y1, x2, y2
+
+end
+
+local structureIconHeight = 192
+local structureIconWidth = 128
+local gStructureIconIndex
+local function GetStructureIconPixelCoordinates(itemTechId, enabled)
+
+  if not gStructureIconIndex then
+
+    gStructureIconIndex = {}
+    gStructureIconIndex[kTechId.Armory] = 0
+    gStructureIconIndex[kTechId.PhaseGate] = 1
+    gStructureIconIndex[kTechId.Observatory] = 2
+    gStructureIconIndex[kTechId.Sentry] = 3
+    gStructureIconIndex[kTechId.RoboticsFactory] = 4
+
+  end
+
+  local index = gStructureIconIndex[itemTechId]
+  if not index then
+      index = 0
+  end
+
+  local x1 = index * structureIconWidth
+  local x2 = (index + 1) * structureIconWidth
+
+  local y1 = 0
+  local y2 = structureIconHeight
+
+  if not enabled then
+    y1 = structureIconHeight
+    y2 = structureIconHeight * 2
+  end
+
+  return x1, y1, x2, y2
+
+end
+
+
 local function GetWeaponItemList()
 
-  local weaponItemList =
-  {
-    kTechId.Pistol,
-    kTechId.Rifle,
-    kTechId.Shotgun,
-    kTechId.Flamethrower,
-    kTechId.GrenadeLauncher,
-    kTechId.HeavyMachineGun
-  }
+    local weaponItemList =
+    {
+        kTechId.Pistol,
+        kTechId.Rifle,
+        kTechId.Shotgun,
+        kTechId.Flamethrower,
+        kTechId.GrenadeLauncher,
+        kTechId.HeavyMachineGun
+    }
 
-  return weaponItemList
+    return weaponItemList
+
+end
+
+local function GetTechItemList()
+
+    local techItemList =
+    {
+        kTechId.Welder,
+        kTechId.LayMines,
+        kTechId.ClusterGrenade,
+        kTechId.GasGrenade,
+        kTechId.PulseGrenade,
+        kTechId.Jetpack,
+        kTechId.DualMinigunExosuit
+    }
+
+    return techItemList
+
+end
+
+local function GetUpgradeItemList()
+
+    local upgradeItemList =
+    {
+        kTechId.Armor1,
+        kTechId.Armor2,
+        kTechId.Armor3,
+        kTechId.Weapons1,
+        kTechId.Weapons2,
+        kTechId.Weapons3
+    }
+
+    return upgradeItemList
+
+end
+
+local function GetConsumableItemList()
+
+    local consumableItemList =
+    {
+        kTechId.MedPack,
+        kTechId.AmmoPack,
+        kTechId.CatPack,
+        kTechId.Scan
+    }
+
+    return consumableItemList
+
+end
+
+local function GetStructureItemList()
+
+    local structureItemList =
+    {
+        kTechId.Armory,
+        kTechId.PhaseGate,
+        kTechId.Observatory,
+        kTechId.Sentry,
+        kTechId.RoboticsFactory
+    }
+
+    return structureItemList
 
 end
 
@@ -152,131 +366,641 @@ end
 
 function CPPGUICombatMarineBuyMenu:_InitializeBackground()
 
-  self.background = GUIManager:CreateGraphicItem()
-  self.background:SetSize( Vector(Client.GetScreenWidth(), Client.GetScreenHeight(), 0) )
-  self.background:SetAnchor(GUIItem.Left, GUIItem.Top)
-  self.background:SetColor(CPPGUICombatMarineBuyMenu.kBackgroundColor)
-  self.background:SetLayer(kGUILayerPlayerHUDForeground4)
+    self.background = GUIManager:CreateGraphicItem()
+    self.background:SetSize( Vector(Client.GetScreenWidth(), Client.GetScreenHeight(), 0) )
+    self.background:SetAnchor(GUIItem.Left, GUIItem.Top)
+    self.background:SetColor(CPPGUICombatMarineBuyMenu.kBackgroundColor)
+    self.background:SetLayer(kGUILayerPlayerHUDForeground4)
 
-  self.backgroundCenteredArea = GUIManager:CreateGraphicItem()
-  self.backgroundCenteredArea:SetSize( Vector(1000, Client.GetScreenHeight(), 0) )
-  self.backgroundCenteredArea:SetAnchor(GUIItem.Middle, GUIItem.Top)
-  self.backgroundCenteredArea:SetPosition( Vector(-500, 0, 0) )
-  self.backgroundCenteredArea:SetColor(CPPGUICombatMarineBuyMenu.kBackgroundCenterColor)
-  self.background:AddChild(self.backgroundCenteredArea)
-
-  --self.backgroundVisual = GUIManager.CreateGraphicItem()
-  --self.backgroundVisual:SetSize(CPPGUICombatMarineBuyMenu.kBtnOverlaySize)
-  --self.backgroundVisual:SetAnchor(GUIItem.Middle, GUIItem.Center)
-  --self.backgroundVisual:SetPosition( Vector(-CPPGUICombatMarineBuyMenu.kBtnOverlaySize.x / 2, -CPPGUICombatMarineBuyMenu.kBtnOverlaySize.y / 2, 0) )
-  --self.backgroundVisual:SetTexture(CPPGUICombatMarineBuyMenu.kBtnOverlayTexture)
-  --self.backgroundVisual:SetTexturePixelCoordinates(0, 0, CPPGUICombatMarineBuyMenu.kBtnOverlaySize.x, CPPGUICombatMarineBuyMenu.kBtnOverlaySize.y)
-  --self.backgroundVisual:SetColor( Color(1,1,1,0.8) )
-  --self.backgroundVisual:SetIsVisible(true)
-  --self.backgroundCenteredArea:AddChild(self.backgroundVisual)
+    self.backgroundCenteredArea = GUIManager:CreateGraphicItem()
+    self.backgroundCenteredArea:SetSize( Vector(1000, Client.GetScreenHeight(), 0) )
+    self.backgroundCenteredArea:SetAnchor(GUIItem.Middle, GUIItem.Top)
+    self.backgroundCenteredArea:SetPosition( Vector(-500, 0, 0) )
+    self.backgroundCenteredArea:SetColor(CPPGUICombatMarineBuyMenu.kBackgroundCenterColor)
+    self.background:AddChild(self.backgroundCenteredArea)
 
 end
 
 function CPPGUICombatMarineBuyMenu:_InitializeHeaders()
 
-  self.wpnHeaderText = GetGUIManager():CreateTextItem()
-  self.wpnHeaderText:SetFontName(CPPGUICombatMarineBuyMenu.kHeaderFont)
-  self.wpnHeaderText:SetFontIsBold(true)
-  self.wpnHeaderText:SetScale(GetScaledVector())
-  GUIMakeFontScale(self.wpnHeaderText)
-  self.wpnHeaderText:SetAnchor(GUIItem.Left, GUIItem.Top)
-  self.wpnHeaderText:SetPosition( Vector(50, 100, 0) )
-  self.wpnHeaderText:SetTextAlignmentX(GUIItem.Align_Min)
-  self.wpnHeaderText:SetTextAlignmentY(GUIItem.Align_Center)
-  self.wpnHeaderText:SetColor(CPPGUICombatMarineBuyMenu.kTextColor)
-  self.wpnHeaderText:SetText("Weapons")
-  self.wpnHeaderText:SetIsVisible(true)
-  self.backgroundCenteredArea:AddChild(self.wpnHeaderText)
+    local player = Client.GetLocalPlayer()
+
+    self.logo = GetGUIManager():CreateGraphicItem()
+    self.logo:SetSize( CPPGUICombatMarineBuyMenu.kLogoSize )
+    self.logo:SetAnchor(GUIItem.Left, GUIItem.Top)
+    self.logo:SetPosition( Vector(-10, -60, 0) )
+    self.logo:SetScale( Vector(0.5, 0.5, 0) )
+    self.logo:SetTexture(CPPGUICombatMarineBuyMenu.kLogoTexture)
+    self.logo:SetTexturePixelCoordinates(0, 0, CPPGUICombatMarineBuyMenu.kLogoSize.x, CPPGUICombatMarineBuyMenu.kLogoSize.y)
+    self.logo:SetColor( Color(1, 1, 1, 1) )
+    self.backgroundCenteredArea:AddChild(self.logo)
+
+    self.titleText = GetGUIManager():CreateTextItem()
+    self.titleText:SetFontName(CPPGUICombatMarineBuyMenu.kTitleFont)
+    self.titleText:SetFontIsBold(true)
+    self.titleText:SetScale(GetScaledVector())
+    GUIMakeFontScale(self.titleText)
+    self.titleText:SetAnchor(GUIItem.Left, GUIItem.Top)
+    self.titleText:SetPosition( Vector(208, 40, 0) )
+    self.titleText:SetTextAlignmentX(GUIItem.Align_Min)
+    self.titleText:SetTextAlignmentY(GUIItem.Align_Center)
+    self.titleText:SetColor(CPPGUICombatMarineBuyMenu.kTextColor)
+    self.titleText:SetText("TSE Uplink Established")
+    self.titleText:SetIsVisible(true)
+    self.backgroundCenteredArea:AddChild(self.titleText)
+
+    self.subTitleText = GetGUIManager():CreateTextItem()
+    self.subTitleText:SetFontName(CPPGUICombatMarineBuyMenu.kHeaderFont)
+    self.subTitleText:SetFontIsBold(true)
+    self.subTitleText:SetScale(GetScaledVector())
+    GUIMakeFontScale(self.subTitleText)
+    self.subTitleText:SetAnchor(GUIItem.Left, GUIItem.Top)
+    self.subTitleText:SetPosition( Vector(208, 80, 0) )
+    self.subTitleText:SetTextAlignmentX(GUIItem.Align_Min)
+    self.subTitleText:SetTextAlignmentY(GUIItem.Align_Center)
+    self.subTitleText:SetColor(CPPGUICombatMarineBuyMenu.kTextColor)
+    self.subTitleText:SetText(string.format("Logged in as %s", player:GetName()))
+    self.subTitleText:SetIsVisible(true)
+    self.backgroundCenteredArea:AddChild(self.subTitleText)
+
+    self.wpnHeaderText = GetGUIManager():CreateTextItem()
+    self.wpnHeaderText:SetFontName(CPPGUICombatMarineBuyMenu.kHeaderFont)
+    self.wpnHeaderText:SetFontIsBold(true)
+    self.wpnHeaderText:SetScale(GetScaledVector())
+    GUIMakeFontScale(self.wpnHeaderText)
+    self.wpnHeaderText:SetAnchor(GUIItem.Left, GUIItem.Top)
+    self.wpnHeaderText:SetPosition( Vector(60, 148, 0) )
+    self.wpnHeaderText:SetTextAlignmentX(GUIItem.Align_Min)
+    self.wpnHeaderText:SetTextAlignmentY(GUIItem.Align_Center)
+    self.wpnHeaderText:SetColor(CPPGUICombatMarineBuyMenu.kTextColor)
+    self.wpnHeaderText:SetText("Weapons")
+    self.wpnHeaderText:SetIsVisible(true)
+    self.backgroundCenteredArea:AddChild(self.wpnHeaderText)
+
+    self.upgradeHeaderText = GetGUIManager():CreateTextItem()
+    self.upgradeHeaderText:SetFontName(CPPGUICombatMarineBuyMenu.kHeaderFont)
+    self.upgradeHeaderText:SetFontIsBold(true)
+    self.upgradeHeaderText:SetScale(GetScaledVector())
+    GUIMakeFontScale(self.upgradeHeaderText)
+    self.upgradeHeaderText:SetAnchor(GUIItem.Left, GUIItem.Top)
+    self.upgradeHeaderText:SetPosition( Vector(520, 148, 0) )
+    self.upgradeHeaderText:SetTextAlignmentX(GUIItem.Align_Min)
+    self.upgradeHeaderText:SetTextAlignmentY(GUIItem.Align_Center)
+    self.upgradeHeaderText:SetColor(CPPGUICombatMarineBuyMenu.kTextColor)
+    self.upgradeHeaderText:SetText("Upgrades")
+    self.upgradeHeaderText:SetIsVisible(true)
+    self.backgroundCenteredArea:AddChild(self.upgradeHeaderText)
+
+    self.techHeaderText = GetGUIManager():CreateTextItem()
+    self.techHeaderText:SetFontName(CPPGUICombatMarineBuyMenu.kHeaderFont)
+    self.techHeaderText:SetFontIsBold(true)
+    self.techHeaderText:SetScale(GetScaledVector())
+    GUIMakeFontScale(self.techHeaderText)
+    self.techHeaderText:SetAnchor(GUIItem.Left, GUIItem.Top)
+    self.techHeaderText:SetPosition( Vector(60, 446, 0) )
+    self.techHeaderText:SetTextAlignmentX(GUIItem.Align_Min)
+    self.techHeaderText:SetTextAlignmentY(GUIItem.Align_Center)
+    self.techHeaderText:SetColor(CPPGUICombatMarineBuyMenu.kTextColor)
+    self.techHeaderText:SetText("Tech")
+    self.techHeaderText:SetIsVisible(true)
+    self.backgroundCenteredArea:AddChild(self.techHeaderText)
+
+    self.consumableHeaderText = GetGUIManager():CreateTextItem()
+    self.consumableHeaderText:SetFontName(CPPGUICombatMarineBuyMenu.kHeaderFont)
+    self.consumableHeaderText:SetFontIsBold(true)
+    self.consumableHeaderText:SetScale(GetScaledVector())
+    GUIMakeFontScale(self.consumableHeaderText)
+    self.consumableHeaderText:SetAnchor(GUIItem.Left, GUIItem.Top)
+    self.consumableHeaderText:SetPosition( Vector(60, 664, 0) )
+    self.consumableHeaderText:SetTextAlignmentX(GUIItem.Align_Min)
+    self.consumableHeaderText:SetTextAlignmentY(GUIItem.Align_Center)
+    self.consumableHeaderText:SetColor(CPPGUICombatMarineBuyMenu.kTextColor)
+    self.consumableHeaderText:SetText("Consumables")
+    self.consumableHeaderText:SetIsVisible(true)
+    self.backgroundCenteredArea:AddChild(self.consumableHeaderText)
+
+    self.structureHeaderText = GetGUIManager():CreateTextItem()
+    self.structureHeaderText:SetFontName(CPPGUICombatMarineBuyMenu.kHeaderFont)
+    self.structureHeaderText:SetFontIsBold(true)
+    self.structureHeaderText:SetScale(GetScaledVector())
+    GUIMakeFontScale(self.structureHeaderText)
+    self.structureHeaderText:SetAnchor(GUIItem.Left, GUIItem.Top)
+    self.structureHeaderText:SetPosition( Vector(60, 798, 0) )
+    self.structureHeaderText:SetTextAlignmentX(GUIItem.Align_Min)
+    self.structureHeaderText:SetTextAlignmentY(GUIItem.Align_Center)
+    self.structureHeaderText:SetColor(CPPGUICombatMarineBuyMenu.kTextColor)
+    self.structureHeaderText:SetText("Structures")
+    self.structureHeaderText:SetIsVisible(true)
+    self.backgroundCenteredArea:AddChild(self.structureHeaderText)
+
+end
+
+local function InitWeaponButtons(self, player)
+
+    local columnIndex = 0
+    local rowIndex = 0
+    local startOffset = Vector(60, 178, 0)
+
+    for k, itemTechId in ipairs(GetWeaponItemList()) do
+
+        if columnIndex == 2 then
+
+            columnIndex = 0
+            rowIndex = rowIndex + 1
+
+        end
+
+        local x = startOffset.x + (columnIndex * (CPPGUICombatMarineBuyMenu.kButtonSize.x + CPPGUICombatMarineBuyMenu.kButtonPadding.x))
+        local y = startOffset.y + (rowIndex * (CPPGUICombatMarineBuyMenu.kButtonSize.y + CPPGUICombatMarineBuyMenu.kButtonPadding.y))
+
+        local buttonGraphic = GUIManager:CreateGraphicItem()
+        buttonGraphic:SetSize( CPPGUICombatMarineBuyMenu.kButtonSize )
+        buttonGraphic:SetAnchor(GUIItem.Left, GUIItem.Top)
+        buttonGraphic:SetPosition( Vector(x, y, 0) )
+        buttonGraphic:SetTexture(CPPGUICombatMarineBuyMenu.kButtonTexture)
+        buttonGraphic:SetTexturePixelCoordinates(0, 0, CPPGUICombatMarineBuyMenu.kButtonSize.x, CPPGUICombatMarineBuyMenu.kButtonSize.y)
+        buttonGraphic:SetColor( CPPGUICombatMarineBuyMenu.kBtnColor )
+        self.backgroundCenteredArea:AddChild(buttonGraphic)
+
+        local cost = CombatPlusPlus_GetCostByTechId(itemTechId)
+        local equipped = GetIsEquipped(itemTechId)
+        local canAfford = cost <= player.combatSkillPoints
+        local hasRequiredRank = CombatPlusPlus_GetRequiredRankByTechId(itemTechId) <= player.combatRank
+
+        local enabled = canAfford and hasRequiredRank and not equipped
+        local iconColor = Color(1, 1, 1, 1)
+
+        if equipped then
+            iconColor = CPPGUICombatMarineBuyMenu.kBlueHighlight
+        elseif hasRequiredRank and not canAfford then
+            iconColor = CPPGUICombatMarineBuyMenu.kRedHighlight
+        end
+
+        local buttonIcon = GUIManager:CreateGraphicItem()
+        buttonIcon:SetSize( Vector(weaponIconWidth, weaponIconHeight, 0) )
+        buttonIcon:SetAnchor(GUIItem.Left, GUIItem.Top)
+        buttonIcon:SetPosition( Vector(x, y, 0) )
+        buttonIcon:SetTexture(CPPGUICombatMarineBuyMenu.kWeaponIconTexture)
+        buttonIcon:SetTexturePixelCoordinates(GetWeaponIconPixelCoordinates(itemTechId, enabled))
+        buttonIcon:SetColor(iconColor)
+        self.backgroundCenteredArea:AddChild(buttonIcon)
+
+        local weaponText = GUIManager:CreateTextItem()
+        weaponText:SetFontName(Fonts.kAgencyFB_Tiny)
+        weaponText:SetScale(GetScaledVector())
+        GUIMakeFontScale(weaponText)
+        weaponText:SetAnchor(GUIItem.Right, GUIItem.Top)
+        weaponText:SetPosition( Vector(-6, 14, 0) )
+        weaponText:SetTextAlignmentX(GUIItem.Align_Max)
+        weaponText:SetTextAlignmentY(GUIItem.Align_Center)
+        weaponText:SetColor(CPPGUICombatMarineBuyMenu.kTextColor)
+        weaponText:SetText(GetDisplayNameForTechId(itemTechId))
+        buttonGraphic:AddChild(weaponText)
+
+        local resColor = CPPGUICombatMarineBuyMenu.kTextColor
+        if not canAfford or not hasRequiredRank then
+            resColor = CPPGUICombatMarineBuyMenu.kRedHighlight
+        end
+
+        local resIcon = GUIManager:CreateGraphicItem()
+        resIcon:SetSize( Vector(48, 48, 0) )
+        resIcon:SetScale( Vector(0.4, 0.4, 0) )
+        resIcon:SetAnchor(GUIItem.Right, GUIItem.Bottom)
+        resIcon:SetPosition( Vector(-50, -38, 0))
+        resIcon:SetTexture(CPPGUICombatMarineBuyMenu.kResIconTexture)
+        resIcon:SetTexturePixelCoordinates( 0, 0, 48, 48 )
+        resIcon:SetColor( resColor )
+        buttonGraphic:AddChild(resIcon)
+
+        local resText = GUIManager:CreateTextItem()
+        resText:SetFontName(Fonts.kAgencyFB_Tiny)
+        resText:SetScale(GetScaledVector())
+        GUIMakeFontScale(resText)
+        resText:SetAnchor(GUIItem.Right, GUIItem.Bottom)
+        resText:SetPosition( Vector(-8, -14, 0) )
+        resText:SetTextAlignmentX(GUIItem.Align_Max)
+        resText:SetTextAlignmentY(GUIItem.Align_Center)
+        resText:SetColor(resColor)
+        resText:SetText(string.format("%s", cost))
+        buttonGraphic:AddChild(resText)
+
+        columnIndex = columnIndex + 1
+
+        table.insert(self.itemButtons, { Button = buttonGraphic, TechId = itemTechId } )
+
+    end
+
+end
+
+local function InitUpgradeButtons(self, player)
+
+    local columnIndex = 0
+    local rowIndex = 0
+    local startOffset = Vector(520, 178, 0)
+
+    for k, itemTechId in ipairs(GetUpgradeItemList()) do
+
+        if columnIndex == 2 then
+
+            columnIndex = 0
+            rowIndex = rowIndex + 1
+
+        end
+
+        local x = startOffset.x + (columnIndex * (CPPGUICombatMarineBuyMenu.kButtonSize.x + CPPGUICombatMarineBuyMenu.kButtonPadding.x))
+        local y = startOffset.y + (rowIndex * (CPPGUICombatMarineBuyMenu.kButtonSize.y + CPPGUICombatMarineBuyMenu.kButtonPadding.y))
+
+        local buttonGraphic = GUIManager:CreateGraphicItem()
+        buttonGraphic:SetSize( CPPGUICombatMarineBuyMenu.kButtonSize )
+        buttonGraphic:SetAnchor(GUIItem.Left, GUIItem.Top)
+        buttonGraphic:SetPosition( Vector(x, y, 0) )
+        buttonGraphic:SetTexture(CPPGUICombatMarineBuyMenu.kButtonTexture)
+        buttonGraphic:SetTexturePixelCoordinates(0, 0, CPPGUICombatMarineBuyMenu.kButtonSize.x, CPPGUICombatMarineBuyMenu.kButtonSize.y)
+        buttonGraphic:SetColor( CPPGUICombatMarineBuyMenu.kBtnColor )
+        self.backgroundCenteredArea:AddChild(buttonGraphic)
+
+        local cost = CombatPlusPlus_GetCostByTechId(itemTechId)
+        local equipped = GetIsEquipped(itemTechId)
+        local canAfford = cost <= player.combatSkillPoints
+        local hasRequiredRank = CombatPlusPlus_GetRequiredRankByTechId(itemTechId) <= player.combatRank
+
+        local enabled = canAfford and hasRequiredRank and not equipped
+        local iconColor = Color(1, 1, 1, 1)
+
+        if equipped then
+            iconColor = CPPGUICombatMarineBuyMenu.kBlueHighlight
+        elseif hasRequiredRank and not canAfford then
+            iconColor = CPPGUICombatMarineBuyMenu.kRedHighlight
+        end
+
+        local buttonIcon = GUIManager:CreateGraphicItem()
+        buttonIcon:SetSize( Vector(smallIconWidth, smallIconHeight, 0) )
+        buttonIcon:SetAnchor(GUIItem.Left, GUIItem.Top)
+        buttonIcon:SetPosition( Vector(x, y, 0) )
+        buttonIcon:SetTexture(CPPGUICombatMarineBuyMenu.kUpgradeIconTexture)
+        buttonIcon:SetTexturePixelCoordinates(GetUpgradeIconPixelCoordinates(itemTechId, enabled))
+        buttonIcon:SetColor(iconColor)
+        self.backgroundCenteredArea:AddChild(buttonIcon)
+
+        local buttonText = GUIManager:CreateTextItem()
+        buttonText:SetFontName(Fonts.kAgencyFB_Tiny)
+        buttonText:SetScale(GetScaledVector())
+        GUIMakeFontScale(buttonText)
+        buttonText:SetAnchor(GUIItem.Right, GUIItem.Top)
+        buttonText:SetPosition( Vector(-6, 14, 0) )
+        buttonText:SetTextAlignmentX(GUIItem.Align_Max)
+        buttonText:SetTextAlignmentY(GUIItem.Align_Center)
+        buttonText:SetColor(CPPGUICombatMarineBuyMenu.kTextColor)
+        buttonText:SetText(GetDisplayNameForTechId(itemTechId))
+        buttonGraphic:AddChild(buttonText)
+
+        local resColor = CPPGUICombatMarineBuyMenu.kTextColor
+        if not canAfford or not hasRequiredRank then
+            resColor = CPPGUICombatMarineBuyMenu.kRedHighlight
+        end
+
+        local resIcon = GUIManager:CreateGraphicItem()
+        resIcon:SetSize( Vector(48, 48, 0) )
+        resIcon:SetScale( Vector(0.4, 0.4, 0) )
+        resIcon:SetAnchor(GUIItem.Right, GUIItem.Bottom)
+        resIcon:SetPosition( Vector(-50, -38, 0))
+        resIcon:SetTexture(CPPGUICombatMarineBuyMenu.kResIconTexture)
+        resIcon:SetTexturePixelCoordinates( 0, 0, 48, 48 )
+        resIcon:SetColor( resColor )
+        buttonGraphic:AddChild(resIcon)
+
+        local resText = GUIManager:CreateTextItem()
+        resText:SetFontName(Fonts.kAgencyFB_Tiny)
+        resText:SetScale(GetScaledVector())
+        GUIMakeFontScale(resText)
+        resText:SetAnchor(GUIItem.Right, GUIItem.Bottom)
+        resText:SetPosition( Vector(-8, -14, 0) )
+        resText:SetTextAlignmentX(GUIItem.Align_Max)
+        resText:SetTextAlignmentY(GUIItem.Align_Center)
+        resText:SetColor(resColor)
+        resText:SetText(string.format("%s", cost))
+        buttonGraphic:AddChild(resText)
+
+        columnIndex = columnIndex + 1
+
+        table.insert(self.itemButtons, { Button = buttonGraphic, TechId = itemTechId } )
+
+    end
+
+end
+
+local function InitTechButtons(self, player)
+
+    local columnIndex = 0
+    local rowIndex = 0
+    local startOffset = Vector(60, 476, 0)
+
+    for k, itemTechId in ipairs(GetTechItemList()) do
+
+        if columnIndex == CPPGUICombatMarineBuyMenu.kButtonsPerRow then
+
+            columnIndex = 0
+            rowIndex = rowIndex + 1
+
+        end
+
+        local x = startOffset.x + (columnIndex * (CPPGUICombatMarineBuyMenu.kButtonSize.x + CPPGUICombatMarineBuyMenu.kButtonPadding.x))
+        local y = startOffset.y + (rowIndex * (CPPGUICombatMarineBuyMenu.kButtonSize.y + CPPGUICombatMarineBuyMenu.kButtonPadding.y))
+
+        -- add a gap between column 2 and 3
+        if columnIndex >= 2 then
+            x = x + 40
+        end
+
+        local buttonGraphic = GUIManager:CreateGraphicItem()
+        buttonGraphic:SetSize( CPPGUICombatMarineBuyMenu.kButtonSize )
+        buttonGraphic:SetAnchor(GUIItem.Left, GUIItem.Top)
+        buttonGraphic:SetPosition( Vector(x, y, 0) )
+        buttonGraphic:SetTexture(CPPGUICombatMarineBuyMenu.kButtonTexture)
+        buttonGraphic:SetTexturePixelCoordinates(0, 0, CPPGUICombatMarineBuyMenu.kButtonSize.x, CPPGUICombatMarineBuyMenu.kButtonSize.y)
+        buttonGraphic:SetColor( CPPGUICombatMarineBuyMenu.kBtnColor )
+        self.backgroundCenteredArea:AddChild(buttonGraphic)
+
+        local cost = CombatPlusPlus_GetCostByTechId(itemTechId)
+        local equipped = GetIsEquipped(itemTechId)
+        local canAfford = cost <= player.combatSkillPoints
+        local hasRequiredRank = CombatPlusPlus_GetRequiredRankByTechId(itemTechId) <= player.combatRank
+
+        local enabled = canAfford and hasRequiredRank and not equipped
+        local iconColor = Color(1, 1, 1, 1)
+
+        if equipped then
+            iconColor = CPPGUICombatMarineBuyMenu.kBlueHighlight
+        elseif hasRequiredRank and not canAfford then
+            iconColor = CPPGUICombatMarineBuyMenu.kRedHighlight
+        end
+
+        local buttonIcon = GUIManager:CreateGraphicItem()
+        buttonIcon:SetSize( Vector(smallIconWidth, smallIconHeight, 0) )
+        buttonIcon:SetAnchor(GUIItem.Left, GUIItem.Top)
+        buttonIcon:SetPosition( Vector(x, y, 0) )
+        buttonIcon:SetTexture(CPPGUICombatMarineBuyMenu.kTechIconTexture)
+        buttonIcon:SetTexturePixelCoordinates(GetTechIconPixelCoordinates(itemTechId, enabled))
+        buttonIcon:SetColor(iconColor)
+        self.backgroundCenteredArea:AddChild(buttonIcon)
+
+        local buttonText = GUIManager:CreateTextItem()
+        buttonText:SetFontName(Fonts.kAgencyFB_Tiny)
+        buttonText:SetScale(GetScaledVector())
+        GUIMakeFontScale(buttonText)
+        buttonText:SetAnchor(GUIItem.Right, GUIItem.Top)
+        buttonText:SetPosition( Vector(-6, 14, 0) )
+        buttonText:SetTextAlignmentX(GUIItem.Align_Max)
+        buttonText:SetTextAlignmentY(GUIItem.Align_Center)
+        buttonText:SetColor(CPPGUICombatMarineBuyMenu.kTextColor)
+        buttonText:SetText(GetDisplayNameForTechId(itemTechId))
+        buttonGraphic:AddChild(buttonText)
+
+        local resColor = CPPGUICombatMarineBuyMenu.kTextColor
+        if not canAfford or not hasRequiredRank then
+            resColor = CPPGUICombatMarineBuyMenu.kRedHighlight
+        end
+
+        local resIcon = GUIManager:CreateGraphicItem()
+        resIcon:SetSize( Vector(48, 48, 0) )
+        resIcon:SetScale( Vector(0.4, 0.4, 0) )
+        resIcon:SetAnchor(GUIItem.Right, GUIItem.Bottom)
+        resIcon:SetPosition( Vector(-50, -38, 0))
+        resIcon:SetTexture(CPPGUICombatMarineBuyMenu.kResIconTexture)
+        resIcon:SetTexturePixelCoordinates( 0, 0, 48, 48 )
+        resIcon:SetColor( resColor )
+        buttonGraphic:AddChild(resIcon)
+
+        local resText = GUIManager:CreateTextItem()
+        resText:SetFontName(Fonts.kAgencyFB_Tiny)
+        resText:SetScale(GetScaledVector())
+        GUIMakeFontScale(resText)
+        resText:SetAnchor(GUIItem.Right, GUIItem.Bottom)
+        resText:SetPosition( Vector(-8, -14, 0) )
+        resText:SetTextAlignmentX(GUIItem.Align_Max)
+        resText:SetTextAlignmentY(GUIItem.Align_Center)
+        resText:SetColor(resColor)
+        resText:SetText(string.format("%s", cost))
+        buttonGraphic:AddChild(resText)
+
+        columnIndex = columnIndex + 1
+
+        table.insert(self.itemButtons, { Button = buttonGraphic, TechId = itemTechId } )
+
+    end
+
+end
+
+local function InitConsumableButtons(self, player)
+
+    local columnIndex = 0
+    local rowIndex = 0
+    local startOffset = Vector(60, 694, 0)
+
+    for k, itemTechId in ipairs(GetConsumableItemList()) do
+
+        if columnIndex == CPPGUICombatMarineBuyMenu.kButtonsPerRow then
+
+            columnIndex = 0
+            rowIndex = rowIndex + 1
+
+        end
+
+        local x = startOffset.x + (columnIndex * (CPPGUICombatMarineBuyMenu.kButtonSize.x + CPPGUICombatMarineBuyMenu.kButtonPadding.x))
+        local y = startOffset.y + (rowIndex * (CPPGUICombatMarineBuyMenu.kButtonSize.y + CPPGUICombatMarineBuyMenu.kButtonPadding.y))
+
+        -- add a gap between column 2 and 3
+        if columnIndex >= 2 then
+            x = x + 40
+        end
+
+        local buttonGraphic = GUIManager:CreateGraphicItem()
+        buttonGraphic:SetSize( CPPGUICombatMarineBuyMenu.kButtonSize )
+        buttonGraphic:SetAnchor(GUIItem.Left, GUIItem.Top)
+        buttonGraphic:SetPosition( Vector(x, y, 0) )
+        buttonGraphic:SetTexture(CPPGUICombatMarineBuyMenu.kButtonTexture)
+        buttonGraphic:SetTexturePixelCoordinates(0, 0, CPPGUICombatMarineBuyMenu.kButtonSize.x, CPPGUICombatMarineBuyMenu.kButtonSize.y)
+        buttonGraphic:SetColor( CPPGUICombatMarineBuyMenu.kBtnColor )
+        self.backgroundCenteredArea:AddChild(buttonGraphic)
+
+        local cost = CombatPlusPlus_GetCostByTechId(itemTechId)
+        local equipped = GetIsEquipped(itemTechId)
+        local canAfford = cost <= player.combatSkillPoints
+        local hasRequiredRank = CombatPlusPlus_GetRequiredRankByTechId(itemTechId) <= player.combatRank
+
+        local enabled = canAfford and hasRequiredRank and not equipped
+        local iconColor = Color(1, 1, 1, 1)
+
+        if equipped then
+            iconColor = CPPGUICombatMarineBuyMenu.kBlueHighlight
+        elseif hasRequiredRank and not canAfford then
+            iconColor = CPPGUICombatMarineBuyMenu.kRedHighlight
+        end
+
+        local buttonIcon = GUIManager:CreateGraphicItem()
+        buttonIcon:SetSize( Vector(smallIconWidth, smallIconHeight, 0) )
+        buttonIcon:SetAnchor(GUIItem.Left, GUIItem.Top)
+        buttonIcon:SetPosition( Vector(x, y, 0) )
+        buttonIcon:SetTexture(CPPGUICombatMarineBuyMenu.kConsumableIconTexture)
+        buttonIcon:SetTexturePixelCoordinates(GetConsumableIconPixelCoordinates(itemTechId, enabled))
+        buttonIcon:SetColor(iconColor)
+        self.backgroundCenteredArea:AddChild(buttonIcon)
+
+        local buttonText = GUIManager:CreateTextItem()
+        buttonText:SetFontName(Fonts.kAgencyFB_Tiny)
+        buttonText:SetScale(GetScaledVector())
+        GUIMakeFontScale(buttonText)
+        buttonText:SetAnchor(GUIItem.Right, GUIItem.Top)
+        buttonText:SetPosition( Vector(-6, 14, 0) )
+        buttonText:SetTextAlignmentX(GUIItem.Align_Max)
+        buttonText:SetTextAlignmentY(GUIItem.Align_Center)
+        buttonText:SetColor(CPPGUICombatMarineBuyMenu.kTextColor)
+        buttonText:SetText(GetDisplayNameForTechId(itemTechId))
+        buttonGraphic:AddChild(buttonText)
+
+        local resColor = CPPGUICombatMarineBuyMenu.kTextColor
+        if not canAfford or not hasRequiredRank then
+            resColor = CPPGUICombatMarineBuyMenu.kRedHighlight
+        end
+
+        local resIcon = GUIManager:CreateGraphicItem()
+        resIcon:SetSize( Vector(48, 48, 0) )
+        resIcon:SetScale( Vector(0.4, 0.4, 0) )
+        resIcon:SetAnchor(GUIItem.Right, GUIItem.Bottom)
+        resIcon:SetPosition( Vector(-50, -38, 0))
+        resIcon:SetTexture(CPPGUICombatMarineBuyMenu.kResIconTexture)
+        resIcon:SetTexturePixelCoordinates( 0, 0, 48, 48 )
+        resIcon:SetColor( resColor )
+        buttonGraphic:AddChild(resIcon)
+
+        local resText = GUIManager:CreateTextItem()
+        resText:SetFontName(Fonts.kAgencyFB_Tiny)
+        resText:SetScale(GetScaledVector())
+        GUIMakeFontScale(resText)
+        resText:SetAnchor(GUIItem.Right, GUIItem.Bottom)
+        resText:SetPosition( Vector(-8, -14, 0) )
+        resText:SetTextAlignmentX(GUIItem.Align_Max)
+        resText:SetTextAlignmentY(GUIItem.Align_Center)
+        resText:SetColor(resColor)
+        resText:SetText(string.format("%s", cost))
+        buttonGraphic:AddChild(resText)
+
+        columnIndex = columnIndex + 1
+
+        table.insert(self.itemButtons, { Button = buttonGraphic, TechId = itemTechId } )
+
+    end
+
+end
+
+local function InitStructureButtons(self, player)
+
+    local columnIndex = 0
+    local rowIndex = 0
+    local startOffset = Vector(60, 828, 0)
+
+    for k, itemTechId in ipairs(GetStructureItemList()) do
+
+        if columnIndex == 5 then
+
+            columnIndex = 0
+            rowIndex = rowIndex + 1
+
+        end
+
+        local x = startOffset.x + (columnIndex * (CPPGUICombatMarineBuyMenu.kButtonLargeSize.x + CPPGUICombatMarineBuyMenu.kButtonLargePadding.x))
+        local y = startOffset.y + (rowIndex * (CPPGUICombatMarineBuyMenu.kButtonLargeSize.y + CPPGUICombatMarineBuyMenu.kButtonLargePadding.y))
+
+        local buttonGraphic = GUIManager:CreateGraphicItem()
+        buttonGraphic:SetSize( CPPGUICombatMarineBuyMenu.kButtonLargeSize )
+        buttonGraphic:SetAnchor(GUIItem.Left, GUIItem.Top)
+        buttonGraphic:SetPosition( Vector(x, y, 0) )
+        buttonGraphic:SetTexture(CPPGUICombatMarineBuyMenu.kButtonLargeTexture)
+        buttonGraphic:SetTexturePixelCoordinates(0, 0, CPPGUICombatMarineBuyMenu.kButtonLargeSize.x, CPPGUICombatMarineBuyMenu.kButtonLargeSize.y)
+        buttonGraphic:SetColor( CPPGUICombatMarineBuyMenu.kBtnColor )
+        self.backgroundCenteredArea:AddChild(buttonGraphic)
+
+        local cost = CombatPlusPlus_GetCostByTechId(itemTechId)
+        local canAfford = cost <= player.combatSkillPoints
+        local hasRequiredRank = CombatPlusPlus_GetRequiredRankByTechId(itemTechId) <= player.combatRank
+
+        local enabled = canAfford and hasRequiredRank
+        local iconColor = Color(1, 1, 1, 1)
+
+        if hasRequiredRank and not canAfford then
+            iconColor = CPPGUICombatMarineBuyMenu.kRedHighlight
+        end
+
+        local buttonIcon = GUIManager:CreateGraphicItem()
+        buttonIcon:SetSize( Vector(structureIconWidth, structureIconHeight, 0) )
+        buttonIcon:SetAnchor(GUIItem.Left, GUIItem.Top)
+        buttonIcon:SetPosition( Vector(x, y, 0) )
+        buttonIcon:SetTexture(CPPGUICombatMarineBuyMenu.kStructureIconTexture)
+        buttonIcon:SetTexturePixelCoordinates(GetStructureIconPixelCoordinates(itemTechId, enabled))
+        buttonIcon:SetColor(iconColor)
+        self.backgroundCenteredArea:AddChild(buttonIcon)
+
+        local buttonText = GUIManager:CreateTextItem()
+        buttonText:SetFontName(Fonts.kAgencyFB_Tiny)
+        buttonText:SetScale(GetScaledVector())
+        GUIMakeFontScale(buttonText)
+        buttonText:SetAnchor(GUIItem.Left, GUIItem.Bottom)
+        buttonText:SetPosition( Vector(6, -14, 0) )
+        buttonText:SetTextAlignmentX(GUIItem.Align_Min)
+        buttonText:SetTextAlignmentY(GUIItem.Align_Center)
+        buttonText:SetColor(CPPGUICombatMarineBuyMenu.kTextColor)
+        buttonText:SetText(GetDisplayNameForTechId(itemTechId))
+        buttonGraphic:AddChild(buttonText)
+
+        local resColor = CPPGUICombatMarineBuyMenu.kTextColor
+        if not canAfford or not hasRequiredRank then
+            resColor = CPPGUICombatMarineBuyMenu.kRedHighlight
+        end
+
+        local resIcon = GUIManager:CreateGraphicItem()
+        resIcon:SetSize( Vector(48, 48, 0) )
+        resIcon:SetScale( Vector(0.4, 0.4, 0) )
+        resIcon:SetAnchor(GUIItem.Right, GUIItem.Bottom)
+        resIcon:SetPosition( Vector(-50, -38, 0))
+        resIcon:SetTexture(CPPGUICombatMarineBuyMenu.kResIconTexture)
+        resIcon:SetTexturePixelCoordinates( 0, 0, 48, 48 )
+        resIcon:SetColor( resColor )
+        buttonGraphic:AddChild(resIcon)
+
+        local resText = GUIManager:CreateTextItem()
+        resText:SetFontName(Fonts.kAgencyFB_Tiny)
+        resText:SetScale(GetScaledVector())
+        GUIMakeFontScale(resText)
+        resText:SetAnchor(GUIItem.Right, GUIItem.Bottom)
+        resText:SetPosition( Vector(-8, -14, 0) )
+        resText:SetTextAlignmentX(GUIItem.Align_Max)
+        resText:SetTextAlignmentY(GUIItem.Align_Center)
+        resText:SetColor(resColor)
+        resText:SetText(string.format("%s", cost))
+        buttonGraphic:AddChild(resText)
+
+        columnIndex = columnIndex + 1
+
+        table.insert(self.itemButtons, { Button = buttonGraphic, TechId = itemTechId } )
+
+    end
 
 end
 
 function CPPGUICombatMarineBuyMenu:_InitializeButtons()
 
-  local columnIndex = 0
-  local rowIndex = 0
-  local startOffset = Vector(70, 130, 0)
+    local player = Client.GetLocalPlayer()
 
-  local player = Client.GetLocalPlayer()
+    self.itemButtons = { }
 
-  self.itemButtons = { }
+    InitWeaponButtons(self, player)
+    InitUpgradeButtons(self, player)
+    InitTechButtons(self, player)
+    InitConsumableButtons(self, player)
+    InitStructureButtons(self, player)
 
-  for k, itemTechId in ipairs(GetWeaponItemList()) do
-
-    if columnIndex == CPPGUICombatMarineBuyMenu.kButtonsPerRow then
-
-      columnIndex = 0
-      rowIndex = rowIndex + 1
-
-    end
-
-    local x = startOffset.x + (columnIndex * (CPPGUICombatMarineBuyMenu.kButtonSize.x + CPPGUICombatMarineBuyMenu.kButtonPadding.x))
-    local y = startOffset.y + (rowIndex * (CPPGUICombatMarineBuyMenu.kButtonSize.y + CPPGUICombatMarineBuyMenu.kButtonPadding.y))
-
-    --Shared.Message(GetDisplayNameForTechId(itemTechId))
-
-    local buttonGraphic = GUIManager:CreateGraphicItem()
-    buttonGraphic:SetSize( CPPGUICombatMarineBuyMenu.kButtonSize )
-    buttonGraphic:SetAnchor(GUIItem.Left, GUIItem.Top)
-    buttonGraphic:SetPosition( Vector(x, y, 0) )
-    buttonGraphic:SetTexture(CPPGUICombatMarineBuyMenu.kButtonTexture)
-    buttonGraphic:SetTexturePixelCoordinates(0, 0, CPPGUICombatMarineBuyMenu.kButtonSize.x, CPPGUICombatMarineBuyMenu.kButtonSize.y)
-    buttonGraphic:SetColor( CPPGUICombatMarineBuyMenu.kBtnColor )
-    self.backgroundCenteredArea:AddChild(buttonGraphic)
-
-    --local buttonGraphicActive = GUIManager:CreateGraphicItem()
-    --buttonGraphicActive:SetSize( Vector(194, 99, 0) )
-    --buttonGraphicActive:SetAnchor(GUIItem.Left, GUIItem.Center)
-    --buttonGraphicActive:SetPosition( Vector(-10, 0, 0) )
-    --buttonGraphicActive:SetTexture(CPPGUICombatMarineBuyMenu.kSelectorTexture)
-    --buttonGraphic.AddChild(buttonGraphicActive)
-
-    local equipped = GetIsEquipped(itemTechId)
-    local canAfford = GetCostByTechId(itemTechId) <= player.combatSkillPoints
-    local hasRequiredRank = GetRequiredRankByTechId(itemTechId) <= player.combatRank
-
-    local enabled = canAfford and hasRequiredRank and not equipped
-    local iconColor = Color(1, 1, 1, 1)
-
-    if equipped then
-      iconColor = Color(0, 1, 0, 1)
-    elseif hasRequiredRank and not canAfford then
-      iconColor = Color(1, 0, 0, 1)
-    end
-
-    local buttonIcon = GUIManager:CreateGraphicItem()
-    buttonIcon:SetSize( Vector(weaponIconWidth, weaponIconHeight, 0) )
-    buttonIcon:SetAnchor(GUIItem.Left, GUIItem.Top)
-    buttonIcon:SetPosition( Vector(x, y, 0) )
-    buttonIcon:SetTexture(CPPGUICombatMarineBuyMenu.kIconTexture)
-    buttonIcon:SetTexturePixelCoordinates(GetWeaponIconPixelCoordinates(itemTechId, enabled))
-    buttonIcon:SetColor(iconColor)
-    self.backgroundCenteredArea:AddChild(buttonIcon)
-
-    local weaponText = GUIManager:CreateTextItem()
-    weaponText:SetFontName(Fonts.kAgencyFB_Tiny)
-    weaponText:SetScale(GetScaledVector())
-    GUIMakeFontScale(weaponText)
-    weaponText:SetAnchor(GUIItem.Right, GUIItem.Bottom)
-    weaponText:SetPosition( Vector(-6, -14, 0) )
-    weaponText:SetTextAlignmentX(GUIItem.Align_Max)
-    weaponText:SetTextAlignmentY(GUIItem.Align_Center)
-    weaponText:SetColor(CPPGUICombatMarineBuyMenu.kTextColor)
-    weaponText:SetText(GetDisplayNameForTechId(itemTechId))
-    buttonGraphic:AddChild(weaponText)
-
-    columnIndex = columnIndex + 1
-
-    table.insert(self.itemButtons, { Button = buttonGraphic, TechId = itemTechId } )
-
-  end
-
-  -- to prevent wrong display before the first update
-  self:_UpdateItemButtons(0)
+    -- to prevent wrong display before the first update
+    self:_UpdateItemButtons(0)
 
 end
 
@@ -308,8 +1032,8 @@ local function HandleItemClicked(self, mouseX, mouseY)
 
               local player = Client.GetLocalPlayer()
               local equipped = GetIsEquipped(itemTechId)
-              local canAfford = GetCostByTechId(itemTechId) <= player.combatSkillPoints
-              local hasRequiredRank = GetRequiredRankByTechId(itemTechId) <= player.combatRank
+              local canAfford = CombatPlusPlus_GetCostByTechId(itemTechId) <= player.combatSkillPoints
+              local hasRequiredRank = CombatPlusPlus_GetRequiredRankByTechId(itemTechId) <= player.combatRank
 
                 if hasRequiredRank and canAfford and not equipped then
 

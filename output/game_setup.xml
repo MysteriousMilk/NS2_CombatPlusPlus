@@ -1,9 +1,0 @@
-<game>
-	<name>combat++</name>
-	<description>?</description>
-	<icon>icons/ns2_64x64.png</icon>
-	<client>lua/cpp_Client.lua</client>
-	<server>lua/cpp_Server.lua</server>
-	<loading>lua/Loading.lua</loading>
-    <soundinfo>sound/NS2.soundinfo</soundinfo>
-</game>

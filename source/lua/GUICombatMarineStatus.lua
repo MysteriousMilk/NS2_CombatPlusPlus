@@ -197,20 +197,22 @@ end
 
 function GUICombatMarineStatus:Uninitialize()
 
-  GUI.DestroyItem(self.combatStatusStencil)
-  self.combatStatusStencil = nil
+    GUIAnimatedScript.Uninitialize(self)
 
-  GUI.DestroyItem(self.currentXPText)
-  self.combatStatusStencil = nil
+    GUI.DestroyItem(self.combatStatusStencil)
+    self.combatStatusStencil = nil
 
-  GUI.DestroyItem(self.currentRankText)
-  self.currentRankText = nil
+    GUI.DestroyItem(self.currentXPText)
+    self.combatStatusStencil = nil
 
-  GUI.DestroyItem(self.xpBarBorderMask)
-  self.xpBarBorderMask = nil
+    GUI.DestroyItem(self.currentRankText)
+    self.currentRankText = nil
 
-  GUI.DestroyItem(self.skillPointText)
-  self.skillPointText = nil
+    GUI.DestroyItem(self.xpBarBorderMask)
+    self.xpBarBorderMask = nil
+
+    GUI.DestroyItem(self.skillPointText)
+    self.skillPointText = nil
 
 end
 
@@ -243,6 +245,9 @@ function GUICombatMarineStatus:OnResolutionChanged(oldX, oldY, newX, newY)
 
     self:Reset(newY / kBaseScreenHeight)
 
+    self:Uninitialize()
+    self:Initialize()
+
 end
 
 function GUICombatMarineStatus:Update(deltaTime)
@@ -255,12 +260,12 @@ function GUICombatMarineStatus:Update(deltaTime)
 
         local currentXP = player.combatXP
         local currentRank = player.combatRank
-        local title = GetMarineTitleByRank(currentRank)
-        local oldXPThreshold = GetLevelThresholdByRank(currentRank)
+        local title = CombatPlusPlus_GetMarineTitleByRank(currentRank)
+        local oldXPThreshold = CombatPlusPlus_GetLevelThresholdByRank(currentRank)
         local newXPThreshold = 0
 
         if currentRank < kMaxRank then
-            newXPThreshold = GetLevelThresholdByRank(currentRank + 1)
+            newXPThreshold = CombatPlusPlus_GetLevelThresholdByRank(currentRank + 1)
         end
 
         -- update rank text

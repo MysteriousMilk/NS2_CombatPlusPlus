@@ -212,6 +212,18 @@ if Server then
     function NS2Gamerules:CheckForNoCommander(onTeam, commanderType)
     end
 
+    function NS2Gamerules:ResetPlayerScores()
+
+        for _, player in ientitylist(Shared.GetEntitiesWithClassname("Player")) do
+            if player.ResetScores and player.client then
+                player:ResetScores()
+                player:ResetCombatScores()
+                self.playerRanking:SetEntranceTime( player, player:GetTeamNumber() )
+            end
+        end
+
+    end
+
     local ns2_SetGameState = NS2Gamerules.SetGameState
     function NS2Gamerules:SetGameState(state)
 

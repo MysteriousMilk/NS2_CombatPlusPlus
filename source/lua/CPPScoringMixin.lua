@@ -1,4 +1,4 @@
-ScoringMixin.networkVars =
+--[=[ ScoringMixin.networkVars =
 {
     playerSkill = "integer",
     playTime = "private time",
@@ -35,7 +35,7 @@ function ScoringMixin:AddXP(xp, source, targetId)
         if xp and xp ~= 0 and not GetGameInfoEntity():GetWarmUpActive() then
 
             self.combatXP = Clamp(self.combatXP + xp, 0, kMaxCombatXP)
-            local currentRank = GetRankByXP(self.combatXP)
+            local currentRank = CombatPlusPlus_GetRankByXP(self.combatXP)
 
             -- check for rank change, and if so, give skill point
             if self.combatRank < currentRank then
@@ -118,14 +118,14 @@ if Server then
 
     end
 
-end
+end]=]
 
 local ns2_ScoringMixin_AddKill = ScoringMixin.AddKill
 function ScoringMixin:AddKill()
 
     ns2_ScoringMixin_AddKill(self)
 
-    if GetGameInfoEntity():GetWarmUpActive() then return end
+    --[=[if GetGameInfoEntity():GetWarmUpActive() then return end
 
     if not self.combatXP then
         self.combatXP = 0
@@ -137,7 +137,10 @@ function ScoringMixin:AddKill()
 
     self.killsGainedCurrentLife = self.killsGainedCurrentLife + 1
 
-    self:AddXP(kEarnedXPPerKill, kXPSourceType.kill, Entity.invalidId)
+    self:AddXP(kEarnedXPPerKill, kXPSourceType.kill, Entity.invalidId)]=]
+    if HasMixin(self, "CombatScore") then
+        self:AddCombatKill()
+    end
 
 end
 
@@ -146,16 +149,19 @@ function ScoringMixin:AddAssistKill()
 
     ns2_ScoringMixin_AddAssistKill(self)
 
-    if GetGameInfoEntity():GetWarmUpActive() then return end
+    --[=[if GetGameInfoEntity():GetWarmUpActive() then return end
 
     if not self.combatXP then
         self.combatXP = 0
     end
 
-    self:AddXP(kEarnedXPPerAssist, kXPSourceType.assist, Entity.invalidId)
+    self:AddXP(kEarnedXPPerAssist, kXPSourceType.assist, Entity.invalidId)]=]
+    if HasMixin(self, "CombatScore") then
+        self:AddCombatAssistKill()
+    end
 
 end
-
+--[=[
 local ns2_ScoringMixin_ResetScores = ScoringMixin.ResetScores
 function ScoringMixin:ResetScores()
 
@@ -165,4 +171,4 @@ function ScoringMixin:ResetScores()
     self.combatRank = 1
     self.combatSkillPoints = 0
 
-end
+end]=]

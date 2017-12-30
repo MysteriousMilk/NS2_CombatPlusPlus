@@ -22,6 +22,15 @@ kEarnedXPPerAssist = 50
 kDamageRequiredXPReward = 20
 kDamageXPModifier = 0.5  -- XP award is half the amount of damage done
 
+-- This is the number of kills needed to achieve the "Rampage" reward
+kKillsForRampageReward = 5
+
+-- This is the number of assists needed to achieve the "Got Your Back" reward
+kAssistsForAssistReward = 6
+
+-- This is the number of assists needed to achieve the "DamageDealer" reward
+kDamageForDamageDealerAward = 2500
+
 -- the highest rank the player can reach
 kMaxRank = 12
 
@@ -42,10 +51,17 @@ kSkillPointSourceType = enum(
     "DamageDealer"
 })
 
+kBuilderMode = enum(
+{
+    "Build",
+    "Create"
+})
+
 kKillStreakValue = 5
 kAssistStreakValue = 5
 kDamageDealerValue = 2500
 
+-- This table drives how many skill points are awarded for a particular action
 kSkillPointTable = {}
 kSkillPointTable[kSkillPointSourceType.LevelUp] = 1
 kSkillPointTable[kSkillPointSourceType.KillStreak] = 1
@@ -59,16 +75,16 @@ kXPLevelThresholds =
 {
     0,
     1000,
-    3000,
-    6000,
-    10000,
-    15000,
-    22000,
+    2500,
+    5000,
+    8000,
+    12000,
+    17000,
+    23000,
     30000,
-    40000,
-    52000,
-    66000,
-    84000
+    38000,
+    47000,
+    57000
 }
 
 -- This table contains the "common" name of each rank for the Marines
