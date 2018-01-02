@@ -14,14 +14,16 @@ The intent of this mod is to bring back a gameplay type similar to the original 
 - [x] Award XP for Assists
 - [x] Award XP for doing Damage
 - [ ] Award XP for Building
+- [ ] Award XP for Welding (Marines)
+- [ ] Award XP for Healing (Aliens)
 - [x] Award Skill Point on Level Up
+- [x] Award Skill Point for 'Rampage' criteria
+- [x] Award Skill Point for 'Got Your Back' criteria
 - [ ] Award Skill Point for 'Damage Dealer' criteria
-- [ ] Award Skill Point for 'Got Your Back' criteria
-- [ ] Award Skill Point for 'Rampage' criteria
 - [x] Update Marine HUD to show Progression and Skill Points
 - [ ] Update Alien HUD to show Progression and Skill Points
 - [x] Visual Indicators for XP Earned
-- [x] Create Marine Buy Menu GUI (50% complete)
+- [x] Create Marine Buy Menu GUI (90% complete)
 - [ ] Create Alien Buy Menu GUI
 - [x] Enable Marine Buy menu via the 'B' key
 - [x] Allow Weapons to be purchased from the Marine Buy Menu
