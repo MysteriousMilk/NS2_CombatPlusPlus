@@ -1,30 +1,27 @@
-function MakeTechEnt( techPoint, mapName, rightOffset, forwardOffset, teamType )
-    local origin = techPoint:GetOrigin()
-    local right = techPoint:GetCoords().xAxis
-    local forward = techPoint:GetCoords().zAxis
-    local position = origin + right * rightOffset + forward * forwardOffset
-
-    local newEnt = CreateEntity( mapName, position, teamType)
-    if HasMixin( newEnt, "Construct" ) then
-        SetRandomOrientation( newEnt )
-        newEnt:SetConstructionComplete()
-    end
-
-    if HasMixin( newEnt, "Live" ) then
-        newEnt:SetIsAlive(true)
-    end
-
-    return newEnt
-end
+--[[
+ * Natural Selection 2 - Combat++ Mod
+ * Authors:
+ *          WhiteWizard
+ *
+ * Makes ajustments to the alien team.
+ *
+ * Overriden Functions:
+ *  'AlienTeam:SpawnWarmUpStructures' - Spawns a Crag and a Shade during warmup mode.
+ *  'AlienTeam:SpawnInitialStructures' - Spawns the initial set of structures for the team.
+]]
 
 function AlienTeam:SpawnWarmUpStructures()
+
     local techPoint = self.startTechPoint
-    if not (Shared.GetCheatsEnabled()) and #self.warmupStructures == 0 then
-        self.warmupStructures[#self.warmupStructures+1] = MakeTechEnt(techPoint, Crag.kMapName, 3.5, -2, kAlienTeamType)
-        self.warmupStructures[#self.warmupStructures+1] = MakeTechEnt(techPoint, Shade.kMapName, -3.5, 2, kAlienTeamType)
+
+    if not Shared.GetCheatsEnabled() and #self.warmupStructures == 0 then
+        self.warmupStructures[#self.warmupStructures + 1] = CreateTechEntity(techPoint, kTechId.Crag, 3.5, -2, kAlienTeamType)
+        self.warmupStructures[#self.warmupStructures + 1] = CreateTechEntity(techPoint, kTechId.Shade, -3.5, 2, kAlienTeamType)
     end
+
 end
 
+-- Copied because it's local and called from 'AlienTeam:SpawnInitialStructures'
 local function CreateCysts(hive, harvester, teamNumber)
 
     local hiveOrigin = hive:GetOrigin()
@@ -51,7 +48,7 @@ end
 function AlienTeam:SpawnInitialStructures(techPoint)
 
     self.startTechPoint = techPoint
-    
+
     local tower, hive = PlayingTeam.SpawnInitialStructures(self, techPoint)
 
     hive:SetFirstLogin()

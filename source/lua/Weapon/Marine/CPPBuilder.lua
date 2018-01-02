@@ -1,3 +1,19 @@
+--[[
+ * Natural Selection 2 - Combat++ Mod
+ * Authors:
+ *          WhiteWizard
+ *
+ * Modified the builder ability to have a 'Create' mode.
+ *
+ * Wrapped Functions:
+ *  'Builder:OnInitialized' - Initialize the new variables.
+ *  'Builder:OnHolster' - Put the builder ability back in 'Build' mode when holstered.
+ *
+ * Overriden Functions:
+ *  'Builder:OnPrimaryAttack' - Player uses primary attack to place structures.
+ *  'Builder:OnPrimaryAttackEnd' - Set builder ability back to 'Build' mode after a structure is placed.
+]]
+
 local networkVarsEx =
 {
     buildMode = "enum kBuilderMode"

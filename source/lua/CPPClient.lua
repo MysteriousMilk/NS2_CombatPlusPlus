@@ -6,7 +6,7 @@
 ]]
 
 decoda_name = "Client"
-Shared.Message('combat++')
+Shared.Message("GameMode: Combat++")
 
 Script.Load("lua/CPPCombatScoreDisplay.lua")
 Script.Load("lua/GUICombatMarineStatus.lua")

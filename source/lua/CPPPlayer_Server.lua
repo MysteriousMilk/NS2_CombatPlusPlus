@@ -34,3 +34,35 @@ function Player:ProcessBuyAction(techIds)
   return false
 
 end
+
+local ns2_Player_Replace = Player.Replace
+function Player:Replace(mapName, newTeamNumber, preserveWeapons, atOrigin, extraValues)
+
+    local player = ns2_Player_Replace(self, mapName, newTeamNumber, preserveWeapons, atOrigin, extraValues)
+
+    -- give the player their pistol or welder back if they already purchased it
+    if player:isa("Marine") then
+
+        local userId = Server.GetOwner(player):GetUserId()
+        local persistData = GetGameMaster():GetMarinePersistData()
+
+        player:SetArmorLevel(persistData:GetArmorLevel(userId))
+        player:SetWeaponLevel(persistData:GetWeaponLevel(userId))
+
+        if persistData:GetHasWeapon(userId, kTechId.Pistol) then
+            player:GiveItem(Pistol.kMapName)
+            player:SetQuickSwitchTarget(Pistol.kMapName)
+        end
+
+        if persistData:GetHasWeapon(userId, kTechId.Welder) then
+            player:GiveItem(Welder.kMapName)
+            player:SetQuickSwitchTarget(Welder.kMapName)
+        end
+
+        player:SetActiveWeapon(Rifle.kMapName)
+
+    end
+
+    return player
+
+end

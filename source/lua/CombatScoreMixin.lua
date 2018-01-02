@@ -1,3 +1,15 @@
+--[[
+ * Natural Selection 2 - Combat++ Mod
+ * Authors:
+ *          WhiteWizard
+ *
+ * New mixin to track Combat++ specific values for players.
+ *
+ * Provides a progression system (xp->rank) and awards skill points when
+ * certain criteria is met.
+]]
+
+
 CombatScoreMixin = CreateMixin(CombatScoreMixin)
 CombatScoreMixin.type = "CombatScore"
 
@@ -10,14 +22,7 @@ CombatScoreMixin.networkVars =
 
 function CombatScoreMixin:__initmixin()
 
-    self.combatXP = 0
-    self.combatRank = 1
-    self.combatSkillPoints = 1
-    self.combatXPGainedCurrentLife = 0
-    self.killsGainedCurrentLife = 0
-    self.assistsGainedCurrentLife = 0
-    self.damageDealtCurrentLife = 0
-    self.armorWeldedCurrentLife = 0
+    self:ResetCombatScores()
 
 end
 
@@ -162,7 +167,7 @@ function CombatScoreMixin:ResetCombatScores()
 
     self.combatXP = 0
     self.combatRank = 1
-    self.combatSkillPoints = 1
+    self.combatSkillPoints = kStartPoints
     self.combatXPGainedCurrentLife = 0
     self.killsGainedCurrentLife = 0
     self.assistsGainedCurrentLife = 0

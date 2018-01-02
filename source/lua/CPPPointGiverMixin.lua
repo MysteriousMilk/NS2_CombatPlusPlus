@@ -1,8 +1,15 @@
 --[[
  * Natural Selection 2 - Combat++ Mod
- * Created by: WhiteWizard
+ * Authors:
+ *          WhiteWizard
  *
  * Adds additional functionality to the PointGiverMixin to handle Combat XP.
+ *
+ * Wrapped Functions:
+ *  'PointGiverMixin:__initmixin' - Added additional init code.
+ *  'PointGiverMixin:OnEntityChange' - Copy over 'pointsSinceLastXPAward' when the entity changes.
+ *  'PointGiverMixin:OnTakeDamage' - Keep track of the damage being done.  Everytime the player hits the
+ *  damage threshold, award some xp.
 ]]
 
 local ns2_PointGiverMixin_Init = PointGiverMixin.__initmixin

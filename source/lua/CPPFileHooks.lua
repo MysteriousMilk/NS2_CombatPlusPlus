@@ -1,10 +1,21 @@
+--[[
+ * Natural Selection 2 - Combat++ Mod
+ * Authors:
+ *          WhiteWizard
+ *
+ * Hooks the base game files with the new Combat++ files.
+]]
+
 ModLoader.SetupFileHook( "lua/NS2Gamerules.lua", "lua/CPPGameRules.lua", "post" )
+ModLoader.SetupFileHook( "lua/Balance.lua", "lua/CPPBalance.lua", "post" )
 ModLoader.SetupFileHook( "lua/Globals.lua", "lua/CPPGlobals.lua", "post" )
 ModLoader.SetupFileHook( "lua/ClientUI.lua", "lua/CPPClientUI.lua", "post" )
 ModLoader.SetupFileHook( "lua/Hud/Commander/GhostModel.lua", "lua/Hud/Commander/CPPGhostModel.lua", "post" )
+ModLoader.SetupFileHook( "lua/Hud/Marine/GUIMarineHUD.lua", "lua/Hud/Marine/CPPGUIMarineHud.lua", "post" )
 ModLoader.SetupFileHook( "lua/GUINotifications.lua", "lua/CPPGUINotifications.lua", "post" )
 ModLoader.SetupFileHook( "lua/Player.lua", "lua/CPPPlayer.lua", "post" )
 ModLoader.SetupFileHook( "lua/Player_Server.lua", "lua/CPPPlayer_Server.lua", "post" )
+ModLoader.SetupFileHook( "lua/Player_Client.lua", "lua/CPPPlayer_Client.lua", "post" )
 ModLoader.SetupFileHook( "lua/Marine.lua", "lua/CPPMarine.lua", "post" )
 ModLoader.SetupFileHook( "lua/Marine_Client.lua", "lua/CPPMarine_Client.lua", "post" )
 ModLoader.SetupFileHook( "lua/Marine_Server.lua", "lua/CPPMarine_Server.lua", "post" )

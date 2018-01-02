@@ -1,11 +1,31 @@
 --[[
- * Starts a new game by resetting the map and all of the players. Keep everyone on current teams (readyroom, playing teams, etc.) but
- * respawn playing players.
- * Combat++ - Removed refrences to the commmand (relogin of previous commander.. etc)
- ]]
+ * Natural Selection 2 - Combat++ Mod
+ * Authors:
+ *          WhiteWizard
+ *
+ * Controls the flow of the game state.
+ *
+ * Wrapped Functions:
+ *  'NS2Gamerules:SetGameState' - Added logic to reset persist data when going from WarmUp to PreGame.  Added
+ *  logic to socket all power points on game start.
+ *
+ * Overriden Functions:
+ *  'NS2Gamerules:ResetGame' - Removes most of the command structure stuff.  Create the Game Master.
+ *  Removes all Resource Towers.
+ *  'NS2Gamerules:CheckForNoCommander' - Short-circuit the no commander check.
+ *  'NS2Gamerules:ResetPlayerScores' - Overriden  to add call to 'CombatScoreMixin.ResetCombatScores'.
+ *  'NS2Gamerules:CheckGameStart' - Overriden to remove 'No Commander' and 'No IP' checks from game start conditions.
+ *  'NS2Gamerules:GetWarmUpPlayerLimit' - Pulls the number of players needed to start a game.  Value defined in CPPGlobals.lua.
+ *  'NS2Gamerules:UpdateWarmUp' - Modified to allow bots to trigger the pregame mode.
+]]
 
 if Server then
+
+    -- Starts a new game by resetting the map and all of the players. Keep everyone on current teams (readyroom, playing teams, etc.) but
+    -- respawn playing players.
+    -- Combat++ - Removed refrences to the commmand (relogin of previous commander.. etc)
     function NS2Gamerules:ResetGame()
+
         Shared.Message("ResetGame called.")
 
         self:SetGameState(kGameState.NotStarted)
@@ -13,8 +33,8 @@ if Server then
         TournamentModeOnReset()
 
         -- save commanders for later re-login
-        local team1CommanderClient = self.team1:GetCommander() and self.team1:GetCommander():GetClient()
-        local team2CommanderClient = self.team2:GetCommander() and self.team2:GetCommander():GetClient()
+        --local team1CommanderClient = self.team1:GetCommander() and self.team1:GetCommander():GetClient()
+        --local team2CommanderClient = self.team2:GetCommander() and self.team2:GetCommander():GetClient()
 
         -- Cleanup any peeps currently in the commander seat by logging them out
         -- have to do this before we start destroying stuff.
@@ -47,9 +67,6 @@ if Server then
             end
 
             if allowDestruction and entity:GetParent() == nil then
-
-                local isMapEntity = entity:GetIsMapEntity()
-                local mapName = entity:GetMapName()
 
                 -- Reset all map entities and all player's that have a valid Client (not ragdolled players for example).
                 local resetEntity = entity:isa("TeamInfo") or entity:GetIsMapEntity() or (entity:isa("Player") and entity:GetClient() ~= nil)
@@ -155,6 +172,11 @@ if Server then
 
         end
 
+        -- Reset the GameModeController for Combat++
+        ResetGameMaster()
+        GetGameMaster():SetMarineTechPoint(team1TechPoint)
+        GetGameMaster():SetAlientTechPoint(team2TechPoint)
+
         self.team1:ResetPreservePlayers(team1TechPoint)
         self.team2:ResetPreservePlayers(team2TechPoint)
 
@@ -199,11 +221,6 @@ if Server then
           DestroyEntity(entity);
         end
 
-        -- Reset the GameModeController for Combat++
-        ResetGameMaster()
-        GetGameMaster():SetMarineTechPoint(team1TechPoint)
-        GetGameMaster():CreateMarineSpawnPoints()
-
         self.team1:OnResetComplete()
         self.team2:OnResetComplete()
 
@@ -239,18 +256,20 @@ if Server then
             Shared.Message("GameState changed to Started.")
         end
 
+        -- PreGame Resets persist data from warmup mode
+        if state ~= self.gameState and state == kGameState.PreGame then
+            GetGameMaster():GetMarinePersistData():Reset()
+        end
+
         if state ~= self.gameState and state == kGameState.Started then
 
-          Shared.Message("Socking PowerPoints")
-          -- start with all powerpoints socketed
-          local powerNodes = EntityListToTable(Shared.GetEntitiesWithClassname("PowerPoint"))
-          for i = 1, #powerNodes do
-            if powerNodes[i] then
-              if not powerNodes[i]:GetIsSocketed() then
-                powerNodes[i]:SocketPowerNode()
-              end
+            -- start with all powerpoints socketed
+            local powerNodes = EntityListToTable(Shared.GetEntitiesWithClassname("PowerPoint"))
+            for i = 1, #powerNodes do
+                if powerNodes[i] and not powerNodes[i]:GetIsSocketed() then
+                    powerNodes[i]:SocketPowerNode()
+                end
             end
-          end
 
         end
 
@@ -264,7 +283,7 @@ if Server then
         local team2players, _, team2bots = self.team2:GetNumPlayers()
         local numPlayers = team1players + team1bots + team2players + team2bots
 
-        if self:GetGameState() <= kGameState.NotStarted and numPlayers>= self:GetWarmUpPlayerLimit() then
+        if self:GetGameState() <= kGameState.NotStarted and numPlayers >= self:GetWarmUpPlayerLimit() then
             self:SetGameState(kGameState.PreGame)
         end
 
@@ -275,7 +294,7 @@ if Server then
      * 12 to 8.
     ]]
     function NS2Gamerules:GetWarmUpPlayerLimit()
-        return 8
+        return kMinPlayersGameStart
     end
 
     --[[
@@ -283,22 +302,34 @@ if Server then
      * Allow bots to trigger pregame as well
     ]]
     function NS2Gamerules:UpdateWarmUp()
+
         local gameState = self:GetGameState()
+
         if gameState < kGameState.PreGame then
+
             local team1players, _, team1bots = self.team1:GetNumPlayers()
             local team2players, _, team2bots = self.team2:GetNumPlayers()
             local numPlayers = team1players + team1bots + team2players + team2bots
+
             if gameState == kGameState.NotStarted and numPlayers < self:GetWarmUpPlayerLimit() then
+
                 self.team1:SpawnWarmUpStructures()
                 self.team2:SpawnWarmUpStructures()
 
                 self:SetGameState(kGameState.WarmUp)
+
                 if GetSeason() == Seasons.kFall then
                     self:DestroyUnusedPowerNodes()
                 end
+
             elseif gameState == kGameState.WarmUp and numPlayers >= self:GetWarmUpPlayerLimit() then
+
                 self:SetGameState(kGameState.PreGame)
+
             end
+
         end
+
     end
+
 end

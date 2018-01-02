@@ -1,6 +1,7 @@
 --[[
  * Natural Selection 2 - Combat++ Mod
- * Created by: WhiteWizard
+ * Authors:
+ *          WhiteWizard
  *
  * Holds a pending XP Update, prior to showing it on screen (ie. +500xp)
 ]]

@@ -1,10 +1,23 @@
+--Cache for spawned ip positions
+local takenInfantryPortalPoints = {}
+
+local ns2_MarineTeam_ResetTeam = MarineTeam.ResetTeam
+function MarineTeam:ResetTeam()
+
+    local commandStructure = ns2_MarineTeam_ResetTeam(self)
+
+    takenInfantryPortalPoints = {}
+
+    return commandStructure
+
+end
+
 function MarineTeam:GetHasAbilityToRespawn()
     return true
 end
 
 function MarineTeam:GetTotalInRespawnQueue()
 
-    local queueSize = #self.respawnQueue
     local numPlayers = 0
 
     for i = 1, #self.respawnQueue do
@@ -34,25 +47,38 @@ function MarineTeam:OnRespawnQueueChanged()
 
 end
 
--- local used in Update()
-local function GetArmorLevel(self)
+local function CreateSpawnPoint(self, techPoint)
 
-    local armorLevels = 0
+    local techPointOrigin = techPoint:GetOrigin() + Vector(0, 2, 0)
+    local spawnPoint
 
-    local techTree = self:GetTechTree()
-    if techTree then
+    -- First check the predefined spawn points. Look for a close one.
+    for p = 1, #Server.infantryPortalSpawnPoints do
 
-        if techTree:GetHasTech(kTechId.Armor3) then
-            armorLevels = 3
-        elseif techTree:GetHasTech(kTechId.Armor2) then
-            armorLevels = 2
-        elseif techTree:GetHasTech(kTechId.Armor1) then
-            armorLevels = 1
+        if not takenInfantryPortalPoints[p] then
+            local predefinedSpawnPoint = Server.infantryPortalSpawnPoints[p]
+            if (predefinedSpawnPoint - techPointOrigin):GetLength() <= kInfantryPortalAttachRange then
+                spawnPoint = predefinedSpawnPoint
+                takenInfantryPortalPoints[p] = true
+                break
+            end
         end
 
     end
 
-    return armorLevels
+    if not spawnPoint then
+
+        spawnPoint = GetRandomBuildPosition( kTechId.InfantryPortal, techPointOrigin, kInfantryPortalAttachRange )
+        spawnPoint = spawnPoint and spawnPoint - Vector( 0, 0.6, 0 )
+
+    end
+
+    if spawnPoint then
+
+        local ip = CreateEntity(CPPMarineSpawn.kMapName, spawnPoint, self:GetTeamNumber())
+        SetRandomOrientation(ip)
+
+    end
 
 end
 
@@ -66,38 +92,28 @@ function MarineTeam:Update(timePassed)
     -- Update distress beacon mask
     self:UpdateGameMasks(timePassed)
 
-    local armorLevel = GetArmorLevel(self)
     for index, player in ipairs(GetEntitiesForTeam("Player", self:GetTeamNumber())) do
-        player:UpdateArmorAmount(armorLevel)
+        if player:isa("Marine") then
+            player:UpdateArmorAmount(player:GetArmorLevel())
+        end
     end
 
-end
-
-function MakeTechEnt( techPoint, mapName, rightOffset, forwardOffset, teamType )
-    local origin = techPoint:GetOrigin() + Vector(0, 2, 0)
-    local right = techPoint:GetCoords().xAxis
-    local forward = techPoint:GetCoords().zAxis
-    local position = origin + right * rightOffset + forward * forwardOffset
-
-    local newEnt = CreateEntity( mapName, position, teamType)
-    if HasMixin( newEnt, "Construct" ) then
-        SetRandomOrientation( newEnt )
-        newEnt:SetConstructionComplete()
+    --  check to see if the team has enough players now for an extra spawn point
+    local spawnPointCount = table.icount(GetEntitiesForTeam("CPPMarineSpawn", self:GetTeamNumber()))
+    if self:GetNumPlayers() > kMarineSpawnAdjustmentThreshold and spawnPointCount == kMinMarineSpawnPoints then
+        CreateSpawnPoint(self, GetGameMaster():GetMarineTechPoint())
     end
 
-    if HasMixin( newEnt, "Live" ) then
-        newEnt:SetIsAlive(true)
-    end
-
-    return newEnt
 end
 
 function MarineTeam:SpawnWarmUpStructures()
+
     local techPoint = self.startTechPoint
+
     if not (Shared.GetCheatsEnabled() and MarineTeam.gSandboxMode) and #self.warmupStructures == 0 then
-        --self.warmupStructures[#self.warmupStructures+1] = MakeTechEnt(techPoint, AdvancedArmory.kMapName, 3.5, -2, kMarineTeamType)
-        self.warmupStructures[#self.warmupStructures+1] = MakeTechEnt(techPoint, Observatory.kMapName, -3.5, 2, kMarineTeamType)
+        self.warmupStructures[#self.warmupStructures + 1] = CreateTechEntity(techPoint, kTechId.Observatory, -3.5, 2, kMarineTeamType)
     end
+
 end
 
 function MarineTeam:SpawnInitialStructures(techPoint)
@@ -106,17 +122,26 @@ function MarineTeam:SpawnInitialStructures(techPoint)
 
     local tower, commandStation = PlayingTeam.SpawnInitialStructures(self, techPoint)
 
+    local marineSpawnPointCount = kMinMarineSpawnPoints
+    if self:GetNumPlayers() > kMarineSpawnAdjustmentThreshold then
+        marineSpawnPointCount = marineSpawnPointCount + 1
+    end
+
+    -- Create initial spawn points
+    for i = 1, marineSpawnPointCount do
+        CreateSpawnPoint(self, techPoint)
+    end
+
     -- Spawn an armory at start
     local forwardOffset = 2
     if math.random() < 0.5 then
         forwardOffset = -2
     end
 
-    MakeTechEnt(techPoint, AdvancedArmory.kMapName, 3.5, forwardOffset, kMarineTeamType)
+    CreateTechEntity(techPoint, kTechId.Armory, 3.5, forwardOffset, kMarineTeamType)
 
     if Shared.GetCheatsEnabled() and MarineTeam.gSandboxMode then
-        MakeTechEnt(techPoint, AdvancedArmory.kMapName, 3.5, -2, kMarineTeamType)
-        MakeTechEnt(techPoint, PrototypeLab.kMapName, -3.5, 2, kMarineTeamType)
+        CreateTechEntity(techPoint, kTechId.Observatory, -3.5, forwardOffset * -1, kMarineTeamType)
     end
 
     return tower, commandStation

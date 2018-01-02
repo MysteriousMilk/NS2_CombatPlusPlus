@@ -1,3 +1,16 @@
+--[[
+ * Natural Selection 2 - Combat++ Mod
+ * Authors:
+ *          WhiteWizard
+ *
+ * Overriden Functions:
+ *  'CommandStructure:OnUpdateRender' - Disable the display arrows that guide the player
+ *  to the Hive or Command Station.
+ *  'CommandStructure:GetCanBeUsed' - Disable from player use.
+ *  'CommandStructure:GetCanBeUsedConstructed' - Disable from player use.
+ *  'CommandStructure:GetUseAllowedBeforeGameStart' - Disable from player use.
+]]
+
 function CommandStructure:OnUpdateRender()
 
     local player = Client.GetLocalPlayer()

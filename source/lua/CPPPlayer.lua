@@ -19,33 +19,6 @@ function Player:OnCreate()
 
 end
 
-local ns2_Player_Replace = Player.Replace
-function Player:Replace(mapName, newTeamNumber, preserveWeapons, atOrigin, extraValues)
-
-    player = ns2_Player_Replace(self, mapName, newTeamNumber, preserveWeapons, atOrigin, extraValues)
-
-    -- give the player their pistol or welder back if they already purchased it
-    if player:isa("Marine") and self:isa("Marine") then
-
-        player.purchasedPistol = self.purchasedPistol
-        player.purchasedWelder = self.purchasedWelder
-
-        if player.purchasedPistol then
-            player:GiveItem(Pistol.kMapName)
-            player:SetQuickSwitchTarget(Pistol.kMapName)
-        end
-
-        if player.purchasedWelder then
-            player:GiveItem(Welder.kMapName)
-            player:SetQuickSwitchTarget(Welder.kMapName)
-        end
-
-    end
-
-    return player
-
-end
-
 function Player:GetCreateStructureTechId()
 
     return self.currentCreateStructureTechId

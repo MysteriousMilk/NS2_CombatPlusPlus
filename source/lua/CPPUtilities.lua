@@ -141,3 +141,31 @@ function CombatPlusPlus_GetRequiredRankByTechId(techId)
     return rank
 
 end
+
+function CreateTechEntity( techPoint, techId, rightOffset, forwardOffset, teamType )
+
+    local origin = techPoint:GetOrigin() + Vector(0, 2, 0)
+    local right = techPoint:GetCoords().xAxis
+    local forward = techPoint:GetCoords().zAxis
+    local position = origin + right * rightOffset + forward * forwardOffset
+
+    local trace = Shared.TraceRay(position, position - Vector(0, 10, 0), CollisionRep.Move, PhysicsMask.All)
+    if trace.fraction < 1 then
+        position = trace.endPoint
+    end
+    --local mapName = LookupTechData(techId, kTechDataMapName)
+
+    --local newEnt = CreateEntity( mapName, position, teamType)
+    local newEnt = CreateEntityForTeam(techId, position, teamType, nil)
+    if HasMixin( newEnt, "Construct" ) then
+        SetRandomOrientation( newEnt )
+        newEnt:SetConstructionComplete()
+    end
+
+    if HasMixin( newEnt, "Live" ) then
+        newEnt:SetIsAlive(true)
+    end
+
+    return newEnt
+
+end

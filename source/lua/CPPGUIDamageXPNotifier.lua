@@ -1,3 +1,11 @@
+--[[
+ * Natural Selection 2 - Combat++ Mod
+ * Authors:
+ *          WhiteWizard
+ *
+ * Pop up XP gain when the user is damaging an object.
+]]
+
 class 'GUIDamageXPNotifier'
 
 GUIDamageXPNotifier.kDamageXPDisplayFontName = Fonts.kAgencyFB_Small

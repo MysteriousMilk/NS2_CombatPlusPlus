@@ -13,13 +13,5 @@ elseif Predict then
 end
 
 Script.Load("lua/CPPUtilities.lua")
+Script.Load("lua/MarinePersistData.lua")
 Script.Load("lua/CPPMarineSpawn.lua")
-Script.Load("lua/Weapon/Marine/CPPMarineDropStructureAbility.lua")
-
---if Server then
---    Script.Load("lua/Server.lua")
---elseif Client then
---    Script.Load("lua/Client.lua")
---elseif Predict then
---    Script.Load("lua/Predict.lua")
---end

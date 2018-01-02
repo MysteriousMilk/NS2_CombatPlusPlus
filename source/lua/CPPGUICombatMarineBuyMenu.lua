@@ -1,3 +1,11 @@
+--[[
+ * Natural Selection 2 - Combat++ Mod
+ * Authors:
+ *          WhiteWizard
+ *
+ * New GUI that appears when the marines attempt to buy something using the 'B' key.
+]]
+
 Script.Load("lua/GUIAnimatedScript.lua")
 
 class 'CPPGUICombatMarineBuyMenu' (GUIAnimatedScript)
@@ -16,7 +24,7 @@ CPPGUICombatMarineBuyMenu.kButtonLargeTexture = PrecacheAsset("ui/combatui_buyme
 CPPGUICombatMarineBuyMenu.kButtonLargeSize = Vector(128, 192, 0)
 
 CPPGUICombatMarineBuyMenu.kButtonPadding = Vector(10, 20, 0)
-CPPGUICombatMarineBuyMenu.kButtonLargePadding = Vector(20, 40, 0)
+CPPGUICombatMarineBuyMenu.kButtonLargePadding = Vector(55, 20, 0)
 
 CPPGUICombatMarineBuyMenu.kWeaponIconTexture = PrecacheAsset("ui/combatui_marine_weapon_icons.dds")
 CPPGUICombatMarineBuyMenu.kStructureIconTexture = PrecacheAsset("ui/combatui_marine_structure_icons_large.dds")
@@ -248,10 +256,10 @@ local function GetUpgradeItemList()
     local upgradeItemList =
     {
         kTechId.Armor1,
-        kTechId.Armor2,
-        kTechId.Armor3,
         kTechId.Weapons1,
+        kTechId.Armor2,
         kTechId.Weapons2,
+        kTechId.Armor3,
         kTechId.Weapons3
     }
 
@@ -290,19 +298,45 @@ end
 
 local function GetIsEquipped(techId)
 
-  local equippedTechIds = MarineBuy_GetEquipped()
+    local player = Client.GetLocalPlayer()
+    local armorLevel = player:GetArmorLevel()
+    local weaponLevel = player:GetWeaponLevel()
 
-  for k, itemTechId in ipairs(equippedTechIds) do
+    if techId == kTechId.Armor1 and armorLevel == 1 then
+        return true
+    end
 
-    if techId == itemTechId then
+    if techId == kTechId.Armor2 and armorLevel == 2 then
+        return true
+    end
 
-      return true
+    if techId == kTechId.Armor3 and armorLevel == 3 then
+        return true
+    end
+
+    if techId == kTechId.Weapons1 and weaponLevel == 1 then
+        return true
+    end
+
+    if techId == kTechId.Weapons2 and weaponLevel == 2 then
+        return true
+    end
+
+    if techId == kTechId.Weapons3 and weaponLevel == 3 then
+        return true
+    end
+
+    local equippedTechIds = MarineBuy_GetEquipped()
+
+    for k, itemTechId in ipairs(equippedTechIds) do
+
+        if techId == itemTechId then
+            return true
+        end
 
     end
 
-  end
-
-  return false
+    return false
 
 end
 
@@ -322,46 +356,48 @@ end
 
 function CPPGUICombatMarineBuyMenu:Initialize()
 
-  GUIAnimatedScript.Initialize(self)
+    GUIAnimatedScript.Initialize(self)
 
-  self.mouseOverStates = { }
+    self.mouseOverStates = { }
 
-  self:_InitializeBackground()
-  self:_InitializeHeaders()
-  self:_InitializeButtons()
+    self:_InitializeBackground()
+    self:_InitializeHeaders()
+    self:_InitializeButtons()
 
-  MarineBuy_OnOpen()
-  MouseTracker_SetIsVisible(true, "ui/Cursor_MenuDefault.dds", true)
+    MarineBuy_OnOpen()
+    MouseTracker_SetIsVisible(true, "ui/Cursor_MenuDefault.dds", true)
 
 end
 
 function CPPGUICombatMarineBuyMenu:Update(deltaTime)
 
-  PROFILE("CPPGUICombatMarineBuyMenu:Update")
+    PROFILE("CPPGUICombatMarineBuyMenu:Update")
 
-  GUIAnimatedScript.Update(self, deltaTime)
-  self:_UpdateItemButtons(deltaTime)
+    GUIAnimatedScript.Update(self, deltaTime)
+    self:_UpdateItemButtons(deltaTime)
 
 end
 
 function CPPGUICombatMarineBuyMenu:Uninitialize()
 
-  GUIAnimatedScript.Uninitialize(self)
+    GUIAnimatedScript.Uninitialize(self)
 
-  GUI.DestroyItem(self.background)
-  self.background = nil
-  self.backgroundVisual = nil
-  self.btnPistol = nil
+    GUI.DestroyItem(self.background)
+    self.background = nil
+    self.backgroundVisual = nil
+    self.btnPistol = nil
 
-  MouseTracker_SetIsVisible(false)
+    MouseTracker_SetIsVisible(false)
 
 end
 
 function CPPGUICombatMarineBuyMenu:OnResolutionChanged(oldX, oldY, newX, newY)
+
     self:Uninitialize()
     self:Initialize()
 
     MarineBuy_OnClose()
+
 end
 
 function CPPGUICombatMarineBuyMenu:_InitializeBackground()
@@ -422,6 +458,49 @@ function CPPGUICombatMarineBuyMenu:_InitializeHeaders()
     self.subTitleText:SetText(string.format("Logged in as %s", player:GetName()))
     self.subTitleText:SetIsVisible(true)
     self.backgroundCenteredArea:AddChild(self.subTitleText)
+
+    self.skillPointText = GetGUIManager():CreateTextItem()
+    self.skillPointText:SetFontName(Fonts.kAgencyFB_Small)
+    self.skillPointText:SetFontIsBold(true)
+    self.skillPointText:SetScale(GetScaledVector())
+    GUIMakeFontScale(self.skillPointText)
+    self.skillPointText:SetAnchor(GUIItem.Right, GUIItem.Top)
+    self.skillPointText:SetPosition( Vector(-125, 85, 0) )
+    self.skillPointText:SetTextAlignmentX(GUIItem.Align_Min)
+    self.skillPointText:SetTextAlignmentY(GUIItem.Align_Center)
+    self.skillPointText:SetColor(CPPGUICombatMarineBuyMenu.kTextColor)
+    self.skillPointText:SetIsVisible(true)
+    self.backgroundCenteredArea:AddChild(self.skillPointText)
+
+    -- update skill point text
+    if player.combatSkillPoints == 1 then
+        self.skillPointText:SetText(string.format("%s Skill Point", player.combatSkillPoints))
+    else
+        self.skillPointText:SetText(string.format("%s Skill Points", player.combatSkillPoints))
+    end
+
+    self.skillPointIcon = GetGUIManager():CreateGraphicItem()
+    self.skillPointIcon:SetSize( Vector(48, 48, 0) )
+    self.skillPointIcon:SetAnchor(GUIItem.Right, GUIItem.Top)
+    self.skillPointIcon:SetPosition( Vector(-170, 61, 0) )
+    self.skillPointIcon:SetScale( Vector(0.75, 0.75, 0) )
+    self.skillPointIcon:SetTexture(CPPGUICombatMarineBuyMenu.kResIconTexture)
+    self.skillPointIcon:SetTexturePixelCoordinates(0, 0, 48, 48)
+    self.skillPointIcon:SetColor( Color(1, 1, 1, 1) )
+    self.backgroundCenteredArea:AddChild(self.skillPointIcon)
+
+    self.helpText = GetGUIManager():CreateTextItem()
+    self.helpText:SetFontName(Fonts.kAgencyFB_Small)
+    self.helpText:SetScale(GetScaledVector())
+    GUIMakeFontScale(self.helpText)
+    self.helpText:SetAnchor(GUIItem.Right, GUIItem.Top)
+    self.helpText:SetPosition( Vector(-100, 115, 0) )
+    self.helpText:SetTextAlignmentX(GUIItem.Align_Min)
+    self.helpText:SetTextAlignmentY(GUIItem.Align_Center)
+    self.helpText:SetText("")
+    self.helpText:SetColor(CPPGUICombatMarineBuyMenu.kTextColor)
+    self.helpText:SetIsVisible(true)
+    self.backgroundCenteredArea:AddChild(self.helpText)
 
     self.wpnHeaderText = GetGUIManager():CreateTextItem()
     self.wpnHeaderText:SetFontName(CPPGUICombatMarineBuyMenu.kHeaderFont)
@@ -1006,19 +1085,61 @@ end
 
 function CPPGUICombatMarineBuyMenu:_UpdateItemButtons(deltaTime)
 
-  if self.itemButtons then
+    self.helpText:SetText("")
 
-    for i, item in ipairs(self.itemButtons) do
+    if self.itemButtons then
 
-      if GetIsMouseOver(self, item.Button) then
-        item.Button:SetColor( CPPGUICombatMarineBuyMenu.kBtnHighlightColor )
-      else
-        item.Button:SetColor( CPPGUICombatMarineBuyMenu.kBtnColor )
-      end
+        for i, item in ipairs(self.itemButtons) do
+
+            if GetIsMouseOver(self, item.Button) then
+
+                item.Button:SetColor( CPPGUICombatMarineBuyMenu.kBtnHighlightColor )
+
+                local player = Client.GetLocalPlayer()
+                local cost = CombatPlusPlus_GetCostByTechId(item.TechId)
+                local equipped = GetIsEquipped(item.TechId)
+                local canAfford = cost <= player.combatSkillPoints
+                local hasRequiredRank = CombatPlusPlus_GetRequiredRankByTechId(item.TechId) <= player.combatRank
+                local helpString = ""
+
+                if equipped then
+
+                    helpString = "Cannot purchase. Item already equipped."
+                    self.helpText:SetColor(CPPGUICombatMarineBuyMenu.kRedHighlight)
+
+                elseif not hasRequiredRank then
+
+                    helpString = "Cannot purchase. Required rank not met."
+                    self.helpText:SetColor(CPPGUICombatMarineBuyMenu.kRedHighlight)
+
+                elseif not canAfford then
+
+                    helpString = "Cannot purchase. Not enough skill points."
+                    self.helpText:SetColor(CPPGUICombatMarineBuyMenu.kRedHighlight)
+
+                else
+                    if cost == 1 then
+                        helpString = string.format("Purchase %s for %s skill point.", GetDisplayNameForTechId(item.TechId), cost)
+                    else
+                        helpString = string.format("Purchase %s for %s skill points.", GetDisplayNameForTechId(item.TechId), cost)
+                    end
+
+                    self.helpText:SetColor(CPPGUICombatMarineBuyMenu.kTextColor)
+                end
+
+                textSize = Fancy_CalculateTextSize(helpString, Fonts.kAgencyFB_Small)
+                self.helpText:SetPosition( Vector((textSize.x * -1) - 40, 115, 0) )
+                self.helpText:SetText(helpString)
+
+            else
+
+                item.Button:SetColor( CPPGUICombatMarineBuyMenu.kBtnColor )
+
+            end
+
+        end
 
     end
-
-  end
 
 end
 

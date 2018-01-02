@@ -7,8 +7,8 @@ function Marine:CopyPlayerDataFrom(player)
 
     if not playerInRR and GetGamerules():GetGameStarted() then
 
-        self.purchasedPistol = player.purchasedPistol
-        self.purchasedWelder = player.purchasedWelder
+        self.armorLevel = player.armorLevel
+        self.weaponLevel = player.weaponLevel
 
     end
 
@@ -24,16 +24,6 @@ function Marine:InitWeapons()
 
     self:SetQuickSwitchTarget(Axe.kMapName)
     self:SetActiveWeapon(Rifle.kMapName)
-
-end
-
-local function UpdatePermanentTechItems(self, techId)
-
-    if techId == kTechId.Pistol then
-        self.purchasedPistol = true
-    elseif techId == kTechId.Welder then
-        self.purchasedWelder = true
-    end
 
 end
 
@@ -100,6 +90,9 @@ kIsExoTechId = { [kTechId.Exosuit] = true, [kTechId.DualMinigunExosuit] = true,
 kIsMarineStructureTechId = { [kTechId.Armory] = true, [kTechId.PhaseGate] = true,
                              [kTechId.Observatory] = true, [kTechId.Sentry] = true,
                              [kTechId.RoboticsFactory] = true }
+kIsArmorUpgradeTechId = { [kTechId.Armor1] = true, [kTechId.Armor2] = true, [kTechId.Armor3] = true }
+kIsWeaponUpgradeTechId = { [kTechId.Weapons1] = true, [kTechId.Weapons2] = true, [kTechId.Weapons3] = true }
+kPersistTechId = { [kTechId.Pistol] = true, [kTechId.Welder] = true }
 function Marine:AttemptToBuy(techIds)
 
     local techId = techIds[1]
@@ -139,7 +132,13 @@ function Marine:AttemptToBuy(techIds)
             -- Make sure we're ready to deploy new weapon so we switch to it properly.
             local newItem = self:GiveItem(mapName)
 
-            UpdatePermanentTechItems(self, techId)
+            -- make sure certain weapons persist
+            if kPersistTechId[techId] then
+
+                local userId = Server.GetOwner(self):GetUserId()
+                GetGameMaster():GetMarinePersistData():SetHasWeapon(userId, techId, true)
+
+            end
 
             if newItem then
                 if newItem.UpdateWeaponSkins then
@@ -150,6 +149,24 @@ function Marine:AttemptToBuy(techIds)
                 return true
 
             end
+
+        end
+
+        return false
+
+    else
+
+        if kIsArmorUpgradeTechId[techId] then
+
+            self:SetArmorLevelByTechId(techId)
+            Shared.PlayPrivateSound(self, Marine.kSpendResourcesSoundName, nil, 1.0, self:GetOrigin())
+            return true
+
+        elseif kIsWeaponUpgradeTechId[techId] then
+
+            self:SetWeaponLevelByTechId(techId)
+            Shared.PlayPrivateSound(self, Marine.kSpendResourcesSoundName, nil, 1.0, self:GetOrigin())
+            return true
 
         end
 

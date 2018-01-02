@@ -1,3 +1,15 @@
+--[[
+ * Natural Selection 2 - Combat++ Mod
+ * Authors:
+ *          WhiteWizard
+ *
+ * Overridden Functions:
+ *  'GhostModel:Update' - Because indiviual marines can now place structures, the ghost model
+ *  for placing that structure sometimes returns a radius.  This attempts to add a ghost guide
+ *  with the commander parameter being nil.  Put in fix to make sure player is a commander before
+ *  calling 'AddGhostGuide'.
+]]
+
 -- children can override, but make sure to call this function as well
 function GhostModel:Update()
 
