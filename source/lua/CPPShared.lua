@@ -15,3 +15,4 @@ end
 Script.Load("lua/CPPUtilities.lua")
 Script.Load("lua/MarinePersistData.lua")
 Script.Load("lua/CPPMarineSpawn.lua")
+Script.Load("lua/CPPSentry.lua")
