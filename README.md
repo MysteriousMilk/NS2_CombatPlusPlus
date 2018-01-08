@@ -5,6 +5,8 @@ The intent of this mod is to bring back a gameplay type similar to the original 
 
 ## Latest Changes
 
+1/7/2018 - Command station and hive will now be "occupied" and therefore in their visibly closed state.
+
 1/7/2018 - Sentries now work without the battery.
 
 12/30/2017 - Modified Builder to have a 'Create' mode.  Marines can now place structures.  Lots of polish on the Marine Buy Menu.
