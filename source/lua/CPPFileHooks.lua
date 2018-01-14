@@ -19,9 +19,11 @@ ModLoader.SetupFileHook( "lua/Player_Client.lua", "lua/CPPPlayer_Client.lua", "p
 ModLoader.SetupFileHook( "lua/Marine.lua", "lua/CPPMarine.lua", "post" )
 ModLoader.SetupFileHook( "lua/Marine_Client.lua", "lua/CPPMarine_Client.lua", "post" )
 ModLoader.SetupFileHook( "lua/Marine_Server.lua", "lua/CPPMarine_Server.lua", "post" )
+ModLoader.SetupFileHook( "lua/MarineActionFinderMixin.lua", "lua/CPPMarineActionFinderMixin.lua", "post" )
 ModLoader.SetupFileHook( "lua/Hud/Marine/GUIMarineHUD.lua", "lua/CPPGUIMarineHud.lua", "post" )
 ModLoader.SetupFileHook( "lua/TechPoint_Server.lua", "lua/CPPTechPoint_Server.lua", "post" )
 ModLoader.SetupFileHook( "lua/Armory_Client.lua", "lua/CPPArmory_Client.lua", "post" )
+ModLoader.SetupFileHook( "lua/PowerPoint.lua", "lua/CPPPowerPoint.lua", "post" )
 ModLoader.SetupFileHook( "lua/Sentry.lua", "lua/CPPSentry.lua", "post" )
 ModLoader.SetupFileHook( "lua/CommandStructure_Server.lua", "lua/CPPCommandStructure_Server.lua", "post" )
 ModLoader.SetupFileHook( "lua/PlayingTeam.lua", "lua/CPPPlayingTeam.lua", "post" )
@@ -35,3 +37,4 @@ ModLoader.SetupFileHook( "lua/CommAbilities/Marine/Scan.lua", "lua/Abilities/CPP
 
 ModLoader.SetupFileHook( "lua/NetworkMessages.lua", "lua/CPPNetworkMessages.lua", "post" )
 ModLoader.SetupFileHook( "lua/NetworkMessages_Client.lua", "lua/CPPNetworkMessages_Client.lua", "post" )
+ModLoader.SetupFileHook( "lua/NetworkMessages_Server.lua", "lua/CPPNetworkMessages_Server.lua", "post" )
