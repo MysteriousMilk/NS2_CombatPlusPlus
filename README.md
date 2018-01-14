@@ -4,6 +4,7 @@
 The intent of this mod is to bring back a gameplay type similar to the original Natural Selection Combat Mod, bring in some aspects from the Natural Selection 2 Combat Game and add in some fresh ideas.
 
 ## Latest Changes
+1/13/2018 - Added cooldown abilities for Marines (MedPack, AmmoPack, CatPack, Scan).
 
 1/7/2018 - Command station and hive will now be "occupied" and therefore in their visibly closed state.
 
