@@ -1,7 +1,7 @@
 function CombatPlusPlus_XPRequiredNextLevel(currentXP, rank)
 
     local xpRequired = 0
-    if rank < kMaxRank then
+    if rank < kMaxCombatRank then
         xpRequired = kXPLevelThresholds[ rank + 1 ]
     end
 
@@ -13,7 +13,7 @@ function CombatPlusPlus_GetLevelThresholdByRank(rank)
 
     local xpThreshold = 0
 
-    if rank > 0 and rank <= kMaxRank then
+    if rank > 0 and rank <= kMaxCombatRank then
         xpThreshold = kXPLevelThresholds[rank]
     end
 
@@ -25,7 +25,7 @@ function CombatPlusPlus_GetMarineTitleByRank(rank)
 
     local title = "Private"
 
-    if rank > 0 and rank <= kMaxRank then
+    if rank > 0 and rank <= kMaxCombatRank then
         title = kMarineRankTitles[rank]
     end
 
@@ -37,13 +37,13 @@ function CombatPlusPlus_GetRankByXP(xp)
 
     local rank = 1
 
-    if xp >= kXPLevelThresholds[ kMaxRank ] then
+    if xp >= kXPLevelThresholds[ kMaxCombatRank ] then
 
-      rank = kMaxRank
+      rank = kMaxCombatRank
 
     else
 
-      for i=1, kMaxRank-1 do
+      for i = 1, kMaxCombatRank-1 do
 
           if xp < kXPLevelThresholds[ i + 1 ] then
               rank = i

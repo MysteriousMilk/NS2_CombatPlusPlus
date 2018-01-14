@@ -326,6 +326,22 @@ local function GetIsEquipped(techId)
         return true
     end
 
+    if techId == kTechId.MedPack and HasMixin(player, "MedPackAbility") and player:GetIsMedPackAbilityEnabled() then
+        return true
+    end
+
+    if techId == kTechId.AmmoPack and HasMixin(player, "AmmoPackAbility") and player:GetIsAmmoPackAbilityEnabled() then
+        return true
+    end
+
+    if techId == kTechId.CatPack and HasMixin(player, "CatPackAbility") and player:GetIsCatPackAbilityEnabled() then
+        return true
+    end
+
+    if techId == kTechId.Scan and HasMixin(player, "ScanAbility") and player:GetIsScanAbilityEnabled() then
+        return true
+    end
+
     local equippedTechIds = MarineBuy_GetEquipped()
 
     for k, itemTechId in ipairs(equippedTechIds) do

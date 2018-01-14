@@ -15,4 +15,17 @@ end
 Script.Load("lua/CPPUtilities.lua")
 Script.Load("lua/MarinePersistData.lua")
 Script.Load("lua/CPPMarineSpawn.lua")
-Script.Load("lua/CPPSentry.lua")
+
+
+if Server then
+
+    -- combat doesn't have batteries but we still want sentries to work
+    local function UpdateBatteryState(self)
+        -- just override the local function
+        -- CPPSentry.lua has the PowerConsumerMixin injected in it to make the
+        -- sentries work with power nodes
+    end
+
+    ReplaceLocals(Sentry.OnUpdate, {UpdateBatteryState = UpdateBatteryState})
+
+end

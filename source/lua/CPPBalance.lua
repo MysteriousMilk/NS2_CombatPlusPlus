@@ -86,3 +86,15 @@ kXPLevelThresholds =
     47000,
     57000
 }
+
+-- How long the player has to wait in between using the MedPackAbility (in sec)
+kMedPackAbilityCooldown = 60
+
+-- How long the player has to wait in between using the AmmoPackAbility (in sec)
+kAmmoPackAbilityCooldown = 75
+
+-- How long the player has to wait in between using the CatPackAbility (in sec)
+kCatPackAbilityCooldown = 120
+
+-- How log the player has to wait in between using the ScanAbility (in sec)
+kScanAbilityCooldown = 90

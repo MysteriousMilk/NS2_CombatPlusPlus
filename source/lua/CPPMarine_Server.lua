@@ -93,10 +93,11 @@ kIsMarineStructureTechId = { [kTechId.Armory] = true, [kTechId.PhaseGate] = true
 kIsArmorUpgradeTechId = { [kTechId.Armor1] = true, [kTechId.Armor2] = true, [kTechId.Armor3] = true }
 kIsWeaponUpgradeTechId = { [kTechId.Weapons1] = true, [kTechId.Weapons2] = true, [kTechId.Weapons3] = true }
 kPersistTechId = { [kTechId.Pistol] = true, [kTechId.Welder] = true }
+kAbilityTechId = { [kTechId.MedPack] = true, [kTechId.AmmoPack] = true, [kTechId.CatPack] = true, [kTechId.Scan] = true }
 function Marine:AttemptToBuy(techIds)
 
     local techId = techIds[1]
-
+    local userId = Server.GetOwner(self):GetUserId()
     local mapName = LookupTechData(techId, kTechDataMapName)
 
     if mapName then
@@ -127,6 +128,48 @@ function Marine:AttemptToBuy(techIds)
                 weapon:SetBuilderMode(kBuilderMode.Create)
             end
 
+        elseif kAbilityTechId[techId] then
+
+            if HasMixin(self, "MedPackAbility") and techId == kTechId.MedPack then
+
+                -- give the ability to the user
+                GetGameMaster():GetMarinePersistData():SetHasAbility(userId, techId, true)
+                self:SetIsMedPackAbilityEnabled(true)
+
+                return true
+
+            end
+
+            if HasMixin(self, "AmmoPackAbility") and techId == kTechId.AmmoPack then
+
+                -- give the ability to the user
+                GetGameMaster():GetMarinePersistData():SetHasAbility(userId, techId, true)
+                self:SetIsAmmoPackAbilityEnabled(true)
+
+                return true
+
+            end
+
+            if HasMixin(self, "CatPackAbility") and techId == kTechId.CatPack then
+
+                -- give the ability to the user
+                GetGameMaster():GetMarinePersistData():SetHasAbility(userId, techId, true)
+                self:SetIsCatPackAbilityEnabled(true)
+
+                return true
+
+            end
+
+            if HasMixin(self, "ScanAbility") and techId == kTechId.Scan then
+
+                -- give the ability to the user
+                GetGameMaster():GetMarinePersistData():SetHasAbility(userId, techId, true)
+                self:SetIsScanAbilityEnabled(true)
+
+                return true
+
+            end
+
         else
 
             -- Make sure we're ready to deploy new weapon so we switch to it properly.
@@ -134,10 +177,7 @@ function Marine:AttemptToBuy(techIds)
 
             -- make sure certain weapons persist
             if kPersistTechId[techId] then
-
-                local userId = Server.GetOwner(self):GetUserId()
                 GetGameMaster():GetMarinePersistData():SetHasWeapon(userId, techId, true)
-
             end
 
             if newItem then

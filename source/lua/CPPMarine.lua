@@ -1,3 +1,8 @@
+Script.Load("lua/Abilities/MedPackAbilityMixin.lua")
+Script.Load("lua/Abilities/AmmoPackAbilityMixin.lua")
+Script.Load("lua/Abilities/CatPackAbilityMixin.lua")
+Script.Load("lua/Abilities/ScanAbilityMixin.lua")
+
 local networkVarsEx =
 {
     armorLevel = "integer",
@@ -5,6 +10,23 @@ local networkVarsEx =
     purchasedPistol = "boolean",
     purchasedWelder = "boolean"
 }
+
+AddMixinNetworkVars(MedPackAbilityMixin, networkVarsEx)
+AddMixinNetworkVars(AmmoPackAbilityMixin, networkVarsEx)
+AddMixinNetworkVars(CatPackAbilityMixin, networkVarsEx)
+AddMixinNetworkVars(ScanAbilityMixin, networkVarsEx)
+
+local ns2_Marine_OnCreate = Marine.OnCreate
+function Marine:OnCreate()
+
+    InitMixin(self, MedPackAbilityMixin)
+    InitMixin(self, AmmoPackAbilityMixin)
+    InitMixin(self, CatPackAbilityMixin)
+    InitMixin(self, ScanAbilityMixin)
+
+    ns2_Marine_OnCreate(self)
+
+end
 
 local ns2_Marine_OnInitialized = Marine.OnInitialized
 function Marine:OnInitialized()

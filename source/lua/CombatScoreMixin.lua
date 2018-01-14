@@ -9,6 +9,7 @@
  * certain criteria is met.
 ]]
 
+Script.Load("lua/CPPUtilities.lua")
 
 CombatScoreMixin = CreateMixin(CombatScoreMixin)
 CombatScoreMixin.type = "CombatScore"
@@ -30,6 +31,22 @@ function CombatScoreMixin:GetCombatXP()
     return self.combatXP
 end
 
+local function GiveXP(self, xp)
+
+    self.combatXP = Clamp(self.combatXP + xp, 0, kMaxCombatXP)
+    local currentRank = CombatPlusPlus_GetRankByXP(self.combatXP)
+
+    -- check for rank change, and if so, give skill points for number of ranks earned
+    local numberOfRanksEarned = currentRank - self.combatRank
+    if numberOfRanksEarned > 0 then
+        self:GiveSkillPoints(kSkillPointSourceType.LevelUp, numberOfRanksEarned)
+    end
+
+    -- update current rank
+    self.combatRank = currentRank
+
+end
+
 function CombatScoreMixin:AddXP(xp, source, targetId)
 
     if Server and xp and xp ~= 0 and not GetGameInfoEntity():GetWarmUpActive() then
@@ -37,9 +54,10 @@ function CombatScoreMixin:AddXP(xp, source, targetId)
         self.combatXP = Clamp(self.combatXP + xp, 0, kMaxCombatXP)
         local currentRank = CombatPlusPlus_GetRankByXP(self.combatXP)
 
-        -- check for rank change, and if so, give skill point
-        if self.combatRank < currentRank then
-            self:GiveSkillPoint(kSkillPointSourceType.LevelUp)
+        -- check for rank change, and if so, give skill points for number of ranks earned
+        local numberOfRanksEarned = currentRank - self.combatRank
+        if numberOfRanksEarned > 0 then
+            self:GiveSkillPoints(kSkillPointSourceType.LevelUp, numberOfRanksEarned)
         end
 
         -- update current rank
@@ -62,15 +80,32 @@ function CombatScoreMixin:GetCombatRank()
     return self.combatRank
 end
 
+function CombatScoreMixin:GiveCombatRank(rank)
+
+    local rankToGive = math.min(rank, kMaxCombatRank)
+    local xpToGive = CombatPlusPlus_GetLevelThresholdByRank(rankToGive) - self.combatXP
+
+    self:AddXP(xpToGive, kXPSourceType.console, Entity.invalidId)
+
+end
+
 function CombatScoreMixin:GetCombatSkillPoints()
     return self.combatSkillPoints
 end
 
-function CombatScoreMixin:GiveSkillPoint(source)
+function CombatScoreMixin:SetCombatSkillPoints(skillPoints)
+    self.combatSkillPoints = math.min(skillPoints, kMaxCombatSkillPoints)
+end
+
+function CombatScoreMixin:GiveSkillPoints(source, points)
 
     if Server and not GetGameInfoEntity():GetWarmUpActive() then
 
-        self.combatSkillPoints = self.combatSkillPoints + 1
+        if points == nil then
+            points = 1
+        end
+
+        self.combatSkillPoints = Clamp(self.combatSkillPoints + points, 0, kMaxCombatSkillPoints)
 
         -- notify the client about the new skill points
         Server.SendNetworkMessage(Server.GetOwner(self), "CombatSkillPointUpdate", { source = source, kills = self.killsGainedCurrentLife, assists = self.assistsGainedCurrentLife }, true)
@@ -124,7 +159,7 @@ function CombatScoreMixin:AddCombatKill()
     self.killsGainedCurrentLife = self.killsGainedCurrentLife + 1
 
     if self.killsGainedCurrentLife == kKillsForRampageReward then
-        self:GiveSkillPoint(kSkillPointSourceType.KillStreak)
+        self:GiveSkillPoints(kSkillPointSourceType.KillStreak)
     end
 
     self:AddXP(kEarnedXPPerKill, kXPSourceType.kill, Entity.invalidId)
@@ -146,7 +181,7 @@ function CombatScoreMixin:AddCombatAssistKill()
     self.assistsGainedCurrentLife = self.assistsGainedCurrentLife + 1
 
     if self.assistsGainedCurrentLife == kAssistsForAssistReward then
-        self:GiveSkillPoint(kSkillPointSourceType.AssistStreak)
+        self:GiveSkillPoints(kSkillPointSourceType.AssistStreak)
     end
 
     self:AddXP(kEarnedXPPerAssist, kXPSourceType.assist, Entity.invalidId)

@@ -49,6 +49,22 @@ function Player:Replace(mapName, newTeamNumber, preserveWeapons, atOrigin, extra
         player:SetArmorLevel(persistData:GetArmorLevel(userId))
         player:SetWeaponLevel(persistData:GetWeaponLevel(userId))
 
+        if HasMixin(player, "MedPackAbility") then
+            player:SetIsMedPackAbilityEnabled(persistData:GetHasAbility(userId, kTechId.MedPack))
+        end
+
+        if HasMixin(player, "AmmoPackAbility") then
+            player:SetIsAmmoPackAbilityEnabled(persistData:GetHasAbility(userId, kTechId.AmmoPack))
+        end
+
+        if HasMixin(player, "CatPackAbility") then
+            player:SetIsCatPackAbilityEnabled(persistData:GetHasAbility(userId, kTechId.CatPack))
+        end
+
+        if HasMixin(player, "CatPackAbility") then
+            player:SetIsScanAbilityEnabled(persistData:GetHasAbility(userId, kTechId.Scan))
+        end
+
         if persistData:GetHasWeapon(userId, kTechId.Pistol) then
             player:GiveItem(Pistol.kMapName)
             player:SetQuickSwitchTarget(Pistol.kMapName)
