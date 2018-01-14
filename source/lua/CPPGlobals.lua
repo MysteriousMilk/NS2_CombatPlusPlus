@@ -10,11 +10,15 @@
 kMinPlayersGameStart = 4
 
 -- the highest rank the player can reach
-kMaxRank = 12
+kMaxCombatRank = 12
+
+-- the max skill points a player can have at 1 time
+kMaxCombatSkillPoints = 100
 
 -- Enumeration used to indicate the source of the xp award
 kXPSourceType = enum(
 {
+    "console",
     "kill",
     "assist",
     "damage"
