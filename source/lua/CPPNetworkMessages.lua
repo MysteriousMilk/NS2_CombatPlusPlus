@@ -22,3 +22,10 @@ local kCombatSkillPointUpdate =
 }
 
 Shared.RegisterNetworkMessage("CombatSkillPointUpdate", kCombatSkillPointUpdate)
+
+local kPowerPointEntity =
+{
+    powerPointId = "integer"
+}
+
+Shared.RegisterNetworkMessage("RequestSocketPowerPoint", kPowerPointEntity)

@@ -12,10 +12,8 @@
  * Overriden Functions:
  *  'NS2Gamerules:ResetGame' - Removes most of the command structure stuff.  Create the Game Master.
  *  Removes all Resource Towers.
- *  'NS2Gamerules:CheckForNoCommander' - Short-circuit the no commander check.
  *  'NS2Gamerules:ResetPlayerScores' - Overriden  to add call to 'CombatScoreMixin.ResetCombatScores'.
  *  'NS2Gamerules:CheckGameStart' - Overriden to remove 'No Commander' and 'No IP' checks from game start conditions.
- *  'NS2Gamerules:GetWarmUpPlayerLimit' - Pulls the number of players needed to start a game.  Value defined in CPPGlobals.lua.
  *  'NS2Gamerules:UpdateWarmUp' - Modified to allow bots to trigger the pregame mode.
 ]]
 
@@ -226,9 +224,6 @@ if Server then
 
     end
 
-    function NS2Gamerules:CheckForNoCommander(onTeam, commanderType)
-    end
-
     function NS2Gamerules:ResetPlayerScores()
 
         for _, player in ientitylist(Shared.GetEntitiesWithClassname("Player")) do
@@ -261,18 +256,6 @@ if Server then
             GetGameMaster():GetMarinePersistData():Reset()
         end
 
-        if state ~= self.gameState and state == kGameState.Started then
-
-            -- start with all powerpoints socketed
-            local powerNodes = EntityListToTable(Shared.GetEntitiesWithClassname("PowerPoint"))
-            for i = 1, #powerNodes do
-                if powerNodes[i] and not powerNodes[i]:GetIsSocketed() then
-                    powerNodes[i]:SocketPowerNode()
-                end
-            end
-
-        end
-
         ns2_SetGameState(self, state)
 
     end
@@ -287,14 +270,6 @@ if Server then
             self:SetGameState(kGameState.PreGame)
         end
 
-    end
-
-    --[[
-     * Combat++ - Changed minimum number of players need to start game from
-     * 12 to 8.
-    ]]
-    function NS2Gamerules:GetWarmUpPlayerLimit()
-        return kMinPlayersGameStart
     end
 
     --[[
