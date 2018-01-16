@@ -6,22 +6,19 @@
  * Global variables and types for Combat++.
 ]]
 
--- the minimum number of players needed to start a game
-kMinPlayersGameStart = 4
-
--- the highest rank the player can reach
-kMaxCombatRank = 12
-
 -- the max skill points a player can have at 1 time
 kMaxCombatSkillPoints = 100
 
 -- Enumeration used to indicate the source of the xp award
 kXPSourceType = enum(
 {
-    "console",
-    "kill",
-    "assist",
-    "damage"
+    "Console",
+    "Kill",
+    "Assist",
+    "Damage",
+    "Build",
+    "Weld",
+    "Heal"
 })
 
 -- Enumeration used to indicate the source of the skill point award
@@ -40,35 +37,5 @@ kBuilderMode = enum(
     "Create"
 })
 
-kDamageXPIndicatorOffset = 50
-
--- This table contains the "common" name of each rank for the Marines
-kMarineRankTitles =
-{
-    "Private",
-    "Private First Class",
-    "Lance Corporal",
-    "Corporal",
-    "Sergeant",
-    "Staff Sergeant",
-    "Gunnery Sergeant",
-    "Master Sergeant",
-    "First Sergeant",
-    "Master Gunnery Sergeant",
-    "Sergeant Major",
-    "Elite"
-}
-
--- This table contains the "common" name of each rank for the Aliens
-kAlienRankTitles =
-{
-    "Bottom Feeder",
-    "Underling",
-    "Grunt",
-    "Hunter",
-    "Stalker",
-    "Devourer",
-    "Overlord",
-    "Matriarch",
-    "Hive Mind"
-}
+-- pixel radius used for randomizing damage xp numbers
+kDamageXPIndicatorOffset = 30

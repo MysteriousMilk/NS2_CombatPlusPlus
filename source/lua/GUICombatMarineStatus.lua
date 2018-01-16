@@ -444,11 +444,11 @@ function GUICombatMarineStatus:Update(deltaTime)
         local currentXP = player.combatXP
         local currentRank = player.combatRank
         local title = CombatPlusPlus_GetMarineTitleByRank(currentRank)
-        local oldXPThreshold = CombatPlusPlus_GetLevelThresholdByRank(currentRank)
+        local oldXPThreshold = CombatPlusPlus_GetXPThresholdByRank(currentRank)
         local newXPThreshold = 0
 
         if currentRank < kMaxCombatRank then
-            newXPThreshold = CombatPlusPlus_GetLevelThresholdByRank(currentRank + 1)
+            newXPThreshold = CombatPlusPlus_GetXPThresholdByRank(currentRank + 1)
         end
 
         -- update rank text

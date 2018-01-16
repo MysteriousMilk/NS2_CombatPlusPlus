@@ -12,6 +12,7 @@
  * Overriden Functions:
  *  'NS2Gamerules:ResetGame' - Removes most of the command structure stuff.  Create the Game Master.
  *  Removes all Resource Towers.
+ *  'NS2Gamerules:CheckForNoCommander' - Prevent the 'No Commander' message from appearing on screen.
  *  'NS2Gamerules:ResetPlayerScores' - Overriden  to add call to 'CombatScoreMixin.ResetCombatScores'.
  *  'NS2Gamerules:CheckGameStart' - Overriden to remove 'No Commander' and 'No IP' checks from game start conditions.
  *  'NS2Gamerules:UpdateWarmUp' - Modified to allow bots to trigger the pregame mode.
@@ -221,6 +222,10 @@ if Server then
 
         self.team1:OnResetComplete()
         self.team2:OnResetComplete()
+
+    end
+
+    function NS2Gamerules:CheckForNoCommander(onTeam, commanderType)
 
     end
 

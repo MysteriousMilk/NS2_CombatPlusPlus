@@ -65,6 +65,10 @@ function CPPGameMaster:SetMarineTechPoint(techPoint)
     self.MarineTechPoint = techPoint
 end
 
+function CPPGameMaster:GetAlienTechPoint()
+    return self.AlienTechPoint
+end
+
 function CPPGameMaster:SetAlientTechPoint(techPoint)
     self.AlienTechPoint = techPoint
 end

@@ -31,25 +31,17 @@ function CombatScoreMixin:GetCombatXP()
     return self.combatXP
 end
 
-local function GiveXP(self, xp)
-
-    self.combatXP = Clamp(self.combatXP + xp, 0, kMaxCombatXP)
-    local currentRank = CombatPlusPlus_GetRankByXP(self.combatXP)
-
-    -- check for rank change, and if so, give skill points for number of ranks earned
-    local numberOfRanksEarned = currentRank - self.combatRank
-    if numberOfRanksEarned > 0 then
-        self:GiveSkillPoints(kSkillPointSourceType.LevelUp, numberOfRanksEarned)
-    end
-
-    -- update current rank
-    self.combatRank = currentRank
-
-end
-
+local kNonScalableXPTypes = { [kXPSourceType.Console] = true, [kXPSourceType.Damage] = true, [kXPSourceType.Weld] = true }
 function CombatScoreMixin:AddXP(xp, source, targetId)
 
     if Server and xp and xp ~= 0 and not GetGameInfoEntity():GetWarmUpActive() then
+
+        -- Console command to give rank should be excluded from xp scaling
+        -- XP given due to damage should be excluded from scaling
+        -- XP given due to welding should be excluded from scaling
+        if not kNonScalableXPTypes[source] then
+            xp = ScaleXPByDistance(self, xp)
+        end
 
         self.combatXP = Clamp(self.combatXP + xp, 0, kMaxCombatXP)
         local currentRank = CombatPlusPlus_GetRankByXP(self.combatXP)
@@ -82,10 +74,10 @@ end
 
 function CombatScoreMixin:GiveCombatRank(rank)
 
-    local rankToGive = math.min(rank, kMaxCombatRank)
-    local xpToGive = CombatPlusPlus_GetLevelThresholdByRank(rankToGive) - self.combatXP
+    local rankToGive = Clamp(rank, 1, kMaxCombatRank)
+    local xpToGive = CombatPlusPlus_GetXPThresholdByRank(rankToGive) - self.combatXP
 
-    self:AddXP(xpToGive, kXPSourceType.console, Entity.invalidId)
+    self:AddXP(xpToGive, kXPSourceType.Console, Entity.invalidId)
 
 end
 
@@ -94,7 +86,7 @@ function CombatScoreMixin:GetCombatSkillPoints()
 end
 
 function CombatScoreMixin:SetCombatSkillPoints(skillPoints)
-    self.combatSkillPoints = math.min(skillPoints, kMaxCombatSkillPoints)
+    self.combatSkillPoints = Clamp(skillPoints, 1, kMaxCombatSkillPoints)
 end
 
 function CombatScoreMixin:GiveSkillPoints(source, points)
@@ -138,13 +130,15 @@ if Server then
         self.killsGainedCurrentLife = 0
         self.assistsGainedCurrentLife = 0
         self.damageDealtCurrentLife = 0
-        self.armorWeldedCurrentLife = 0
+        self.damageDealerAwardReceived = false
+        self.armorWeledSinceLastXPAward = 0
+        self.damageSinceLastXPAward = 0
 
     end
 
 end
 
-function CombatScoreMixin:AddCombatKill()
+function CombatScoreMixin:AddCombatKill(victimRank)
 
     if GetGameInfoEntity():GetWarmUpActive() then return end
 
@@ -162,11 +156,11 @@ function CombatScoreMixin:AddCombatKill()
         self:GiveSkillPoints(kSkillPointSourceType.KillStreak)
     end
 
-    self:AddXP(kEarnedXPPerKill, kXPSourceType.kill, Entity.invalidId)
+    self:AddXP(CombatPlusPlus_GetBaseKillXP(victimRank), kXPSourceType.Kill, Entity.invalidId)
 
 end
 
-function CombatScoreMixin:AddCombatAssistKill()
+function CombatScoreMixin:AddCombatAssistKill(victimRank)
 
     if GetGameInfoEntity():GetWarmUpActive() then return end
 
@@ -184,17 +178,69 @@ function CombatScoreMixin:AddCombatAssistKill()
         self:GiveSkillPoints(kSkillPointSourceType.AssistStreak)
     end
 
-    self:AddXP(kEarnedXPPerAssist, kXPSourceType.assist, Entity.invalidId)
+    local xp = CombatPlusPlus_GetBaseKillXP(victimRank) * kXPAssistModifier
+    self:AddXP(xp, kXPSourceType.Assist, Entity.invalidId)
+
+end
+
+function CombatScoreMixin:AddCombatDamage(damage)
+
+    if GetGameInfoEntity():GetWarmUpActive() then return end
+
+    if not self.combatXP then
+        self.combatXP = 0
+    end
+
+    if not self.damageDealtCurrentLife then
+        self.damageDealtCurrentLife = 0
+    end
+
+    self.damageDealtCurrentLife = self.damageDealtCurrentLife + damage
+
+    if not self.damageDealerAwardReceived and self.damageDealtCurrentLife >= kDamageForDamageDealerAward then
+        self:GiveSkillPoints(kSkillPointSourceType.DamageDealer)
+        self.damageDealerAwardReceived = true
+    end
+
+    self.damageSinceLastXPAward = self.damageSinceLastXPAward + damage
+
+    -- if the current damage amount crosses the threshold required, reward a little xp
+    if self.damageSinceLastXPAward >= kDamageRequiredXPReward then
+
+        -- make sure not to let the remaining weld points "leak"
+        self.damageSinceLastXPAward = self.damageSinceLastXPAward - kDamageRequiredXPReward
+
+        -- add the xp
+        self:AddXP(kDamageRequiredXPReward * kDamageXPModifier, kXPSourceType.Damage)
+
+    end
 
 end
 
 function CombatScoreMixin:AddCombatWeldPoints(weldAmount)
 
-    if not self.armorWeldedCurrentLife then
-        self.armorWeldedCurrentLife = 0
+    if GetGameInfoEntity():GetWarmUpActive() then return end
+
+    if not self.combatXP then
+        self.combatXP = 0
     end
 
-    self.armorWeldedCurrentLife = self.armorWeldedCurrentLife + weldAmount
+    if not self.armorWeledSinceLastXPAward then
+        self.armorWeledSinceLastXPAward = 0
+    end
+
+    self.armorWeledSinceLastXPAward = self.armorWeledSinceLastXPAward + weldAmount
+
+    -- if the current weld amount crosses the threshold required, reward a little xp
+    if self.armorWeledSinceLastXPAward >= kWeldingRequiredXPReward then
+
+        -- make sure not to let the remaining weld points "leak"
+        self.armorWeledSinceLastXPAward = self.armorWeledSinceLastXPAward - kWeldingRequiredXPReward
+
+        -- add the xp
+        self:AddXP(kWeldingRequiredXPReward * kWeldingXPModifier, kXPSourceType.Weld)
+
+    end
 
 end
 
@@ -207,6 +253,8 @@ function CombatScoreMixin:ResetCombatScores()
     self.killsGainedCurrentLife = 0
     self.assistsGainedCurrentLife = 0
     self.damageDealtCurrentLife = 0
-    self.armorWeldedCurrentLife = 0
+    self.damageDealerAwardReceived = false
+    self.armorWeledSinceLastXPAward = 0
+    self.damageSinceLastXPAward = 0
 
 end

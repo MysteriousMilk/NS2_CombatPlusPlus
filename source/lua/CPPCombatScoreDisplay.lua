@@ -7,7 +7,7 @@
 ]]
 
 local pendingXP = 0
-local pendingSource = kXPSourceType.kill
+local pendingSource = kXPSourceType.Kill
 local pendingTargetId = Entity.invalidId
 
 function CombatScoreDisplayUI_GetNewXPAward()
@@ -17,7 +17,7 @@ function CombatScoreDisplayUI_GetNewXPAward()
     local tempTargetId = pendingTargetId
 
     pendingXP = 0
-    pendingSource = kXPSourceType.kill
+    pendingSource = kXPSourceType.Kill
     pendingTargetId = Entity.invalidId
 
     return tempXP, tempSource, tempTargetId
