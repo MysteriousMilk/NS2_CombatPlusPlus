@@ -6,36 +6,39 @@
  * Adds additional functionality to the PointGiverMixin to handle Combat XP.
  *
  * Wrapped Functions:
- *  'PointGiverMixin:__initmixin' - Added additional init code.
- *  'PointGiverMixin:OnEntityChange' - Copy over 'pointsSinceLastXPAward' when the entity changes.
+ *  'PointGiverMixin:OnConstructionComplete' - Give xp for building a structure.
  *  'PointGiverMixin:OnTakeDamage' - Keep track of the damage being done.  Everytime the player hits the
  *  damage threshold, award some xp.
 ]]
 
-local ns2_PointGiverMixin_Init = PointGiverMixin.__initmixin
-function PointGiverMixin:__initmixin()
-
-    ns2_PointGiverMixin_Init(self)
-
-    if Server then
-        self.pointsSinceLastXPAward = {}
-    end
-
-end
-
 if Server then
 
-    local ns2_PointGiverMixin_OnEntityChange = PointGiverMixin.OnEntityChange
-    function PointGiverMixin:OnEntityChange(oldId, newId)
+    local ns2_PointGiverMixin_OnConstructionComplete = PointGiverMixin.OnConstructionComplete
+    function PointGiverMixin:OnConstructionComplete()
 
-        ns2_PointGiverMixin_OnEntityChange(self, oldId, newId)
+        if self.constructer then
 
-        if self.pointsSinceLastXPAward[oldId] then
-            if newId and newId ~= Entity.invalidId then
-                self.pointsSinceLastXPAward[newId] = self.pointsSinceLastXPAward[oldId]
+            for _, builderId in ipairs(self.constructer) do
+
+                local builder = Shared.GetEntity(builderId)
+                if builder and builder:isa("Player") and HasMixin(builder, "CombatScore") then
+
+                    local constructionFraction = self.constructPoints[builderId]
+                    local xp = math.max(math.floor(kCombatBuildRewardBase * Clamp(constructionFraction, 0, 1)))
+
+                    if builder:isa("Gorge") then
+                        xp = xp * kGorgeBuildRewardModifier
+                    end
+
+                    builder:AddXP(xp, kXPSourceType.Build, self:GetId())
+
+                end
+
             end
-            self.pointsSinceLastXPAward[oldId] = nil
+
         end
+
+        ns2_PointGiverMixin_OnConstructionComplete(self)
 
     end
 
@@ -44,28 +47,61 @@ if Server then
 
         ns2_PointGiverMixin_OnTakeDamage(self, damage, attacker, doer, point, direction, damageType, preventAlert)
 
-        if attacker and attacker:isa("Player") and GetAreEnemies(self, attacker) then
+        if attacker and attacker:isa("Player") and GetAreEnemies(self, attacker) and HasMixin(attacker, "CombatScore") then
+            attacker:AddCombatDamage(damage)
+        end
 
-            local attackerId = attacker:GetId()
+    end
 
-            if not self.pointsSinceLastXPAward[attackerId] then
-                self.pointsSinceLastXPAward[attackerId] = 0
-            end
+    function PointGiverMixin:PreOnKill(attacker, doer, point, direction)
 
-            -- store the damage the current attacker is dealing
-            self.pointsSinceLastXPAward[attackerId] = self.pointsSinceLastXPAward[attackerId] + damage
+        if self.isHallucination then
+            return
+        end
 
-            -- if the current attacker crosses the threshold required, reward a little xp
-            if self.pointsSinceLastXPAward[attackerId] >= kDamageRequiredXPReward then
+        local totalDamageDone = self:GetMaxHealth() + self:GetMaxArmor() * 2
+        local points = self:GetPointValue()
+        local resReward = self:isa("Player") and kPersonalResPerKill or 0
 
-                -- make sure not to let the remaining xp "leak"
-                self.pointsSinceLastXPAward[attackerId] = self.pointsSinceLastXPAward[attackerId] - kDamageRequiredXPReward
+        -- award partial res and score to players who assisted
+        for _, attackerId in ipairs(self.damagePoints.attackers) do
 
-                if HasMixin(attacker, "Scoring") then
-                    attacker:AddXP(kDamageRequiredXPReward * kDamageXPModifier, kXPSourceType.damage, self:GetId())
+            local currentAttacker = Shared.GetEntity(attackerId)
+            if currentAttacker and HasMixin(currentAttacker, "Scoring") then
+
+                local damageDone = self.damagePoints[attackerId]
+                local damageFraction = Clamp(damageDone / totalDamageDone, 0, 1)
+                local scoreReward = points >= 1 and math.max(1, math.round(points * damageFraction)) or 0
+
+                currentAttacker:AddScore(scoreReward, resReward * damageFraction, attacker == currentAttacker)
+
+                if self:isa("Player") and currentAttacker ~= attacker then
+
+                    currentAttacker:AddAssistKill()
+
+                    if HasMixin(self, "CombatScore") and HasMixin(currentAttacker, "CombatScore") then
+                        currentAttacker:AddCombatAssistKill(self:GetCombatRank())
+                    end
+
                 end
 
             end
+
+        end
+
+        if self:isa("Player") and attacker and GetAreEnemies(self, attacker) then
+
+            if attacker:isa("Player") then
+
+                attacker:AddKill()
+
+                if HasMixin(self, "CombatScore") and HasMixin(attacker, "CombatScore") then
+                    attacker:AddCombatKill(self:GetCombatRank())
+                end
+
+            end
+
+            self:GetTeam():AddTeamResources(kKillTeamReward)
 
         end
 

@@ -18,7 +18,8 @@ local networkVarsEx =
 {
     buildMode = "enum kBuilderMode"
 }
-local kPlacementDistance = 3
+
+local kPlacementDistance = 2.5
 
 local ns2_Builder_OnInitialized = Builder.OnInitialized
 function Builder:OnInitialized()

@@ -17,6 +17,8 @@ GUIDamageXPNotifier.kDamageXPDisplayMinFontHeight = 40
 GUIDamageXPNotifier.kDamageXPDisplayPopTimer = 0.15
 GUIDamageXPNotifier.kDamageXPDisplayFadeoutTimer = 2
 
+GUIDamageXPNotifier.kStartingPosition = GUIScale(Vector(0, GUINotifications.kScoreDisplayYOffset, 0))
+
 function CreateDamageXPNotifier()
 
     local dmgXPNotifier = GUIDamageXPNotifier()
@@ -36,7 +38,7 @@ function GUIDamageXPNotifier:Initialize()
     self.dmgXPDisplay = GUIManager:CreateTextItem()
     self.dmgXPDisplay:SetFontName(GUIDamageXPNotifier.kDamageXPDisplayFontName)
     self.dmgXPDisplay:SetScale(GetScaledVector())
-    self.dmgXPDisplay:SetAnchor(GUIItem.Left, GUIItem.Top)
+    self.dmgXPDisplay:SetAnchor(GUIItem.Middle, GUIItem.Center)
     self.dmgXPDisplay:SetTextAlignmentX(GUIItem.Align_Center)
     self.dmgXPDisplay:SetTextAlignmentY(GUIItem.Align_Center)
     self.dmgXPDisplay:SetColor(GUIDamageXPNotifier.kDamageXPDisplayTextColor)
@@ -45,8 +47,9 @@ function GUIDamageXPNotifier:Initialize()
     self.dmgXPDisplayPopupTime = 0
     self.dmgXPDisplayPopdownTime = 0
     self.dmgXPDisplayFadeoutTime = 0
-    self.isAvailable = true
     self.xp = 0
+
+    self.timeLastUsed = 0
 
     self.visible = true
 
@@ -61,19 +64,32 @@ end
 
 function GUIDamageXPNotifier:SetIsVisible(state)
     self.visible = state
+    self.dmgXPDisplay:SetIsVisible(state)
+    self:Update(0)
 end
 
-function GUIDamageXPNotifier:SetDisplayXP(xp, pos)
+local function GetRandomDamageNotificationOffset()
+
+    local theta = math.random() * (2 * math.pi)
+    local x = GUIDamageXPNotifier.kStartingPosition.x + kDamageXPIndicatorOffset * math.cos(theta)
+    local y = GUIDamageXPNotifier.kStartingPosition.y + kDamageXPIndicatorOffset * math.sin(theta)
+
+    return Vector(x, y, 0)
+
+end
+
+function GUIDamageXPNotifier:SetDisplayXP(xp)
 
     self.dmgXPDisplay:SetText(string.format("+%s XP", xp))
-    self.dmgXPDisplay:SetPosition(pos)
+    self.dmgXPDisplay:SetPosition(GetRandomDamageNotificationOffset())
+    self.dmgXPDisplay:SetIsVisible(self.visible)
 
     -- reset animation
     self.dmgXPDisplayPopupTime = GUIDamageXPNotifier.kDamageXPDisplayPopTimer
     self.dmgXPDisplayPopdownTime = 0
     self.dmgXPDisplayFadeoutTime = 0
 
-    self.isAvailable = false
+    self.timeLastUsed = Shared.GetTime()
 
 end
 
@@ -91,15 +107,14 @@ function GUIDamageXPNotifier:Update(deltaTime)
         self.dmgXPDisplay:SetColor(fadeColor)
         if self.dmgXPDisplayFadeoutTime == 0 then
             self.dmgXPDisplay:SetIsVisible(false)
-            self.isAvailable = true
         end
 
     end
 
     if self.dmgXPDisplayPopdownTime > 0 then
         self.dmgXPDisplayPopdownTime = math.max(0, self.dmgXPDisplayPopdownTime - deltaTime)
-        local popRate = self.dmgXPDisplayPopdownTime / GUIDamageXPNotifier.kScoreDisplayPopTimer
-        local fontSize = GUIDamageXPNotifier.kDamageXPDisplayMinFontHeight + ((GUIDamageXPNotifier.kDamageXPDisplayFontHeight - GUIDamageXPNotifier.kDamageDisplayMinFontHeight) * popRate)
+        local popRate = self.dmgXPDisplayPopdownTime / GUIDamageXPNotifier.kDamageXPDisplayPopTimer
+        local fontSize = GUIDamageXPNotifier.kDamageXPDisplayMinFontHeight + ((GUIDamageXPNotifier.kDamageXPDisplayFontHeight - GUIDamageXPNotifier.kDamageXPDisplayMinFontHeight) * popRate)
         local scale = GUIScale(fontSize / GUIDamageXPNotifier.kDamageXPDisplayFontHeight)
         self.dmgXPDisplay:SetScale(Vector(scale, scale, scale))
         if self.dmgXPDisplayPopdownTime == 0 then

@@ -1,13 +1,21 @@
 Script.Load("lua/CPPGUIDamageXPNotifier.lua")
 
 GUINotifications.kScoreDisplayFontNameLarge = Fonts.kAgencyFB_Large
-GUINotifications.kScoreDisplayKillTextColor = Color(52/255, 180/255, 219/255, 1)
-GUINotifications.kScoreDisplayFontHeight = 80
-GUINotifications.kScoreDisplayMinFontHeight = 60
+GUINotifications.kScoreDisplayPrimaryTextColor = Color(0.2, 0.71, 0.86, 1)
+GUINotifications.kScoreDisplayBuildTextColor = Color(0, 1, 0, 1)
+GUINotifications.kScoreDisplayWeldTextColor = Color(0.73, 0.22, 0.84, 1)
+GUINotifications.kScoreDisplayFontHeight = 100
+GUINotifications.kScoreDisplayMinFontHeight = 80
+GUINotifications.kScoreDisplayPopTimer = 0.35
 GUINotifications.kScoreDisplayFadeoutTimer = 3
 
 GUINotifications.kScoreDisplayFontHeightDmg = 60
 GUINotifications.kScoreDisplayMinFontHeightDmg = 40
+
+GUINotifications.kTimeToDisplayFinalAccumulatedValue = 2
+
+local kResetSourceTypes = { [kXPSourceType.Kill] = true, [kXPSourceType.Assist] = true, [kXPSourceType.Build] = true }
+local kAccumulatingSourceTypes = { [kXPSourceType.Weld] = true }
 
 local ns2_GUINotifications_Initialize = GUINotifications.Initialize
 function GUINotifications:Initialize()
@@ -24,6 +32,8 @@ function GUINotifications:Initialize()
 
     self.isAnimating = false
     self.xpSinceReset = 0
+    self.lastSourceType = kXPSourceType.Kill
+    self.timeLastAccumulated = 0
 
     ns2_GUINotifications_Initialize(self)
 
@@ -40,32 +50,25 @@ function GUINotifications:Uninitialize()
 
 end
 
-local function GetAvailableDmgXPNotifier(self)
+function GUINotifications:GetAvailableDmgXPNotifier()
 
     local dmgXPNotifier = nil
 
-    for index, value in pairs(self.damageXPNotifiers) do
+    for index, value in ipairs(self.damageXPNotifiers) do
 
-        if value.isAvailable then
+        if dmgXPNotifier == nil then
             dmgXPNotifier = value
-            break
+        elseif value.timeLastUsed <  dmgXPNotifier.timeLastUsed then
+            dmgXPNotifier = value
         end
 
     end
 
-end
-
-local function GetRandomDamageNotificationOffset(location)
-
-    local theta = math.random() * (2 * math.pi)
-    local x = location.x + kDamageXPIndicatorOffset * math.cos(theta)
-    local y = location.y + kDamageXPIndicatorOffset * math.sin(theta)
-
-    return Vector(x, y, 0)
+    return dmgXPNotifier
 
 end
 
-local function UpdateCombatScoreDisplay(self, deltaTime)
+function GUINotifications:UpdateCombatScoreDisplay(deltaTime)
 
     PROFILE("GUINotifications:UpdateScoreDisplay")
     self.updateInterval = kUpdateIntervalFull
@@ -112,35 +115,94 @@ local function UpdateCombatScoreDisplay(self, deltaTime)
 
     if xp > 0 then
 
-        if self.isAnimating ~= true then
+        if source == kXPSourceType.Damage then
 
-            -- Restart the animation sequence.
-            self.scoreDisplayPopupTime = GUINotifications.kScoreDisplayPopTimer
-            self.isAnimating = true
-            self.scoreDisplayPopdownTime = 0
-            self.scoreDisplayFadeoutTime = 0
-            self.xpSinceReset = 0
+            self:GetAvailableDmgXPNotifier():SetDisplayXP(xp)
 
-        end
-
-        self.xpSinceReset = self.xpSinceReset + xp
-
-        -- earned more xp while numbers are on screen.. keep them there
-        if self.scoreDisplayPopupTime == 0 then
-            self.scoreDisplayPopdownTime = GUINotifications.kScoreDisplayPopTimer
-        end
-
-        if source == kXPSourceType.damage then
-            self.scoreDisplay:SetColor(GUINotifications.kScoreDisplayTextColor)
         else
-            self.scoreDisplay:SetColor(GUINotifications.kScoreDisplayKillTextColor)
+
+            if self.isAnimating ~= true then
+                -- Restart the animation sequence.
+                self:ResetAnimationSequence()
+            end
+
+            -- We want to see the the exact xp for certain source types (not accumulated)
+            if kResetSourceTypes[source] or kResetSourceTypes[self.lastSourceType] then
+                self:ResetAnimationSequence()
+            end
+
+            if kAccumulatingSourceTypes[source] then
+
+                self.xpSinceReset = self.xpSinceReset + xp
+
+                self.timeLastAccumulated = Shared.GetTime()
+
+                -- earned more xp while numbers are on screen.. keep them there
+                if self.scoreDisplayPopupTime == 0 then
+                    self.scoreDisplayPopdownTime = GUINotifications.kScoreDisplayPopTimer
+                end
+
+            else
+
+                self.xpSinceReset = xp
+
+            end
+
+            self.scoreDisplay:SetColor(GUINotifications.kScoreDisplayPrimaryTextColor)
+            self.scoreDisplay:SetText(string.format("+%s XP", self.xpSinceReset))
+
+            if source == kXPSourceType.Damage then
+                self.scoreDisplay:SetColor(GUINotifications.kScoreDisplayTextColor)
+                self.scoreDisplay:SetText(string.format("+%s XP", self.xpSinceReset))
+            elseif source == kXPSourceType.Weld then
+                self.scoreDisplay:SetColor(GUINotifications.kScoreDisplayWeldTextColor)
+                self.scoreDisplay:SetText(string.format("+%s XP", self.xpSinceReset))
+            elseif source == kXPSourceType.Build then
+                self.scoreDisplay:SetColor(GUINotifications.kScoreDisplayBuildTextColor)
+                self.scoreDisplay:SetText(string.format("Built Structure +%s XP", self.xpSinceReset))
+            elseif source == kXPSourceType.Kill then
+                self.scoreDisplay:SetColor(GUINotifications.kScoreDisplayPrimaryTextColor)
+                self.scoreDisplay:SetText(string.format("Kill +%s XP", self.xpSinceReset))
+            elseif source == kXPSourceType.Assist then
+                self.scoreDisplay:SetColor(GUINotifications.kScoreDisplayPrimaryTextColor)
+                self.scoreDisplay:SetText(string.format("Assist +%s XP", self.xpSinceReset))
+            end
+
+            self.scoreDisplay:SetScale(GUIScale(Vector(0.7, 0.7, 0.7)))
+            self.scoreDisplay:SetIsVisible(self.visible)
+
+            self.lastSourceType = source
+
         end
 
-        self.scoreDisplay:SetText(string.format("+%s XP", self.xpSinceReset))
-        self.scoreDisplay:SetScale(GUIScale(Vector(0.5, 0.5, 0.5)))
+    elseif kAccumulatingSourceTypes[self.lastSourceType] and self.timeLastAccumulated ~= 0 and (Shared.GetTime() - self.timeLastAccumulated) >= GUINotifications.kTimeToDisplayFinalAccumulatedValue then
+
+        local totalXp = self.xpSinceReset
+
+        self:ResetAnimationSequence()
+
+        if self.lastSourceType == kXPSourceType.Weld then
+            self.scoreDisplay:SetColor(GUINotifications.kScoreDisplayPrimaryTextColor)
+            self.scoreDisplay:SetText(string.format("Welded Target +%s XP", totalXp))
+        end
+
+        self.scoreDisplay:SetScale(GUIScale(Vector(0.7, 0.7, 0.7)))
         self.scoreDisplay:SetIsVisible(self.visible)
 
+        self.timeLastAccumulated = 0
+
     end
+
+end
+
+function GUINotifications:ResetAnimationSequence()
+
+    -- Restart the animation sequence.
+    self.scoreDisplayPopupTime = GUINotifications.kScoreDisplayPopTimer
+    self.isAnimating = true
+    self.scoreDisplayPopdownTime = 0
+    self.scoreDisplayFadeoutTime = 0
+    self.xpSinceReset = 0
 
 end
 
@@ -158,9 +220,9 @@ function GUINotifications:Update(deltaTime)
         self.locationText:SetText(PlayerUI_GetLocationName())
     end
 
-    UpdateCombatScoreDisplay(self, deltaTime)
+    self:UpdateCombatScoreDisplay(deltaTime)
 
-    for index, value in pairs(self.damageXPNotifiers) do
+    for index, value in ipairs(self.damageXPNotifiers) do
         value:Update(deltaTime)
     end
 

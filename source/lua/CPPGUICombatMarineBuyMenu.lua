@@ -41,8 +41,10 @@ CPPGUICombatMarineBuyMenu.kTextColor = Color(kMarineFontColor)
 CPPGUICombatMarineBuyMenu.kBtnColor = Color(1, 1, 1, 0.7)
 CPPGUICombatMarineBuyMenu.kBtnHighlightColor = Color(0.5, 0.5, 1.0, 0.7)
 
+CPPGUICombatMarineBuyMenu.kLightBlueHighlight = Color(0.4, 0.85, 1, 1)
 CPPGUICombatMarineBuyMenu.kBlueHighlight = Color(0.6, 0.6, 1, 1)
 CPPGUICombatMarineBuyMenu.kRedHighlight = Color(1, 0.3, 0.3, 1)
+CPPGUICombatMarineBuyMenu.kGreyHighlight = Color(0.6, 0.6, 0.6, 1)
 
 CPPGUICombatMarineBuyMenu.kButtonsPerRow = 4
 
@@ -296,17 +298,38 @@ local function GetStructureItemList()
 
 end
 
+local function GetHasPrerequisite(techId)
+
+    local player = Client.GetLocalPlayer()
+    local armorLevel = player:GetArmorLevel()
+    local weaponLevel = player:GetWeaponLevel()
+    local hasPrereq = true
+
+    if techId == kTechId.Armor2 and armorLevel < 1 then
+        hasPrereq = false
+    elseif techId == kTechId.Armor3 and armorLevel < 2 then
+        hasPrereq = false
+    elseif techId == kTechId.Weapons2 and weaponLevel < 1 then
+        hasPrereq = false
+    elseif techId == kTechId.Weapons3 and weaponLevel < 2 then
+        hasPrereq = false
+    end
+
+    return hasPrereq
+
+end
+
 local function GetIsEquipped(techId)
 
     local player = Client.GetLocalPlayer()
     local armorLevel = player:GetArmorLevel()
     local weaponLevel = player:GetWeaponLevel()
 
-    if techId == kTechId.Armor1 and armorLevel == 1 then
+    if techId == kTechId.Armor1 and armorLevel >= 1 then
         return true
     end
 
-    if techId == kTechId.Armor2 and armorLevel == 2 then
+    if techId == kTechId.Armor2 and armorLevel >= 2 then
         return true
     end
 
@@ -314,11 +337,11 @@ local function GetIsEquipped(techId)
         return true
     end
 
-    if techId == kTechId.Weapons1 and weaponLevel == 1 then
+    if techId == kTechId.Weapons1 and weaponLevel >= 1 then
         return true
     end
 
-    if techId == kTechId.Weapons2 and weaponLevel == 2 then
+    if techId == kTechId.Weapons2 and weaponLevel >= 2 then
         return true
     end
 
@@ -716,16 +739,19 @@ local function InitUpgradeButtons(self, player)
 
         local cost = CombatPlusPlus_GetCostByTechId(itemTechId)
         local equipped = GetIsEquipped(itemTechId)
+        local hasPrereq = GetHasPrerequisite(itemTechId)
         local canAfford = cost <= player.combatSkillPoints
         local hasRequiredRank = CombatPlusPlus_GetRequiredRankByTechId(itemTechId) <= player.combatRank
 
-        local enabled = canAfford and hasRequiredRank and not equipped
-        local iconColor = Color(1, 1, 1, 1)
+        local enabled = canAfford and hasRequiredRank and hasPrereq and not equipped
+        local iconColor = CPPGUICombatMarineBuyMenu.kLightBlueHighlight
 
         if equipped then
             iconColor = CPPGUICombatMarineBuyMenu.kBlueHighlight
         elseif hasRequiredRank and not canAfford then
             iconColor = CPPGUICombatMarineBuyMenu.kRedHighlight
+        elseif not enabled then
+            iconColor = CPPGUICombatMarineBuyMenu.kGreyHighlight
         end
 
         local buttonIcon = GUIManager:CreateGraphicItem()
@@ -1114,6 +1140,7 @@ function CPPGUICombatMarineBuyMenu:_UpdateItemButtons(deltaTime)
                 local player = Client.GetLocalPlayer()
                 local cost = CombatPlusPlus_GetCostByTechId(item.TechId)
                 local equipped = GetIsEquipped(item.TechId)
+                local hasPrereq = GetHasPrerequisite(item.TechId)
                 local canAfford = cost <= player.combatSkillPoints
                 local hasRequiredRank = CombatPlusPlus_GetRequiredRankByTechId(item.TechId) <= player.combatRank
                 local helpString = ""
@@ -1126,6 +1153,11 @@ function CPPGUICombatMarineBuyMenu:_UpdateItemButtons(deltaTime)
                 elseif not hasRequiredRank then
 
                     helpString = "Cannot purchase. Required rank not met."
+                    self.helpText:SetColor(CPPGUICombatMarineBuyMenu.kRedHighlight)
+
+                elseif not hasPrereq then
+
+                    helpString = "Cannot purchase. Required prerequisite not met."
                     self.helpText:SetColor(CPPGUICombatMarineBuyMenu.kRedHighlight)
 
                 elseif not canAfford then
@@ -1162,17 +1194,19 @@ end
 local function HandleItemClicked(self, mouseX, mouseY)
 
     if self.itemButtons then
+
         for i = 1, #self.itemButtons do
 
             local item = self.itemButtons[i]
             if GetIsMouseOver(self, item.Button) then
 
-              local player = Client.GetLocalPlayer()
-              local equipped = GetIsEquipped(itemTechId)
-              local canAfford = CombatPlusPlus_GetCostByTechId(itemTechId) <= player.combatSkillPoints
-              local hasRequiredRank = CombatPlusPlus_GetRequiredRankByTechId(itemTechId) <= player.combatRank
+                local player = Client.GetLocalPlayer()
+                local equipped = GetIsEquipped(item.TechId)
+                local hasPrereq = GetHasPrerequisite(item.TechId)
+                local canAfford = CombatPlusPlus_GetCostByTechId(item.TechId) <= player.combatSkillPoints
+                local hasRequiredRank = CombatPlusPlus_GetRequiredRankByTechId(item.TechId) <= player.combatRank
 
-                if hasRequiredRank and canAfford and not equipped then
+                if hasRequiredRank and canAfford and hasPrereq and not equipped then
 
                     MarineBuy_PurchaseItem(item.TechId)
                     MarineBuy_OnClose()
@@ -1184,6 +1218,7 @@ local function HandleItemClicked(self, mouseX, mouseY)
             end
 
         end
+
     end
 
     return false, false

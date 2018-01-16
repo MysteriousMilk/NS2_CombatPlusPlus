@@ -1,35 +1,39 @@
-function CombatPlusPlus_XPRequiredNextLevel(currentXP, rank)
+function CombatPlusPlus_XPRequiredForNextRank(currentXP, rank)
 
     local xpRequired = 0
     if rank < kMaxCombatRank then
-        xpRequired = kXPLevelThresholds[ rank + 1 ]
+        xpRequired = kXPTable[ rank + 1 ]["XP"]
     end
 
     return xpRequired
 
 end
 
-function CombatPlusPlus_GetLevelThresholdByRank(rank)
+function CombatPlusPlus_GetXPThresholdByRank(rank)
 
-    local xpThreshold = 0
-
-    if rank > 0 and rank <= kMaxCombatRank then
-        xpThreshold = kXPLevelThresholds[rank]
-    end
-
-    return xpThreshold
+    rank = Clamp(rank, 1, kMaxCombatRank)
+    return kXPTable[rank]["XP"]
 
 end
 
 function CombatPlusPlus_GetMarineTitleByRank(rank)
 
-    local title = "Private"
+    rank = Clamp(rank, 1, kMaxCombatRank)
+    return kXPTable[rank]["MarineName"]
 
-    if rank > 0 and rank <= kMaxCombatRank then
-        title = kMarineRankTitles[rank]
-    end
+end
 
-    return title
+function CombatPlusPlus_GetAlienTitleByRank(rank)
+
+    rank = Clamp(rank, 1, kMaxCombatRank)
+    return kXPTable[rank]["AlienName"]
+
+end
+
+function CombatPlusPlus_GetBaseKillXP(victimRank)
+
+    victimRank = Clamp(victimRank, 1, kMaxCombatRank)
+    return kXPTable[victimRank]["BaseXpOnKill"]
 
 end
 
@@ -37,7 +41,7 @@ function CombatPlusPlus_GetRankByXP(xp)
 
     local rank = 1
 
-    if xp >= kXPLevelThresholds[ kMaxCombatRank ] then
+    if xp >= kXPTable[kMaxCombatRank]["XP"] then
 
       rank = kMaxCombatRank
 
@@ -45,8 +49,8 @@ function CombatPlusPlus_GetRankByXP(xp)
 
       for i = 1, kMaxCombatRank-1 do
 
-          if xp < kXPLevelThresholds[ i + 1 ] then
-              rank = i
+          if xp < kXPTable[ i + 1 ]["XP"] then
+              rank = kXPTable[i]["Rank"]
               break
           end
 
@@ -142,6 +146,39 @@ function CombatPlusPlus_GetRequiredRankByTechId(techId)
 
 end
 
+function GetDistanceBetweenTechPoints()
+
+    local marineTechPointOrigin = GetGameMaster():GetMarineTechPoint():GetOrigin()
+    local alienTechPointOrigin = GetGameMaster():GetAlienTechPoint():GetOrigin()
+
+    return math.abs((marineTechPointOrigin - alienTechPointOrigin):GetLength())
+
+end
+
+function ScaleXPByDistance(player, baseXp)
+
+    local enemyTechPointOrigin = nil
+    local scaledXp = baseXp
+
+    if player:GetTeamNumber() == kTeam1Index then
+        enemyTechPointOrigin = GetGameMaster():GetAlienTechPoint():GetOrigin()
+    elseif player:GetTeamNumber() == kTeam2Index then
+        enemyTechPointOrigin = GetGameMaster():GetMarineTechPoint():GetOrigin()
+    end
+
+    if enemyTechPointOrigin ~= nil then
+
+        local distance = math.abs((enemyTechPointOrigin - player:GetOrigin()):GetLength())
+        local percentage = 1 - distance / GetDistanceBetweenTechPoints()
+        local modifier = LerpNumber(1, kDistanceXPModifierMaxUpperBound, percentage)
+        scaledXp = math.ceil(baseXp * modifier)
+
+    end
+
+    return scaledXp
+
+end
+
 function CreateTechEntity( techPoint, techId, rightOffset, forwardOffset, teamType )
 
     local origin = techPoint:GetOrigin() + Vector(0, 2, 0)
@@ -153,9 +190,7 @@ function CreateTechEntity( techPoint, techId, rightOffset, forwardOffset, teamTy
     if trace.fraction < 1 then
         position = trace.endPoint
     end
-    --local mapName = LookupTechData(techId, kTechDataMapName)
 
-    --local newEnt = CreateEntity( mapName, position, teamType)
     local newEnt = CreateEntityForTeam(techId, position, teamType, nil)
     if HasMixin( newEnt, "Construct" ) then
         SetRandomOrientation( newEnt )
