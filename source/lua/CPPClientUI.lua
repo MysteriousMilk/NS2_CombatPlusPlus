@@ -7,3 +7,4 @@
 ]]
 
 AddClientUIScriptForClass("Marine", "GUICombatMarineStatus")
+AddClientUIScriptForClass("Alien", "CPPGUIAlienCombatHUD")

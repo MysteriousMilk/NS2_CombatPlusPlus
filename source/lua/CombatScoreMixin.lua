@@ -31,7 +31,7 @@ function CombatScoreMixin:GetCombatXP()
     return self.combatXP
 end
 
-local kNonScalableXPTypes = { [kXPSourceType.Console] = true, [kXPSourceType.Damage] = true, [kXPSourceType.Weld] = true }
+local kNonScalableXPTypes = { [kXPSourceType.Console] = true, [kXPSourceType.Damage] = true, [kXPSourceType.Weld] = true, [kXPSourceType.Heal] = true }
 function CombatScoreMixin:AddXP(xp, source, targetId)
 
     if Server and xp and xp ~= 0 and not GetGameInfoEntity():GetWarmUpActive() then
@@ -132,6 +132,7 @@ if Server then
         self.damageDealtCurrentLife = 0
         self.damageDealerAwardReceived = false
         self.armorWeledSinceLastXPAward = 0
+        self.healingAmountSinceLastXPAward = 0
         self.damageSinceLastXPAward = 0
 
     end
@@ -244,6 +245,33 @@ function CombatScoreMixin:AddCombatWeldPoints(weldAmount)
 
 end
 
+function CombatScoreMixin:AddCombatHealingPoints(healingAmount)
+
+    if GetGameInfoEntity():GetWarmUpActive() then return end
+
+    if not self.combatXP then
+        self.combatXP = 0
+    end
+
+    if not self.healingAmountSinceLastXPAward then
+        self.healingAmountSinceLastXPAward = 0
+    end
+
+    self.healingAmountSinceLastXPAward = self.healingAmountSinceLastXPAward + healingAmount
+
+    -- if the current healing amount crosses the threshold required, reward a little xp
+    if self.healingAmountSinceLastXPAward >= kHealingRequiredXPReward then
+
+        -- make sure not to let the remaining healing points "leak"
+        self.healingAmountSinceLastXPAward = self.healingAmountSinceLastXPAward - kHealingRequiredXPReward
+
+        -- add the xp
+        self:AddXP(kHealingRequiredXPReward * kHealingXPModifier, kXPSourceType.Heal)
+
+    end
+
+end
+
 function CombatScoreMixin:ResetCombatScores()
 
     self.combatXP = 0
@@ -255,6 +283,7 @@ function CombatScoreMixin:ResetCombatScores()
     self.damageDealtCurrentLife = 0
     self.damageDealerAwardReceived = false
     self.armorWeledSinceLastXPAward = 0
+    self.healingAmountSinceLastXPAward = 0
     self.damageSinceLastXPAward = 0
 
 end

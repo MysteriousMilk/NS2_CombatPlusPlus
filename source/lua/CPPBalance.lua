@@ -72,6 +72,14 @@ kWeldingRequiredXPReward = 10
 -- Modifier used to determine how much xp to give per welding award
 kWeldingXPModifier = 0.5
 
+-- The required healding threshold required to be awarded xp.  Every time the
+-- player reaches this threshold, xp will be awarded for the amount of healing
+-- multiplied by the welding xp modifier
+kHealingRequiredXPReward = 10
+
+-- Modifier used to determine how much xp to give per healing award
+kHealingXPModifier = 0.5
+
 -- The amount multiplied by the construct fraction to determine how much xp given for
 -- building/constructing
 kCombatBuildRewardBase = 400
@@ -116,3 +124,6 @@ kCatPackAbilityCooldown = 120
 
 -- How log the player has to wait in between using the ScanAbility (in sec)
 kScanAbilityCooldown = 90
+
+-- Rate at which the Hive will 'Auto Cyst'
+kHiveAutoCystFrequency = 40

@@ -4,6 +4,7 @@ GUINotifications.kScoreDisplayFontNameLarge = Fonts.kAgencyFB_Large
 GUINotifications.kScoreDisplayPrimaryTextColor = Color(0.2, 0.71, 0.86, 1)
 GUINotifications.kScoreDisplayBuildTextColor = Color(0, 1, 0, 1)
 GUINotifications.kScoreDisplayWeldTextColor = Color(0.73, 0.22, 0.84, 1)
+GUINotifications.kScoreDisplayHealTextColor = Color(0.84, 0.18, 0.49, 1)
 GUINotifications.kScoreDisplayFontHeight = 100
 GUINotifications.kScoreDisplayMinFontHeight = 80
 GUINotifications.kScoreDisplayPopTimer = 0.35
@@ -15,7 +16,7 @@ GUINotifications.kScoreDisplayMinFontHeightDmg = 40
 GUINotifications.kTimeToDisplayFinalAccumulatedValue = 2
 
 local kResetSourceTypes = { [kXPSourceType.Kill] = true, [kXPSourceType.Assist] = true, [kXPSourceType.Build] = true }
-local kAccumulatingSourceTypes = { [kXPSourceType.Weld] = true }
+local kAccumulatingSourceTypes = { [kXPSourceType.Weld] = true, [kXPSourceType.Heal] = true }
 
 local ns2_GUINotifications_Initialize = GUINotifications.Initialize
 function GUINotifications:Initialize()
@@ -157,6 +158,9 @@ function GUINotifications:UpdateCombatScoreDisplay(deltaTime)
             elseif source == kXPSourceType.Weld then
                 self.scoreDisplay:SetColor(GUINotifications.kScoreDisplayWeldTextColor)
                 self.scoreDisplay:SetText(string.format("+%s XP", self.xpSinceReset))
+            elseif source == kXPSourceType.Heal then
+                self.scoreDisplay:SetColor(GUINotifications.kScoreDisplayHealTextColor)
+                self.scoreDisplay:SetText(string.format("+%s XP", self.xpSinceReset))
             elseif source == kXPSourceType.Build then
                 self.scoreDisplay:SetColor(GUINotifications.kScoreDisplayBuildTextColor)
                 self.scoreDisplay:SetText(string.format("Built Structure +%s XP", self.xpSinceReset))
@@ -184,6 +188,9 @@ function GUINotifications:UpdateCombatScoreDisplay(deltaTime)
         if self.lastSourceType == kXPSourceType.Weld then
             self.scoreDisplay:SetColor(GUINotifications.kScoreDisplayPrimaryTextColor)
             self.scoreDisplay:SetText(string.format("Welded Target +%s XP", totalXp))
+        elseif self.lastSourceType == kXPSourceType.Heal then
+            self.scoreDisplay:SetColor(GUINotifications.kScoreDisplayPrimaryTextColor)
+            self.scoreDisplay:SetText(string.format("Healed Target +%s XP", totalXp))
         end
 
         self.scoreDisplay:SetScale(GUIScale(Vector(0.7, 0.7, 0.7)))

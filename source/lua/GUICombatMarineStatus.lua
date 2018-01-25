@@ -319,7 +319,7 @@ function GUICombatMarineStatus:Uninitialize()
     GUIAnimatedScript.Uninitialize(self)
 
     GUI.DestroyItem(self.currentXPText)
-    self.combatStatusStencil = nil
+    self.currentXPText = nil
 
     GUI.DestroyItem(self.currentRankText)
     self.currentRankText = nil
@@ -439,7 +439,7 @@ function GUICombatMarineStatus:Update(deltaTime)
 
     self:UpdateCooldowns(player)
 
-    if player and HasMixin(player, "Scoring") then
+    if player and HasMixin(player, "CombatScore") then
 
         local currentXP = player.combatXP
         local currentRank = player.combatRank

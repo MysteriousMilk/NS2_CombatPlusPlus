@@ -27,7 +27,7 @@ function Player:ProcessBuyAction(techIds)
       end
 
   else
-      Print("not enough resources sound server")
+      --Print("not enough resources sound server")
       Server.PlayPrivateSound(self, self:GetNotEnoughResourcesSound(), self, 1.0, Vector(0, 0, 0))
   end
 
