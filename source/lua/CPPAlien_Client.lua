@@ -27,3 +27,30 @@ function Alien:OnCountDownEnd()
     ClientUI.SetScriptVisibility("CPPGUIAlienCombatHUD", "Countdown", true)
 
 end
+
+-- Bring up evolve menu
+function Alien:Buy()
+
+    -- Don't allow display in the ready room, or as phantom
+    -- Don't allow buy menu to be opened while help screen is displayed.
+    if self:GetIsLocalPlayer() and not HelpScreen_GetHelpScreen():GetIsBeingDisplayed() then
+
+        -- The Embryo cannot use the buy menu in any case.
+        if self:GetTeamNumber() ~= 0 and not self:isa("Embryo") then
+
+            if not self.buyMenu then
+
+                -- new Combat Alien Buy Menu (WhiteWizard)
+                self.buyMenu = GetGUIManager():CreateGUIScript("CPPGUICombatAlienBuyMenu")
+
+            else
+                self:CloseMenu()
+            end
+
+        else
+            self:PlayEvolveErrorSound()
+        end
+
+    end
+
+end

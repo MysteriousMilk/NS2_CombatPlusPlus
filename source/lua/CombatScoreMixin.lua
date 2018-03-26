@@ -86,7 +86,7 @@ function CombatScoreMixin:GetCombatSkillPoints()
 end
 
 function CombatScoreMixin:SetCombatSkillPoints(skillPoints)
-    self.combatSkillPoints = Clamp(skillPoints, 1, kMaxCombatSkillPoints)
+    self.combatSkillPoints = Clamp(skillPoints, 0, kMaxCombatSkillPoints)
 end
 
 function CombatScoreMixin:GiveSkillPoints(source, points)

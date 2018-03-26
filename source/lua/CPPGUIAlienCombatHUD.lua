@@ -18,7 +18,15 @@ CPPGUIAlienCombatHUD.kXPFontName = Fonts.kArial_13
 CPPGUIAlienCombatHUD.kXPTextPosition = Vector(0, -123, 0)
 
 CPPGUIAlienCombatHUD.kRankFontName = Fonts.kStamp_Medium
-GUICombatMarineStatus.kRankTextPosition = Vector(0, -152, 0)
+CPPGUIAlienCombatHUD.kRankTextPosition = Vector(0, -154, 0)
+
+CPPGUIAlienCombatHUD.kSkillIconTexture = PrecacheAsset("ui/alien_HUD_presicon.dds")
+CPPGUIAlienCombatHUD.kSkillIconPixelCoords = { 6, 25, 26, 45 }
+CPPGUIAlienCombatHUD.kSkillIconSize = Vector(25, 25, 0)
+CPPGUIAlienCombatHUD.kSkillIconPos = Vector(-160, -28, 0)
+
+CPPGUIAlienCombatHUD.kSkillPointFontName = Fonts.kAgencyFB_Small
+CPPGUIAlienCombatHUD.kSkillPointTextPos = Vector(-130, -17, 0)
 
 function CPPGUIAlienCombatHUD:Initialize()
 
@@ -70,6 +78,22 @@ function CPPGUIAlienCombatHUD:Initialize()
     self.currentRankText:SetColor( kAlienFontColor )
     self.background:AddChild(self.currentRankText)
 
+    self.skillPointIcon = self:CreateAnimatedGraphicItem()
+    self.skillPointIcon:SetAnchor(GUIItem.Right, GUIItem.Top)
+    self.skillPointIcon:SetTexture(CPPGUIAlienCombatHUD.kSkillIconTexture)
+    self.skillPointIcon:SetTexturePixelCoordinates(unpack(CPPGUIAlienCombatHUD.kSkillIconPixelCoords))
+    self.xpBarBackground:AddChild(self.skillPointIcon)
+
+    self.skillPointText = GetGUIManager():CreateTextItem()
+    self.skillPointText:SetFontName(CPPGUIAlienCombatHUD.kSkillPointFontName)
+    self.skillPointText:SetAnchor(GUIItem.Right, GUIItem.Top)
+    self.skillPointText:SetTextAlignmentX(GUIItem.Align_Min)
+    self.skillPointText:SetTextAlignmentY(GUIItem.Align_Center)
+    self.skillPointText:SetText("0 Skill Points")
+    self.skillPointText:SetIsVisible(true)
+    self.skillPointText:SetColor( kAlienFontColor )
+    self.xpBarBackground:AddChild(self.skillPointText)
+
     self.visible = true
     self:UpdateVisibility()
 
@@ -100,9 +124,18 @@ function CPPGUIAlienCombatHUD:Reset(scale)
     GUIMakeFontScale(self.currentXPText)
 
     self.currentRankText:SetScale(GetScaledVector())
-    self.currentRankText:SetPosition(GUICombatMarineStatus.kRankTextPosition)
-    self.currentRankText:SetFontName(GUICombatMarineStatus.kRankFontName)
+    self.currentRankText:SetPosition(CPPGUIAlienCombatHUD.kRankTextPosition)
+    self.currentRankText:SetFontName(CPPGUIAlienCombatHUD.kRankFontName)
     GUIMakeFontScale(self.currentRankText)
+
+    self.skillPointIcon:SetUniformScale(self.scale)
+    self.skillPointIcon:SetPosition(CPPGUIAlienCombatHUD.kSkillIconPos)
+    self.skillPointIcon:SetSize(CPPGUIAlienCombatHUD.kSkillIconSize)
+
+    self.skillPointText:SetScale(GetScaledVector())
+    self.skillPointText:SetPosition(CPPGUIAlienCombatHUD.kSkillPointTextPos)
+    self.skillPointText:SetFontName(CPPGUIAlienCombatHUD.kSkillPointFontName)
+    GUIMakeFontScale(self.skillPointText)
 
 end
 
@@ -116,6 +149,9 @@ function CPPGUIAlienCombatHUD:Uninitialize()
     GUI.DestroyItem(self.currentRankText)
     self.currentRankText = nil
 
+    GUI.DestroyItem(self.skillPointText)
+    self.skillPointText = nil
+
 end
 
 function CPPGUIAlienCombatHUD:UpdateVisibility()
@@ -124,6 +160,8 @@ function CPPGUIAlienCombatHUD:UpdateVisibility()
     self.xpBar:SetIsVisible(self.visible)
     self.currentXPText:SetIsVisible(self.visible)
     self.currentRankText:SetIsVisible(self.visible)
+    self.skillPointIcon:SetIsVisible(self.visible)
+    self.skillPointText:SetIsVisible(self.visible)
 
 end
 
@@ -169,6 +207,13 @@ function CPPGUIAlienCombatHUD:Update(deltaTime)
 
         -- update rank text
         self.currentRankText:SetText(string.format("Rank %s : %s", currentRank, title))
+
+        -- update skill point text
+        if player.combatSkillPoints == 1 then
+            self.skillPointText:SetText(string.format("%s Skill Point", player.combatSkillPoints))
+        else
+            self.skillPointText:SetText(string.format("%s Skill Points", player.combatSkillPoints))
+        end
 
         -- update xp text
         if newXPThreshold == 0 then

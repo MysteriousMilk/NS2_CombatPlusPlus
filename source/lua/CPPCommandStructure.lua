@@ -10,5 +10,5 @@
 ]]
 
 function CommandStructure:GetCanBeUsed(player, useSuccessTable)
-    useSuccessTable.useSuccess = true
+    useSuccessTable.useSuccess = false
 end

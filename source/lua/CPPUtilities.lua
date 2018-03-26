@@ -65,6 +65,8 @@ end
 function CombatPlusPlus_GetCostByTechId(techId)
 
     local techIdCostTable = {}
+
+    -- Marine
     techIdCostTable[kTechId.Pistol] = 1
     techIdCostTable[kTechId.Rifle] = 1
     techIdCostTable[kTechId.Shotgun] = 1
@@ -94,6 +96,33 @@ function CombatPlusPlus_GetCostByTechId(techId)
     techIdCostTable[kTechId.Sentry] = 1
     techIdCostTable[kTechId.RoboticsFactory] = 2
 
+    -- Alien
+    techIdCostTable[kTechId.Skulk] = 0
+    techIdCostTable[kTechId.Gorge] = 0
+    techIdCostTable[kTechId.Lerk] = 1
+    techIdCostTable[kTechId.Fade] = 2
+    techIdCostTable[kTechId.Onos] = 2
+    techIdCostTable[kTechId.Celerity] = 1
+    techIdCostTable[kTechId.Vampirism] = 1
+    techIdCostTable[kTechId.Carapace] = 1
+    techIdCostTable[kTechId.Adrenaline] = 1
+    techIdCostTable[kTechId.Aura] = 1
+    techIdCostTable[kTechId.Regeneration] = 1
+    techIdCostTable[kTechId.Silence] = 1
+    techIdCostTable[kTechId.Focus] = 1
+    techIdCostTable[kTechId.Crush] = 1
+    techIdCostTable[kTechId.BileBomb] = 1
+    techIdCostTable[kTechId.Leap] = 1
+    techIdCostTable[kTechId.Xenocide] = 1
+    techIdCostTable[kTechId.Spores] = 1
+    techIdCostTable[kTechId.Umbra] = 1
+    techIdCostTable[kTechId.MetabolizeEnergy] = 1
+    techIdCostTable[kTechId.MetabolizeHealth] = 1
+    techIdCostTable[kTechId.Stab] = 1
+    techIdCostTable[kTechId.Charge] = 1
+    techIdCostTable[kTechId.BoneShield] = 1
+    techIdCostTable[kTechId.Stomp] = 1
+
     local cost = techIdCostTable[techId]
 
     if not cost then
@@ -107,6 +136,8 @@ end
 function CombatPlusPlus_GetRequiredRankByTechId(techId)
 
     local techIdRankTable = {}
+
+    -- Marine
     techIdRankTable[kTechId.Pistol] = 1
     techIdRankTable[kTechId.Rifle] = 1
     techIdRankTable[kTechId.Shotgun] = 3
@@ -136,6 +167,22 @@ function CombatPlusPlus_GetRequiredRankByTechId(techId)
     techIdRankTable[kTechId.Sentry] = 6
     techIdRankTable[kTechId.RoboticsFactory] = 8
 
+    -- Alien
+    techIdRankTable[kTechId.Skulk] = 1
+    techIdRankTable[kTechId.Gorge] = 2
+    techIdRankTable[kTechId.Lerk] = 3
+    techIdRankTable[kTechId.Fade] = 6
+    techIdRankTable[kTechId.Onos] = 9
+    techIdRankTable[kTechId.Celerity] = 2
+    techIdRankTable[kTechId.Vampirism] = 3
+    techIdRankTable[kTechId.Carapace] = 3
+    techIdRankTable[kTechId.Adrenaline] = 4
+    techIdRankTable[kTechId.Aura] = 4
+    techIdRankTable[kTechId.Regeneration] = 4
+    techIdRankTable[kTechId.Silence] = 5
+    techIdRankTable[kTechId.Focus] = 5
+    techIdRankTable[kTechId.Crush] = 5
+
     local rank = techIdRankTable[techId]
 
     if not rank then
@@ -143,6 +190,28 @@ function CombatPlusPlus_GetRequiredRankByTechId(techId)
     end
 
     return rank
+
+end
+
+function CombatPlusPlus_AlienPurchase(purchaseTable)
+
+    ASSERT(type(purchaseTable) == "table")
+
+    local purchaseTechIds = { }
+
+    for _, purchase in ipairs(purchaseTable) do
+
+        if purchase.Type == "Alien" then
+            table.insert(purchaseTechIds, IndexToAlienTechId(purchase.Alien))
+        elseif purchase.Type == "Upgrade" then
+            table.insert(purchaseTechIds, purchase.TechId)
+        end
+
+    end
+
+    if #purchaseTechIds > 0 then
+        Client.SendNetworkMessage("Buy", BuildBuyMessage(purchaseTechIds), true)
+    end
 
 end
 
