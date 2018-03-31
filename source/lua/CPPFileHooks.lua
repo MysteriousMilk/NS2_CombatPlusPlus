@@ -21,6 +21,7 @@ ModLoader.SetupFileHook( "lua/Player_Client.lua", "lua/CPPPlayer_Client.lua", "p
 ModLoader.SetupFileHook( "lua/Marine.lua", "lua/CPPMarine.lua", "post" )
 ModLoader.SetupFileHook( "lua/Marine_Client.lua", "lua/CPPMarine_Client.lua", "post" )
 ModLoader.SetupFileHook( "lua/Marine_Server.lua", "lua/CPPMarine_Server.lua", "post" )
+ModLoader.SetupFileHook( "lua/Exo.lua", "lua/CPPExo.lua", "post" )
 ModLoader.SetupFileHook( "lua/Alien_Client.lua", "lua/CPPAlien_Client.lua", "post" )
 ModLoader.SetupFileHook( "lua/MarineActionFinderMixin.lua", "lua/CPPMarineActionFinderMixin.lua", "post" )
 ModLoader.SetupFileHook( "lua/Hud/Marine/GUIMarineHUD.lua", "lua/CPPGUIMarineHud.lua", "post" )
