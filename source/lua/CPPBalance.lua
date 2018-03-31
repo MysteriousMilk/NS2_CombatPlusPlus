@@ -53,6 +53,12 @@ kStartPoints = 1
 -- the modifier applied to the 'BaseXpOnKill' to determine how much xp for assists
 kXPAssistModifier = 0.33
 
+-- The fraction of 'BaseXpOnKill' given for being near a kill and doing no damage
+kNearbyKillXPModifier = 0.25
+
+-- Kills within this distance to a player will grant xp
+kNearbyKillXPDistance = 20
+
 -- upper bound for modifier used to scale xp based on distance to enemy tech point
 kDistanceXPModifierMaxUpperBound = 2
 

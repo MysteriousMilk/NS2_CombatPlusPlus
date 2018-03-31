@@ -101,6 +101,16 @@ if Server then
 
             end
 
+            local playersNearby = GetEntitiesForTeamWithinRange("Player", attacker:GetTeamNumber(), self:GetOrigin(), kNearbyKillXPDistance)
+
+            for _, player in ipairs(playersNearby) do
+
+                if player:GetIsAlive() and player ~= attacker then
+                    player:AddCombatNearbyKill(self:GetCombatRank())
+                end
+
+            end
+
             self:GetTeam():AddTeamResources(kKillTeamReward)
 
         end

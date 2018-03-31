@@ -184,6 +184,17 @@ function CombatScoreMixin:AddCombatAssistKill(victimRank)
 
 end
 
+function CombatScoreMixin:AddCombatNearbyKill(victimRank)
+    if GetGameInfoEntity():GetWarmUpActive() then return end
+
+    if not self.combatXP then
+        self.combatXP = 0
+    end
+
+    local xp = CombatPlusPlus_GetBaseKillXP(victimRank) * kNearbyKillXPModifier
+    self:AddXP(xp, kXPSourceType.Kill, Entity.invalidId)
+end
+
 function CombatScoreMixin:AddCombatDamage(damage)
 
     if GetGameInfoEntity():GetWarmUpActive() then return end
