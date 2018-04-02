@@ -37,6 +37,7 @@ ModLoader.SetupFileHook( "lua/Hive_Server.lua", "lua/CPPHive_Server.lua", "post"
 ModLoader.SetupFileHook( "lua/PlayingTeam.lua", "lua/CPPPlayingTeam.lua", "post" )
 ModLoader.SetupFileHook( "lua/MarineTeam.lua", "lua/CPPMarineTeam.lua", "post" )
 ModLoader.SetupFileHook( "lua/AlienTeam.lua", "lua/CPPAlienTeam.lua", "post" )
+ModLoader.SetupFileHook( "lua/AlienTeamInfo.lua", "lua/CPPAlienTeamInfo.lua", "post" )
 ModLoader.SetupFileHook( "lua/ScoringMixin.lua", "lua/CPPScoringMixin.lua", "post" )
 ModLoader.SetupFileHook( "lua/PointGiverMixin.lua", "lua/CPPPointGiverMixin.lua", "post" )
 ModLoader.SetupFileHook( "lua/WeldableMixin.lua", "lua/CPPWeldableMixin.lua", "post" )

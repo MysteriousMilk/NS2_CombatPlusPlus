@@ -29,3 +29,16 @@ local kPowerPointEntity =
 }
 
 Shared.RegisterNetworkMessage("RequestSocketPowerPoint", kPowerPointEntity)
+
+-- used for updating the upgrade tree
+function BuildUpgradeNodeMessage(node)
+
+    local n = {}
+
+    n.techId = node.techId
+    n.type = node.type
+    n.isUnlocked = node.isUnlocked
+
+    return n
+
+end

@@ -174,12 +174,14 @@ local function UpdateItemsGUIScale(self)
     -- current evolution section
     CPPGUICombatAlienBuyMenu.kCurrentEvoBorderOffset = GUIScale(Vector(-320, 20, 0))
     CPPGUICombatAlienBuyMenu.kCurrentEvoBorderSize = GUIScale(Vector(262, 222, 0))
+    CPPGUICombatAlienBuyMenu.kCurrentEvoAlienIconOffset = GUIScale(Vector(0, 5, 0))
     CPPGUICombatAlienBuyMenu.kBiomassIconSize = GUIScale(Vector(72, 72, 0))
     CPPGUICombatAlienBuyMenu.kBiomassIconOffset = GUIScale(Vector(-CPPGUICombatAlienBuyMenu.kBiomassIconSize.x - 20, 45, 0))
+    CPPGUICombatAlienBuyMenu.kCurrentEvoUpgradeOffset = GUIScale(Vector(16, 130, 0))
 
     -- alien buttons
     CPPGUICombatAlienBuyMenu.kAlienButtonOffsetY = GUIScale(-60)
-    CPPGUICombatAlienBuyMenu.kAlienIconSize = GUIScale(120)
+    CPPGUICombatAlienBuyMenu.kAlienIconSize = GUIScale(94)
 
     -- evolve panel
     CPPGUICombatAlienBuyMenu.kEvolvePanelSize = GUIScale(Vector(600, 100, 0))
@@ -585,7 +587,7 @@ function CPPGUICombatAlienBuyMenu:_InitializeCurrentEvolutionDisplay()
     local ARAdjustedHeight = (alienType.Height / alienType.Width) * CPPGUICombatAlienBuyMenu.kAlienIconSize
     alienGraphicItem:SetSize(Vector(CPPGUICombatAlienBuyMenu.kAlienIconSize, ARAdjustedHeight, 0))
     alienGraphicItem:SetAnchor(GUIItem.Left, GUIItem.Bottom)
-    alienGraphicItem:SetPosition(Vector(0, 0, 0))
+    alienGraphicItem:SetPosition(CPPGUICombatAlienBuyMenu.kCurrentEvoAlienIconOffset)
     alienGraphicItem:SetTexture("ui/" .. alienType.Name .. ".dds")
     headerTextShadow:AddChild(alienGraphicItem)
 
@@ -621,6 +623,51 @@ function CPPGUICombatAlienBuyMenu:_InitializeCurrentEvolutionDisplay()
     biomassLevelText:SetColor(Color(1, 1, 1, 1))
     biomassLevelText:SetText("1")
     biomassLevelTextShadow:AddChild(biomassLevelText)
+
+    local categories =
+    {
+        kTechId.ShiftHive,
+        kTechId.ShadeHive,
+        kTechId.CragHive
+    }
+
+    local offsetFactor = 0
+
+    for i = 1, #categories do
+
+        local upgrades = AlienUI_GetUpgradesForCategory(categories[i])
+        
+        for upgradeIndex = 1, #upgrades do
+
+            local upgradeTechId = upgrades[upgradeIndex]
+
+            if AlienBuy_GetUpgradePurchased(upgradeTechId) then
+            
+                -- Every upgrade has an icon.
+                local upgradeIcon = GUIManager:CreateGraphicItem()
+
+                local iconX, iconY = GetMaterialXYOffset(upgradeTechId, false)
+                iconX = iconX * CPPGUICombatAlienBuyMenu.kUpgradeButtonTextureSize
+                iconY = iconY * CPPGUICombatAlienBuyMenu.kUpgradeButtonTextureSize
+
+                local offset = Vector((CPPGUICombatAlienBuyMenu.kUpgradeButtonSize + GUIScale(4)) * offsetFactor, 0, 0)
+
+                upgradeIcon:SetAnchor(GUIItem.Left, GUIItem.Top)
+                upgradeIcon:SetSize(Vector(CPPGUICombatAlienBuyMenu.kUpgradeButtonSize, CPPGUICombatAlienBuyMenu.kUpgradeButtonSize, 0))
+                upgradeIcon:SetPosition(CPPGUICombatAlienBuyMenu.kCurrentEvoUpgradeOffset + offset)
+                upgradeIcon:SetTexture(CPPGUICombatAlienBuyMenu.kBuyHUDTexture)
+                upgradeIcon:SetTexturePixelCoordinates(iconX, iconY, iconX + CPPGUICombatAlienBuyMenu.kUpgradeButtonTextureSize, iconY + CPPGUICombatAlienBuyMenu.kUpgradeButtonTextureSize)
+                upgradeIcon:SetColor(kIconColors[kAlienTeamType])
+                border:AddChild(upgradeIcon)
+
+                offsetFactor = offsetFactor + 1
+                break
+
+            end
+
+        end
+
+    end
 
 end
 
@@ -843,8 +890,8 @@ function CPPGUICombatAlienBuyMenu:_InitializeUpgrades()
 
             local purchased = AlienBuy_GetUpgradePurchased(techId)
 
-            table.insert(self.upgradeButtons, { Background = nil, Icon = buttonIcon, TechId = techId, Category = categories[i],
-                Selected = purchased, SelectedMovePercent = 0, Cost = 0, Purchased = purchased, Index = nil })
+            table.insert(self.upgradeButtons, { Background = nil, Icon = buttonIcon, TechId = techId, Selected = purchased,
+                         Cost = 0, Purchased = purchased, Index = nil })
 
         end
 
@@ -1185,7 +1232,6 @@ end
 
 function CPPGUICombatAlienBuyMenu:_UpdateUpgrades(deltaTime)
 
-    local categoryHasSelected = {}
     local player = Client.GetLocalPlayer()
 
     for i, currentButton in ipairs(self.upgradeButtons) do
@@ -1212,10 +1258,6 @@ function CPPGUICombatAlienBuyMenu:_UpdateUpgrades(deltaTime)
         end
 
         currentButton.Icon:SetColor(useColor)
-
-        if currentButton.Selected then
-            categoryHasSelected[ currentButton.Category ] = true
-        end
 
         if self:_GetIsMouseOver(currentButton.Icon) then
         
