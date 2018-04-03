@@ -16,6 +16,7 @@ kXPSourceType = enum(
     "Kill",
     "Assist",
     "Damage",
+    "Nearby",
     "Build",
     "Weld",
     "Heal"

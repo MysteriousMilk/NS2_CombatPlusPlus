@@ -192,7 +192,7 @@ function CombatScoreMixin:AddCombatNearbyKill(victimRank)
     end
 
     local xp = CombatPlusPlus_GetBaseKillXP(victimRank) * kNearbyKillXPModifier
-    self:AddXP(xp, kXPSourceType.Kill, Entity.invalidId)
+    self:AddXP(xp, kXPSourceType.Nearby, Entity.invalidId)
 end
 
 function CombatScoreMixin:AddCombatDamage(damage)

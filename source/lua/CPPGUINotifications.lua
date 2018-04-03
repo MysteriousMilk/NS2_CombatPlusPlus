@@ -15,7 +15,14 @@ GUINotifications.kScoreDisplayMinFontHeightDmg = 40
 
 GUINotifications.kTimeToDisplayFinalAccumulatedValue = 2
 
-local kResetSourceTypes = { [kXPSourceType.Kill] = true, [kXPSourceType.Assist] = true, [kXPSourceType.Build] = true }
+local kResetSourceTypes =
+{
+    [kXPSourceType.Kill] = true,
+    [kXPSourceType.Assist] = true,
+    [kXPSourceType.Nearby] = true,
+    [kXPSourceType.Build] = true,
+}
+
 local kAccumulatingSourceTypes = { [kXPSourceType.Weld] = true, [kXPSourceType.Heal] = true }
 
 local ns2_GUINotifications_Initialize = GUINotifications.Initialize
@@ -170,6 +177,9 @@ function GUINotifications:UpdateCombatScoreDisplay(deltaTime)
             elseif source == kXPSourceType.Assist then
                 self.scoreDisplay:SetColor(GUINotifications.kScoreDisplayPrimaryTextColor)
                 self.scoreDisplay:SetText(string.format("Assist +%s XP", self.xpSinceReset))
+            elseif source == kXPSourceType.Nearby then
+                self.scoreDisplay:SetColor(GUINotifications.kScoreDisplayPrimaryTextColor)
+                self.scoreDisplay:SetText(string.format("Nearby Kill +%s XP", self.xpSinceReset))
             end
 
             self.scoreDisplay:SetScale(GUIScale(Vector(0.7, 0.7, 0.7)))
