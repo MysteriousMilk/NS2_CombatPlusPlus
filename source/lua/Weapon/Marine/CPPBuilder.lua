@@ -128,7 +128,7 @@ local function DropStructure(self, player)
             local struct = CreateEntity(mapName, coords.origin, player:GetTeamNumber())
             if struct then
 
-                --mine:SetOwner(player)
+                struct:SetOwner(player)
 
                 -- Check for space
                 if struct:SpaceClearForEntity(coords.origin) then
