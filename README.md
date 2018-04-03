@@ -4,6 +4,8 @@
 The intent of this mod is to bring back a gameplay type similar to the original Natural Selection Combat Mod, bring in some aspects from the Natural Selection 2 Combat Game and add in some fresh ideas.  Seeing as how the title is still 'Combat', I'd like to keep that original gametype feel (individual xp, no commanders).
 
 ## Latest Changes
+**4/3/2018** - Players now gain xp for teammate kills nearby, ejecting from Exos has been disabled, and players now receive credit for sentry and babbler kills if they are the one that placed/created it.
+
 **1/24/2018** - Added the xp bar and text to the Alien HUD, track healing for Aliens, and added an Auto-Cyst feature to the Hive.
 
 **1/15/2018** - Experience is now given for building structures and welding.  Added Skill Point award for the 'Damage Dealer' criteria.  Implemented an XP scale/modifier based on the distance between the player and the enemy base. Also, some improvements to the XP notification GUI.
