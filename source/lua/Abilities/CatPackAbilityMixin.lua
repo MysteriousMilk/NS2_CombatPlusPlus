@@ -43,11 +43,10 @@ function CatPackAbilityMixin:CanApplyCatPack()
             return false
         end
 
-        local userId = Server.GetOwner(self):GetUserId()
         local coolDownTime = GetRemainingCooldownTime(self)
         local alive = self:GetIsAlive()
         local vortexed = GetIsVortexed()
-        local hasAbility = GetGameMaster():GetMarinePersistData():GetHasAbility(userId, kTechId.CatPack)
+        local hasAbility = self.UpgradeManager:GetTree():GetIsPurchased(kTechId.CatPack)
         local canUse = self.GetCanUseCatPack and self:GetCanUseCatPack()
 
         return hasAbility and canUse and self.catPackAbilityEnabled and coolDownTime == 0 and alive and not vortexed

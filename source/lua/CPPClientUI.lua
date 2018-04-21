@@ -6,5 +6,5 @@
  * Adds a UI script for marines to show the xp bar.
 ]]
 
-AddClientUIScriptForClass("Marine", "GUICombatMarineStatus")
+AddClientUIScriptForClass("Marine", "Combat/GUI/MarineStatusHUD")
 AddClientUIScriptForClass("Alien", "CPPGUIAlienCombatHUD")

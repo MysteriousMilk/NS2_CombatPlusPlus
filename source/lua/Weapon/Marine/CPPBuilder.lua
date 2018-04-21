@@ -143,9 +143,7 @@ local function DropStructure(self, player)
                     end
 
                     struct:TriggerEffects("spawn")
-                    --player:TriggerEffects("create_" .. self:GetSuffixName())
 
-                    -- Jackpot.
                     return true
 
                 else

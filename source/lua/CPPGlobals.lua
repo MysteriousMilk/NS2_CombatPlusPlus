@@ -40,3 +40,10 @@ kBuilderMode = enum(
 
 -- pixel radius used for randomizing damage xp numbers
 kDamageXPIndicatorOffset = 30
+
+-- Enumeration used to specify the type of upgrade for the UpgradeTree
+kCombatUpgradeType = enum( 
+{ 
+	"Class", 
+	"Upgrade" 
+}) 

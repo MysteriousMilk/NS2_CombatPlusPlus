@@ -8,6 +8,11 @@
 -- Set the name of the VM for debugging
 decoda_name = "Server"
 Script.Load("lua/CPPGameMaster.lua")
+Script.Load("lua/Combat/UpgradeData.lua")
+Script.Load("lua/Combat/UpgradeNode.lua")
+Script.Load("lua/Combat/UpgradeTree.lua")
+Script.Load("lua/Combat/UpgradeManager.lua")
+Script.Load("lua/Combat/MarineUpgradeManager.lua")
 
 local old_CreateVoiceMessage = CreateVoiceMessage
 function CreateVoiceMessage(player, voiceId)

@@ -10,72 +10,69 @@ end
 -- A table of tech Ids is passed in.
 function Player:ProcessBuyAction(techIds)
 
-  ASSERT(type(techIds) == "table")
-  ASSERT(table.icount(techIds) > 0)
+    ASSERT(type(techIds) == "table")
+    ASSERT(table.icount(techIds) > 0)
 
-  local techId = techIds[1]
+    local techId = techIds[1]
+    local success = false
 
-  local cost = CombatPlusPlus_GetCostByTechId(techId)
-  local canAfford = cost <= self.combatSkillPoints
-  local hasRequiredRank = CombatPlusPlus_GetRequiredRankByTechId(techId) <= self.combatRank
+    if self.UpgradeManager then
 
-  if canAfford and hasRequiredRank then
+        if CombatPlusPlus_GetIsStructureTechId(techId) then
+            -- use override cost flag because the cost will be subtracted when the structure is actually placed
+            success = self.UpgradeManager:GiveUpgrade(techId, self, true)
+        else
+            success = self.UpgradeManager:GiveUpgrade(techId, self)
+        end
 
-      if self:AttemptToBuy(techIds) then
-          self:SpendSkillPoints(cost)
-          return true
-      end
+    end
 
-  else
-      --Print("not enough resources sound server")
-      Server.PlayPrivateSound(self, self:GetNotEnoughResourcesSound(), self, 1.0, Vector(0, 0, 0))
-  end
-
-  return false
+    return success
 
 end
 
 local ns2_Player_Replace = Player.Replace
 function Player:Replace(mapName, newTeamNumber, preserveWeapons, atOrigin, extraValues)
 
+    local persistUpgrades = nil
+    local upgradeTree = nil
+    local oldPlayerActive = self:GetTeamNumber() == kTeam1Index or self:GetTeamNumber() == kTeam2Index
+
+    if self.UpgradeManager then
+
+        -- cache off the upgrade tree and persistent upgrades from the "old" player
+        upgradeTree = self.UpgradeManager:GetTree()
+        persistUpgrades = upgradeTree:GetPurchasedPersistentUpgrades()
+
+        --Shared.Message(string.format("Number of persist upgrades: %s", #persistUpgrades))
+
+    end
+
+    -- do the normal replace
     local player = ns2_Player_Replace(self, mapName, newTeamNumber, preserveWeapons, atOrigin, extraValues)
 
-    -- give the player their pistol or welder back if they already purchased it
-    if player:isa("Marine") then
+    -- active player is one currently playing on Marines or Aliens
+    local newPlayerActive = player:GetTeamNumber() == kTeam1Index or player:GetTeamNumber() == kTeam2Index
 
-        local userId = Server.GetOwner(player):GetUserId()
-        local persistData = GetGameMaster():GetMarinePersistData()
+    if player.UpgradeManager then
 
-        player:SetArmorLevel(persistData:GetArmorLevel(userId))
-        player:SetWeaponLevel(persistData:GetWeaponLevel(userId))
+        if player:isa("Spectator") and upgradeTree and oldPlayerActive then
 
-        if HasMixin(player, "MedPackAbility") then
-            player:SetIsMedPackAbilityEnabled(persistData:GetHasAbility(userId, kTechId.MedPack))
+            -- When the player is spectating between spawns, copy the tree to the "spectator" player so the
+            -- persist items can be given when the player respawns
+            player.UpgradeManager:GetTree():CopyFrom(upgradeTree, false)
+
+        elseif newPlayerActive and persistUpgrades then
+
+            player.UpgradeManager:UpdateUnlocks(false)
+            player.UpgradeManager:GetTree():SendFullTree(player)
+
+            -- Respawning players get the certain "persistent" upgrades back
+            for k, node in ipairs(persistUpgrades) do
+                player.UpgradeManager:GiveUpgrade(node:GetTechId(), player, true)
+            end
+
         end
-
-        if HasMixin(player, "AmmoPackAbility") then
-            player:SetIsAmmoPackAbilityEnabled(persistData:GetHasAbility(userId, kTechId.AmmoPack))
-        end
-
-        if HasMixin(player, "CatPackAbility") then
-            player:SetIsCatPackAbilityEnabled(persistData:GetHasAbility(userId, kTechId.CatPack))
-        end
-
-        if HasMixin(player, "CatPackAbility") then
-            player:SetIsScanAbilityEnabled(persistData:GetHasAbility(userId, kTechId.Scan))
-        end
-
-        if persistData:GetHasWeapon(userId, kTechId.Pistol) then
-            player:GiveItem(Pistol.kMapName)
-            player:SetQuickSwitchTarget(Pistol.kMapName)
-        end
-
-        if persistData:GetHasWeapon(userId, kTechId.Welder) then
-            player:GiveItem(Welder.kMapName)
-            player:SetQuickSwitchTarget(Welder.kMapName)
-        end
-
-        player:SetActiveWeapon(Rifle.kMapName)
 
     end
 

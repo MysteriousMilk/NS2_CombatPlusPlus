@@ -53,11 +53,10 @@ function ScanAbilityMixin:CanApplyScan()
             self.scanPosition = trace.endPoint
         end
 
-        local userId = Server.GetOwner(self):GetUserId()
         local coolDownTime = GetRemainingCooldownTime(self)
         local alive = self:GetIsAlive()
         local vortexed = GetIsVortexed()
-        local hasAbility = GetGameMaster():GetMarinePersistData():GetHasAbility(userId, kTechId.Scan)
+        local hasAbility = self.UpgradeManager:GetTree():GetIsPurchased(kTechId.Scan)
 
         return hasAbility and self.scanPosition ~= nil and self.scanAbilityEnabled and coolDownTime == 0 and alive and not vortexed
 

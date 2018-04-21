@@ -2,46 +2,46 @@ Script.Load("lua/Globals.lua")
 Script.Load("lua/GUIUtility.lua")
 Script.Load("lua/GUIAnimatedScript.lua")
 
-class 'GUICombatMarineStatus' (GUIAnimatedScript)
+class 'MarineStatusHUD' (GUIAnimatedScript)
 
-GUICombatMarineStatus.kTexture = PrecacheAsset("ui/combatui_marine_status_bkg.dds")
-GUICombatMarineStatus.kXpBarTexture = PrecacheAsset("ui/combatui_xp_bar.dds")
+MarineStatusHUD.kTexture = PrecacheAsset("ui/combatui_marine_status_bkg.dds")
+MarineStatusHUD.kXpBarTexture = PrecacheAsset("ui/combatui_xp_bar.dds")
 
-GUICombatMarineStatus.kBackgroundCoords = { 0, 0, 300, 121 }
-GUICombatMarineStatus.kBackgroundPos = Vector(-400, -140, 0)
-GUICombatMarineStatus.kBackgroundSize = Vector(GUICombatMarineStatus.kBackgroundCoords[3], GUICombatMarineStatus.kBackgroundCoords[4], 0)
-GUICombatMarineStatus.kStencilCoords = { 0, 140, 300, 140 + 121 }
+MarineStatusHUD.kBackgroundCoords = { 0, 0, 300, 121 }
+MarineStatusHUD.kBackgroundPos = Vector(-400, -140, 0)
+MarineStatusHUD.kBackgroundSize = Vector(MarineStatusHUD.kBackgroundCoords[3], MarineStatusHUD.kBackgroundCoords[4], 0)
+MarineStatusHUD.kStencilCoords = { 0, 140, 300, 140 + 121 }
 
-GUICombatMarineStatus.kXPFontName = Fonts.kArial_13
-GUICombatMarineStatus.kXPTextPosition = Vector(0, -61, 0)
+MarineStatusHUD.kXPFontName = Fonts.kArial_13
+MarineStatusHUD.kXPTextPosition = Vector(0, -61, 0)
 
-GUICombatMarineStatus.kRankFontName = Fonts.kAgencyFB_Small
-GUICombatMarineStatus.kRankTextPosition = Vector(0, -82, 0)
+MarineStatusHUD.kRankFontName = Fonts.kAgencyFB_Small
+MarineStatusHUD.kRankTextPosition = Vector(0, -82, 0)
 
-GUICombatMarineStatus.kSkillPointTextPos = Vector(70, 64, 0)
+MarineStatusHUD.kSkillPointTextPos = Vector(70, 64, 0)
 
-GUICombatMarineStatus.kXPBarSize = Vector(789, 10, 0)
-GUICombatMarineStatus.kXPBarSizeScaled = Vector(789, 10, 0)
-GUICombatMarineStatus.kXPBarPos = Vector(5, 13, 0)
-GUICombatMarineStatus.kXPBarColor = Color(0.26, 0.8, 0.87, 0.75)
+MarineStatusHUD.kXPBarSize = Vector(789, 10, 0)
+MarineStatusHUD.kXPBarSizeScaled = Vector(789, 10, 0)
+MarineStatusHUD.kXPBarPos = Vector(5, 13, 0)
+MarineStatusHUD.kXPBarColor = Color(0.26, 0.8, 0.87, 0.75)
 
-GUICombatMarineStatus.kXPBarGlowSize = Vector(8, 22, 0)
-GUICombatMarineStatus.kXPBarGlowPos = Vector(-GUICombatMarineStatus.kXPBarGlowSize.x, 0, 0)
+MarineStatusHUD.kXPBarGlowSize = Vector(8, 22, 0)
+MarineStatusHUD.kXPBarGlowPos = Vector(-MarineStatusHUD.kXPBarGlowSize.x, 0, 0)
 
-GUICombatMarineStatus.kSkillIconTexture = PrecacheAsset("ui/marine_HUD_presicon.dds")
-GUICombatMarineStatus.kSkillIconPixelCoords = { 6, 25, 26, 45 }
-GUICombatMarineStatus.kSkillIconSize = Vector(25, 25, 0)
-GUICombatMarineStatus.kSkillIconPos = Vector(40, 52, 0)
+MarineStatusHUD.kSkillIconTexture = PrecacheAsset("ui/marine_HUD_presicon.dds")
+MarineStatusHUD.kSkillIconPixelCoords = { 6, 25, 26, 45 }
+MarineStatusHUD.kSkillIconSize = Vector(25, 25, 0)
+MarineStatusHUD.kSkillIconPos = Vector(40, 52, 0)
 
-GUICombatMarineStatus.kAbilityIconBkgTexture = PrecacheAsset("ui/combatui_ability_buttonbg.dds")
-GUICombatMarineStatus.kAbilityIconSize = Vector(68, 68, 0)
+MarineStatusHUD.kAbilityIconBkgTexture = PrecacheAsset("ui/combatui_ability_buttonbg.dds")
+MarineStatusHUD.kAbilityIconSize = Vector(68, 68, 0)
 
-GUICombatMarineStatus.kAbilityIconTexture = PrecacheAsset("ui/combatui_marine_ability_icons.dds")
-GUICombatMarineStatus.kAbilityBkgColorEnabled = Color(0.23, 0.33, 0.74, 1)
-GUICombatMarineStatus.kAbilityCooldownColor = Color(0.24, 0.64, 1, 0.6)
+MarineStatusHUD.kAbilityIconTexture = PrecacheAsset("ui/combatui_marine_ability_icons.dds")
+MarineStatusHUD.kAbilityBkgColorEnabled = Color(0.23, 0.33, 0.74, 1)
+MarineStatusHUD.kAbilityCooldownColor = Color(0.24, 0.64, 1, 0.6)
 
-GUICombatMarineStatus.kAnimSpeedDown = 0.2
-GUICombatMarineStatus.kAnimSpeedUp = 0.5
+MarineStatusHUD.kAnimSpeedDown = 0.2
+MarineStatusHUD.kAnimSpeedUp = 0.5
 
 local gAbilityIconIndex
 local function GetAbilityIconPixelCoordinates(itemTechId)
@@ -71,7 +71,7 @@ local function GetAbilityIconPixelCoordinates(itemTechId)
 
 end
 
-function GUICombatMarineStatus:Initialize()
+function MarineStatusHUD:Initialize()
 
     GUIAnimatedScript.Initialize(self)
 
@@ -90,24 +90,24 @@ function GUICombatMarineStatus:Initialize()
 
     self.newXpBarBkg = self:CreateAnimatedGraphicItem()
     self.newXpBarBkg:SetAnchor(GUIItem.Middle, GUIItem.Bottom)
-    self.newXpBarBkg:SetTexture(GUICombatMarineStatus.kXpBarTexture)
+    self.newXpBarBkg:SetTexture(MarineStatusHUD.kXpBarTexture)
     self.newXpBarBkg:SetIsVisible(true)
     self.background:AddChild(self.newXpBarBkg)
 
     self.newXpBar = self:CreateAnimatedGraphicItem()
     self.newXpBar:SetAnchor(GUIItem.Left, GUIItem.Top)
     self.newXpBar:SetIsVisible(true)
-    self.newXpBar:SetColor( GUICombatMarineStatus.kXPBarColor )
+    self.newXpBar:SetColor( MarineStatusHUD.kXPBarColor )
     self.newXpBarBkg:AddChild(self.newXpBar)
 
     self.combatStatusBkg = self:CreateAnimatedGraphicItem()
     self.combatStatusBkg:SetAnchor(GUIItem.Right, GUIItem.Bottom)
-    self.combatStatusBkg:SetTexture(GUICombatMarineStatus.kTexture)
-    self.combatStatusBkg:SetTexturePixelCoordinates(unpack(GUICombatMarineStatus.kBackgroundCoords))
+    self.combatStatusBkg:SetTexture(MarineStatusHUD.kTexture)
+    self.combatStatusBkg:SetTexturePixelCoordinates(unpack(MarineStatusHUD.kBackgroundCoords))
     self.combatStatusBkg:AddAsChildTo(self.background)
 
     self.currentXPText = GetGUIManager():CreateTextItem()
-    self.currentXPText:SetFontName(GUICombatMarineStatus.kXPFontName)
+    self.currentXPText:SetFontName(MarineStatusHUD.kXPFontName)
     self.currentXPText:SetAnchor(GUIItem.Middle, GUIItem.Bottom)
     self.currentXPText:SetTextAlignmentX(GUIItem.Align_Center)
     self.currentXPText:SetTextAlignmentY(GUIItem.Align_Center)
@@ -117,7 +117,7 @@ function GUICombatMarineStatus:Initialize()
     self.background:AddChild(self.currentXPText)
 
     self.currentRankText = GetGUIManager():CreateTextItem()
-    self.currentRankText:SetFontName(GUICombatMarineStatus.kRankFontName)
+    self.currentRankText:SetFontName(MarineStatusHUD.kRankFontName)
     self.currentRankText:SetAnchor(GUIItem.Middle, GUIItem.Bottom)
     self.currentRankText:SetTextAlignmentX(GUIItem.Align_Center)
     self.currentRankText:SetTextAlignmentY(GUIItem.Align_Center)
@@ -128,12 +128,12 @@ function GUICombatMarineStatus:Initialize()
 
     self.skillPointIcon = self:CreateAnimatedGraphicItem()
     self.skillPointIcon:SetAnchor(GUIItem.Left, GUIItem.Top)
-    self.skillPointIcon:SetTexture(GUICombatMarineStatus.kSkillIconTexture)
-    self.skillPointIcon:SetTexturePixelCoordinates(unpack(GUICombatMarineStatus.kSkillIconPixelCoords))
+    self.skillPointIcon:SetTexture(MarineStatusHUD.kSkillIconTexture)
+    self.skillPointIcon:SetTexturePixelCoordinates(unpack(MarineStatusHUD.kSkillIconPixelCoords))
     self.skillPointIcon:AddAsChildTo(self.combatStatusBkg)
 
     self.skillPointText = GetGUIManager():CreateTextItem()
-    self.skillPointText:SetFontName(GUICombatMarineStatus.kRankFontName)
+    self.skillPointText:SetFontName(MarineStatusHUD.kRankFontName)
     self.skillPointText:SetAnchor(GUIItem.Left, GUIItem.Top)
     self.skillPointText:SetTextAlignmentX(GUIItem.Align_Min)
     self.skillPointText:SetTextAlignmentY(GUIItem.Align_Center)
@@ -144,74 +144,74 @@ function GUICombatMarineStatus:Initialize()
 
     self.medPackIconBackground = self:CreateAnimatedGraphicItem()
     self.medPackIconBackground:SetAnchor(GUIItem.Right, GUIItem.Bottom)
-    self.medPackIconBackground:SetTexture(GUICombatMarineStatus.kAbilityIconBkgTexture)
-    self.medPackIconBackground:SetTexturePixelCoordinates(0, 0, GUICombatMarineStatus.kAbilityIconSize.x, GUICombatMarineStatus.kAbilityIconSize.y)
+    self.medPackIconBackground:SetTexture(MarineStatusHUD.kAbilityIconBkgTexture)
+    self.medPackIconBackground:SetTexturePixelCoordinates(0, 0, MarineStatusHUD.kAbilityIconSize.x, MarineStatusHUD.kAbilityIconSize.y)
     self.background:AddChild(self.medPackIconBackground)
 
     self.medPackIcon = self:CreateAnimatedGraphicItem()
     self.medPackIcon:SetAnchor(GUIItem.Left, GUIItem.Top)
-    self.medPackIcon:SetTexture(GUICombatMarineStatus.kAbilityIconTexture)
+    self.medPackIcon:SetTexture(MarineStatusHUD.kAbilityIconTexture)
     self.medPackIcon:SetTexturePixelCoordinates(GetAbilityIconPixelCoordinates(kTechId.MedPack))
     self.medPackIcon:SetColor( Color(0.44, 0.58, 0.74, 1) )
     self.medPackIconBackground:AddChild(self.medPackIcon)
 
     self.medPackCooldownOverlay = self:CreateAnimatedGraphicItem()
     self.medPackCooldownOverlay:SetAnchor(GUIItem.Left, GUIItem.Top)
-    self.medPackCooldownOverlay:SetColor( GUICombatMarineStatus.kAbilityCooldownColor )
+    self.medPackCooldownOverlay:SetColor( MarineStatusHUD.kAbilityCooldownColor )
     self.medPackIconBackground:AddChild(self.medPackCooldownOverlay)
 
     self.ammoPackIconBackground = self:CreateAnimatedGraphicItem()
     self.ammoPackIconBackground:SetAnchor(GUIItem.Right, GUIItem.Bottom)
-    self.ammoPackIconBackground:SetTexture(GUICombatMarineStatus.kAbilityIconBkgTexture)
-    self.ammoPackIconBackground:SetTexturePixelCoordinates(0, 0, GUICombatMarineStatus.kAbilityIconSize.x, GUICombatMarineStatus.kAbilityIconSize.y)
+    self.ammoPackIconBackground:SetTexture(MarineStatusHUD.kAbilityIconBkgTexture)
+    self.ammoPackIconBackground:SetTexturePixelCoordinates(0, 0, MarineStatusHUD.kAbilityIconSize.x, MarineStatusHUD.kAbilityIconSize.y)
     self.background:AddChild(self.ammoPackIconBackground)
 
     self.ammoPackIcon = self:CreateAnimatedGraphicItem()
     self.ammoPackIcon:SetAnchor(GUIItem.Left, GUIItem.Top)
-    self.ammoPackIcon:SetTexture(GUICombatMarineStatus.kAbilityIconTexture)
+    self.ammoPackIcon:SetTexture(MarineStatusHUD.kAbilityIconTexture)
     self.ammoPackIcon:SetTexturePixelCoordinates(GetAbilityIconPixelCoordinates(kTechId.AmmoPack))
     self.ammoPackIcon:SetColor( Color(0.44, 0.58, 0.74, 1) )
     self.ammoPackIconBackground:AddChild(self.ammoPackIcon)
 
     self.ammoPackCooldownOverlay = self:CreateAnimatedGraphicItem()
     self.ammoPackCooldownOverlay:SetAnchor(GUIItem.Left, GUIItem.Top)
-    self.ammoPackCooldownOverlay:SetColor( GUICombatMarineStatus.kAbilityCooldownColor )
+    self.ammoPackCooldownOverlay:SetColor( MarineStatusHUD.kAbilityCooldownColor )
     self.ammoPackIconBackground:AddChild(self.ammoPackCooldownOverlay)
 
     self.catPackIconBackground = self:CreateAnimatedGraphicItem()
     self.catPackIconBackground:SetAnchor(GUIItem.Right, GUIItem.Bottom)
-    self.catPackIconBackground:SetTexture(GUICombatMarineStatus.kAbilityIconBkgTexture)
-    self.catPackIconBackground:SetTexturePixelCoordinates(0, 0, GUICombatMarineStatus.kAbilityIconSize.x, GUICombatMarineStatus.kAbilityIconSize.y)
+    self.catPackIconBackground:SetTexture(MarineStatusHUD.kAbilityIconBkgTexture)
+    self.catPackIconBackground:SetTexturePixelCoordinates(0, 0, MarineStatusHUD.kAbilityIconSize.x, MarineStatusHUD.kAbilityIconSize.y)
     self.background:AddChild(self.catPackIconBackground)
 
     self.catPackIcon = self:CreateAnimatedGraphicItem()
     self.catPackIcon:SetAnchor(GUIItem.Left, GUIItem.Top)
-    self.catPackIcon:SetTexture(GUICombatMarineStatus.kAbilityIconTexture)
+    self.catPackIcon:SetTexture(MarineStatusHUD.kAbilityIconTexture)
     self.catPackIcon:SetTexturePixelCoordinates(GetAbilityIconPixelCoordinates(kTechId.CatPack))
     self.catPackIcon:SetColor( Color(0.44, 0.58, 0.74, 1) )
     self.catPackIconBackground:AddChild(self.catPackIcon)
 
     self.catPackCooldownOverlay = self:CreateAnimatedGraphicItem()
     self.catPackCooldownOverlay:SetAnchor(GUIItem.Left, GUIItem.Top)
-    self.catPackCooldownOverlay:SetColor( GUICombatMarineStatus.kAbilityCooldownColor )
+    self.catPackCooldownOverlay:SetColor( MarineStatusHUD.kAbilityCooldownColor )
     self.catPackIconBackground:AddChild(self.catPackCooldownOverlay)
 
     self.scanIconBackground = self:CreateAnimatedGraphicItem()
     self.scanIconBackground:SetAnchor(GUIItem.Right, GUIItem.Bottom)
-    self.scanIconBackground:SetTexture(GUICombatMarineStatus.kAbilityIconBkgTexture)
-    self.scanIconBackground:SetTexturePixelCoordinates(0, 0, GUICombatMarineStatus.kAbilityIconSize.x, GUICombatMarineStatus.kAbilityIconSize.y)
+    self.scanIconBackground:SetTexture(MarineStatusHUD.kAbilityIconBkgTexture)
+    self.scanIconBackground:SetTexturePixelCoordinates(0, 0, MarineStatusHUD.kAbilityIconSize.x, MarineStatusHUD.kAbilityIconSize.y)
     self.background:AddChild(self.scanIconBackground)
 
     self.scanIcon = self:CreateAnimatedGraphicItem()
     self.scanIcon:SetAnchor(GUIItem.Left, GUIItem.Top)
-    self.scanIcon:SetTexture(GUICombatMarineStatus.kAbilityIconTexture)
+    self.scanIcon:SetTexture(MarineStatusHUD.kAbilityIconTexture)
     self.scanIcon:SetTexturePixelCoordinates(GetAbilityIconPixelCoordinates(kTechId.Scan))
     self.scanIcon:SetColor( Color(0.44, 0.58, 0.74, 1) )
     self.scanIconBackground:AddChild(self.scanIcon)
 
     self.scanCooldownOverlay = self:CreateAnimatedGraphicItem()
     self.scanCooldownOverlay:SetAnchor(GUIItem.Left, GUIItem.Top)
-    self.scanCooldownOverlay:SetColor( GUICombatMarineStatus.kAbilityCooldownColor )
+    self.scanCooldownOverlay:SetColor( MarineStatusHUD.kAbilityCooldownColor )
     self.scanIconBackground:AddChild(self.scanCooldownOverlay)
 
     self.visible = true
@@ -221,7 +221,7 @@ function GUICombatMarineStatus:Initialize()
 
 end
 
-function GUICombatMarineStatus:Reset(scale)
+function MarineStatusHUD:Reset(scale)
 
     self.scale = scale
     GUIAnimatedScript.Reset(self)
@@ -233,37 +233,37 @@ function GUICombatMarineStatus:Reset(scale)
     self.newXpBarBkg:SetSize( Vector(xpBarWidthBkg, 32, 0) )
     self.newXpBarBkg:SetPosition( Vector(-1 * xpBarWidthBkg / 2, -80, 0) )
 
-    GUICombatMarineStatus.kXPBarSizeScaled = Vector(GUIScaleWidth(GUICombatMarineStatus.kXPBarSizeScaled.x), GUICombatMarineStatus.kXPBarSizeScaled.y, 0)
+    MarineStatusHUD.kXPBarSizeScaled = Vector(GUIScaleWidth(MarineStatusHUD.kXPBarSizeScaled.x), MarineStatusHUD.kXPBarSizeScaled.y, 0)
     self.newXpBar:SetUniformScale(self.scale)
-    self.newXpBar:SetSize( Vector(0, GUICombatMarineStatus.kXPBarSizeScaled.y, 0) )
-    self.newXpBar:SetPosition(GUICombatMarineStatus.kXPBarPos)
+    self.newXpBar:SetSize( Vector(0, MarineStatusHUD.kXPBarSizeScaled.y, 0) )
+    self.newXpBar:SetPosition(MarineStatusHUD.kXPBarPos)
 
     self.combatStatusBkg:SetUniformScale(self.scale)
-    self.combatStatusBkg:SetPosition(GUICombatMarineStatus.kBackgroundPos)
-    self.combatStatusBkg:SetSize(GUICombatMarineStatus.kBackgroundSize)
+    self.combatStatusBkg:SetPosition(MarineStatusHUD.kBackgroundPos)
+    self.combatStatusBkg:SetSize(MarineStatusHUD.kBackgroundSize)
 
     self.skillPointIcon:SetUniformScale(self.scale)
-    self.skillPointIcon:SetPosition(GUICombatMarineStatus.kSkillIconPos)
-    self.skillPointIcon:SetSize(GUICombatMarineStatus.kSkillIconSize)
+    self.skillPointIcon:SetPosition(MarineStatusHUD.kSkillIconPos)
+    self.skillPointIcon:SetSize(MarineStatusHUD.kSkillIconSize)
 
     self.currentXPText:SetScale(GetScaledVector())
-    self.currentXPText:SetPosition(GUICombatMarineStatus.kXPTextPosition)
-    self.currentXPText:SetFontName(GUICombatMarineStatus.kXPFontName)
+    self.currentXPText:SetPosition(MarineStatusHUD.kXPTextPosition)
+    self.currentXPText:SetFontName(MarineStatusHUD.kXPFontName)
     GUIMakeFontScale(self.currentXPText)
 
     self.currentRankText:SetScale(GetScaledVector())
-    self.currentRankText:SetPosition(GUICombatMarineStatus.kRankTextPosition)
-    self.currentRankText:SetFontName(GUICombatMarineStatus.kRankFontName)
+    self.currentRankText:SetPosition(MarineStatusHUD.kRankTextPosition)
+    self.currentRankText:SetFontName(MarineStatusHUD.kRankFontName)
     GUIMakeFontScale(self.currentRankText)
 
     self.skillPointText:SetScale(GetScaledVector())
-    self.skillPointText:SetPosition(GUICombatMarineStatus.kSkillPointTextPos)
-    self.skillPointText:SetFontName(GUICombatMarineStatus.kRankFontName)
+    self.skillPointText:SetPosition(MarineStatusHUD.kSkillPointTextPos)
+    self.skillPointText:SetFontName(MarineStatusHUD.kRankFontName)
     GUIMakeFontScale(self.skillPointText)
 
     self.medPackIconBackground:SetUniformScale(self.scale)
     self.medPackIconBackground:SetPosition( Vector(-142, -180, 0) )
-    self.medPackIconBackground:SetSize(GUICombatMarineStatus.kAbilityIconSize)
+    self.medPackIconBackground:SetSize(MarineStatusHUD.kAbilityIconSize)
 
     self.medPackIcon:SetUniformScale(self.scale)
     self.medPackIcon:SetPosition( Vector(2, 2, 0) )
@@ -275,7 +275,7 @@ function GUICombatMarineStatus:Reset(scale)
 
     self.ammoPackIconBackground:SetUniformScale(self.scale)
     self.ammoPackIconBackground:SetPosition( Vector(-142, -110, 0) )
-    self.ammoPackIconBackground:SetSize(GUICombatMarineStatus.kAbilityIconSize)
+    self.ammoPackIconBackground:SetSize(MarineStatusHUD.kAbilityIconSize)
 
     self.ammoPackIcon:SetUniformScale(self.scale)
     self.ammoPackIcon:SetPosition( Vector(2, 2, 0) )
@@ -287,7 +287,7 @@ function GUICombatMarineStatus:Reset(scale)
 
     self.catPackIconBackground:SetUniformScale(self.scale)
     self.catPackIconBackground:SetPosition( Vector(-72, -180, 0) )
-    self.catPackIconBackground:SetSize(GUICombatMarineStatus.kAbilityIconSize)
+    self.catPackIconBackground:SetSize(MarineStatusHUD.kAbilityIconSize)
 
     self.catPackIcon:SetUniformScale(self.scale)
     self.catPackIcon:SetPosition( Vector(2, 2, 0) )
@@ -299,7 +299,7 @@ function GUICombatMarineStatus:Reset(scale)
 
     self.scanIconBackground:SetUniformScale(self.scale)
     self.scanIconBackground:SetPosition( Vector(-72, -110, 0) )
-    self.scanIconBackground:SetSize(GUICombatMarineStatus.kAbilityIconSize)
+    self.scanIconBackground:SetSize(MarineStatusHUD.kAbilityIconSize)
 
     self.scanIcon:SetUniformScale(self.scale)
     self.scanIcon:SetPosition( Vector(2, 2, 0) )
@@ -309,12 +309,12 @@ function GUICombatMarineStatus:Reset(scale)
     self.scanCooldownOverlay:SetPosition( Vector(3, 3, 0) )
     self.scanCooldownOverlay:SetSize( Vector(60, 60, 0) )
 
-    --self.xpBar:SetSize(Vector(0, GUICombatMarineStatus.kXPBarSize.y, 0))
-    --self.xpBar:SetTexturePixelCoordinates(GUICombatMarineStatus.kXPBarPixelCoords[1], GUICombatMarineStatus.kXPBarPixelCoords[2], GUICombatMarineStatus.kXPBarPixelCoords[1], GUICombatMarineStatus.kXPBarPixelCoords[4])
+    --self.xpBar:SetSize(Vector(0, MarineStatusHUD.kXPBarSize.y, 0))
+    --self.xpBar:SetTexturePixelCoordinates(MarineStatusHUD.kXPBarPixelCoords[1], MarineStatusHUD.kXPBarPixelCoords[2], MarineStatusHUD.kXPBarPixelCoords[1], MarineStatusHUD.kXPBarPixelCoords[4])
 
 end
 
-function GUICombatMarineStatus:Uninitialize()
+function MarineStatusHUD:Uninitialize()
 
     GUIAnimatedScript.Uninitialize(self)
 
@@ -329,12 +329,12 @@ function GUICombatMarineStatus:Uninitialize()
 
 end
 
-function GUICombatMarineStatus:UpdateCooldowns(player)
+function MarineStatusHUD:UpdateCooldowns(player)
 
     if HasMixin(player, "MedPackAbility") then
 
         local visible = player:GetIsMedPackAbilityEnabled()
-        local bkgColor = ConditionalValue(visible, GUICombatMarineStatus.kAbilityBkgColorEnabled, Color(1,1,1,1))
+        local bkgColor = ConditionalValue(visible, MarineStatusHUD.kAbilityBkgColorEnabled, Color(1,1,1,1))
 
         self.medPackIconBackground:SetColor(bkgColor)
         self.medPackIcon:SetIsVisible(visible)
@@ -349,7 +349,7 @@ function GUICombatMarineStatus:UpdateCooldowns(player)
     if HasMixin(player, "AmmoPackAbility") then
 
         local visible = player:GetIsAmmoPackAbilityEnabled()
-        local bkgColor = ConditionalValue(visible, GUICombatMarineStatus.kAbilityBkgColorEnabled, Color(1,1,1,1))
+        local bkgColor = ConditionalValue(visible, MarineStatusHUD.kAbilityBkgColorEnabled, Color(1,1,1,1))
 
         self.ammoPackIconBackground:SetColor(bkgColor)
         self.ammoPackIcon:SetIsVisible(visible)
@@ -364,7 +364,7 @@ function GUICombatMarineStatus:UpdateCooldowns(player)
     if HasMixin(player, "CatPackAbility") then
 
         local visible = player:GetIsCatPackAbilityEnabled()
-        local bkgColor = ConditionalValue(visible, GUICombatMarineStatus.kAbilityBkgColorEnabled, Color(1,1,1,1))
+        local bkgColor = ConditionalValue(visible, MarineStatusHUD.kAbilityBkgColorEnabled, Color(1,1,1,1))
 
         self.catPackIconBackground:SetColor(bkgColor)
         self.catPackIcon:SetIsVisible(visible)
@@ -379,7 +379,7 @@ function GUICombatMarineStatus:UpdateCooldowns(player)
     if HasMixin(player, "ScanAbility") then
 
         local visible = player:GetIsScanAbilityEnabled()
-        local bkgColor = ConditionalValue(visible, GUICombatMarineStatus.kAbilityBkgColorEnabled, Color(1,1,1,1))
+        local bkgColor = ConditionalValue(visible, MarineStatusHUD.kAbilityBkgColorEnabled, Color(1,1,1,1))
 
         self.scanIconBackground:SetColor(bkgColor)
         self.scanIcon:SetIsVisible(visible)
@@ -393,7 +393,7 @@ function GUICombatMarineStatus:UpdateCooldowns(player)
 
 end
 
-function GUICombatMarineStatus:UpdateVisibility()
+function MarineStatusHUD:UpdateVisibility()
 
     self.combatStatusBkg:SetIsVisible(self.visible)
     self.currentXPText:SetIsVisible(self.visible)
@@ -409,20 +409,20 @@ function GUICombatMarineStatus:UpdateVisibility()
 
 end
 
-function GUICombatMarineStatus:SetIsVisible(isVisible)
+function MarineStatusHUD:SetIsVisible(isVisible)
 
     self.visible = isVisible
     self:UpdateVisibility()
 
 end
 
-function GUICombatMarineStatus:GetIsVisible()
+function MarineStatusHUD:GetIsVisible()
 
     return self.visible
 
 end
 
-function GUICombatMarineStatus:OnResolutionChanged(oldX, oldY, newX, newY)
+function MarineStatusHUD:OnResolutionChanged(oldX, oldY, newX, newY)
 
     self:Reset(newY / kBaseScreenHeight)
 
@@ -431,7 +431,7 @@ function GUICombatMarineStatus:OnResolutionChanged(oldX, oldY, newX, newY)
 
 end
 
-function GUICombatMarineStatus:Update(deltaTime)
+function MarineStatusHUD:Update(deltaTime)
 
     GUIAnimatedScript.Update(self, deltaTime)
 
@@ -485,15 +485,15 @@ function GUICombatMarineStatus:Update(deltaTime)
 
         if currentXP ~= self.lastXP then
 
-            local animSpeed = ConditionalValue(currentXP < self.lastXP, GUICombatMarineStatus.kAnimSpeedDown, GUICombatMarineStatus.kAnimSpeedUp)
+            local animSpeed = ConditionalValue(currentXP < self.lastXP, MarineStatusHUD.kAnimSpeedDown, MarineStatusHUD.kAnimSpeedUp)
 
             local xpFraction = currentXPNorm / newXPThresholdNorm
-            local xpBarSize = Vector(GUICombatMarineStatus.kXPBarSizeScaled.x * xpFraction, GUICombatMarineStatus.kXPBarSizeScaled.y, 0)
+            local xpBarSize = Vector(MarineStatusHUD.kXPBarSizeScaled.x * xpFraction, MarineStatusHUD.kXPBarSizeScaled.y, 0)
 
             self.newXpBar:DestroyAnimations()
             self.newXpBar:SetSize(xpBarSize, animSpeed)
             self.newXpBar:SetColor( Color(1, 1, 1, 1) )
-            self.newXpBar:SetColor( GUICombatMarineStatus.kXPBarColor, 1 )
+            self.newXpBar:SetColor( MarineStatusHUD.kXPBarColor, 1 )
 
             self.lastXP = currentXP
 

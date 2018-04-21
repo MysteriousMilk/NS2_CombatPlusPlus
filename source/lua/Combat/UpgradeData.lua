@@ -19,6 +19,9 @@ kUpDataConsoleNameIndex = "consoleName"
 -- Index used to get the category of an upgrade
 kUpDataCategoryIndex = "category"
 
+-- Index used to get the description of an upgrade
+kUpDataDescIndex = "desc"
+
 -- Index used to get a flag that indicates if the upgrade persists after death for the current round
 kUpDataPersistIndex = "persist"
 
@@ -60,6 +63,7 @@ kCombatUpgradeData =
 		[kUpDataHardCapIndex] = 1/3,
 		[kUpDataConsoleNameIndex] = "minigunexo",
 		[kUpDataCategoryIndex] = "Tech",
+		[kUpDataDescIndex] = "An armored exosuit with a minigun equipped to each arm.",
 		[kUpDataPersistIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { kTechId.DualRailgunExosuit }
 	},
@@ -72,12 +76,13 @@ kCombatUpgradeData =
 		[kUpDataHardCapIndex] = 1/3,
 		[kUpDataConsoleNameIndex] = "railgunexo",
 		[kUpDataCategoryIndex] = "Tech",
+		[kUpDataDescIndex] = "An armored exosuit with a railgun equipped to each arm.",
 		[kUpDataPersistIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { kTechId.DualMinigunExosuit }
 	},
 
+	[kTechId.Pistol] =
 	{
-		[kUpDataTechIdIndex] = kTechId.Pistol,
 		[kUpDataTeamIndex] = 1,
 		[kUpDataRankIndex] = 1,
 		[kUpDataCostIndex] = 1,
@@ -287,7 +292,8 @@ kCombatUpgradeData =
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "medpack",
-		[kUpDataCategoryIndex] = "Abilities",
+		[kUpDataCategoryIndex] = "Consumable",
+		[kUpDataDescIndex] = "A pack that restores 50 player health each use.  Can be reused every time the cooldown expires.",
 		[kUpDataPersistIndex] = true,
 		[kUpDataMutuallyExclusiveIndex] = { }
 	},
@@ -299,7 +305,8 @@ kCombatUpgradeData =
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "ammopack",
-		[kUpDataCategoryIndex] = "Abilities",
+		[kUpDataCategoryIndex] = "Consumable",
+		[kUpDataDescIndex] = "A pack that restores ammo for any type of weapon.  Can be reused every time the cooldown expires.",
 		[kUpDataPersistIndex] = true,
 		[kUpDataMutuallyExclusiveIndex] = { }
 	},
@@ -311,7 +318,8 @@ kCombatUpgradeData =
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "catpack",
-		[kUpDataCategoryIndex] = "Abilities",
+		[kUpDataCategoryIndex] = "Consumable",
+		[kUpDataDescIndex] = "A pack that increases Marine movement and speed for a limited time.  Can be reused every time the cooldown expires.",
 		[kUpDataPersistIndex] = true,
 		[kUpDataMutuallyExclusiveIndex] = { }
 	},
@@ -323,7 +331,57 @@ kCombatUpgradeData =
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "scan",
-		[kUpDataCategoryIndex] = "Abilities",
+		[kUpDataCategoryIndex] = "Consumable",
+		[kUpDataDescIndex] = "Reveals cloaked units and gives line of sight to the area where triggered.  Can be reused every time the cooldown expires.",
+		[kUpDataPersistIndex] = true,
+		[kUpDataMutuallyExclusiveIndex] = { }
+	},
+
+	[kTechId.Armory] =
+	{
+		[kUpDataTeamIndex] = 1,
+		[kUpDataRankIndex] = 3,
+		[kUpDataCostIndex] = 1,
+		[kUpDataHardCapIndex] = 0,
+		[kUpDataConsoleNameIndex] = "armory",
+		[kUpDataCategoryIndex] = "Structures",
+		[kUpDataPersistIndex] = true,
+		[kUpDataMutuallyExclusiveIndex] = { }
+	},
+
+	[kTechId.PhaseGate] =
+	{
+		[kUpDataTeamIndex] = 1,
+		[kUpDataRankIndex] = 4,
+		[kUpDataCostIndex] = 1,
+		[kUpDataHardCapIndex] = 0,
+		[kUpDataConsoleNameIndex] = "phasegate",
+		[kUpDataCategoryIndex] = "Structures",
+		[kUpDataPersistIndex] = true,
+		[kUpDataMutuallyExclusiveIndex] = { }
+	},
+
+	[kTechId.Observatory] =
+	{
+		[kUpDataTeamIndex] = 1,
+		[kUpDataRankIndex] = 5,
+		[kUpDataCostIndex] = 2,
+		[kUpDataHardCapIndex] = 0,
+		[kUpDataConsoleNameIndex] = "observatory",
+		[kUpDataCategoryIndex] = "Structures",
+		[kUpDataPersistIndex] = true,
+		[kUpDataMutuallyExclusiveIndex] = { }
+	},
+
+	[kTechId.Sentry] =
+	{
+		[kUpDataTeamIndex] = 1,
+		[kUpDataRankIndex] = 6,
+		[kUpDataCostIndex] = 1,
+		[kUpDataHardCapIndex] = 0,
+		[kUpDataConsoleNameIndex] = "sentry",
+		[kUpDataCategoryIndex] = "Structures",
+		[kUpDataDescIndex] = "An AI torrent that fires on enemy units.  Requires an active power node for the area it is located.",
 		[kUpDataPersistIndex] = true,
 		[kUpDataMutuallyExclusiveIndex] = { }
 	},
@@ -667,8 +725,8 @@ kCombatUpgradeData =
 
 function LookupUpgradeData(techId, index)
 
-	ASSERT(techId ~= nil)
-	ASSERT(index ~= nil)
+	assert(techId)
+	assert(index)
 
 	return kCombatUpgradeData[techId][index]
 

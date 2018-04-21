@@ -16,6 +16,7 @@ ModLoader.SetupFileHook( "lua/GUIAlienHUD.lua", "lua/CPPGUIAlienHUD.lua", "post"
 ModLoader.SetupFileHook( "lua/GUINotifications.lua", "lua/CPPGUINotifications.lua", "post" )
 ModLoader.SetupFileHook( "lua/GUIWorldText.lua", "lua/CPPGUIWorldText.lua", "post" )
 ModLoader.SetupFileHook( "lua/Player.lua", "lua/CPPPlayer.lua", "post" )
+ModLoader.SetupFileHook( "lua/Spectator.lua", "lua/CPPSpectator.lua", "post" )
 ModLoader.SetupFileHook( "lua/Player_Server.lua", "lua/CPPPlayer_Server.lua", "post" )
 ModLoader.SetupFileHook( "lua/Player_Client.lua", "lua/CPPPlayer_Client.lua", "post" )
 ModLoader.SetupFileHook( "lua/Marine.lua", "lua/CPPMarine.lua", "post" )

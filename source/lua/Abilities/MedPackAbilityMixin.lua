@@ -44,11 +44,10 @@ function MedPackAbilityMixin:CanApplyMedPack()
             return false
         end
 
-        local userId = Server.GetOwner(self):GetUserId()
         local coolDownTime = GetRemainingCooldownTime(self)
         local alive = self:GetIsAlive()
         local vortexed = GetIsVortexed()
-        local hasAbility = GetGameMaster():GetMarinePersistData():GetHasAbility(userId, kTechId.MedPack)
+        local hasAbility = self.UpgradeManager:GetTree():GetIsPurchased(kTechId.MedPack)
 
         return hasAbility and self.medPackAbilityEnabled and coolDownTime == 0 and alive and not vortexed and self:GetHealth() < self:GetMaxHealth()
 

@@ -46,14 +46,22 @@ function CombatScoreMixin:AddXP(xp, source, targetId)
         self.combatXP = Clamp(self.combatXP + xp, 0, kMaxCombatXP)
         local currentRank = CombatPlusPlus_GetRankByXP(self.combatXP)
 
-        -- check for rank change, and if so, give skill points for number of ranks earned
+        -- check for rank change
         local numberOfRanksEarned = currentRank - self.combatRank
-        if numberOfRanksEarned > 0 then
-            self:GiveSkillPoints(kSkillPointSourceType.LevelUp, numberOfRanksEarned)
-        end
-
+        
         -- update current rank
         self.combatRank = currentRank
+
+        if numberOfRanksEarned > 0 then
+
+            --give skill points for number of ranks earned
+            self:GiveSkillPoints(kSkillPointSourceType.LevelUp, numberOfRanksEarned)
+
+            if self.UpgradeManager then
+                self.UpgradeManager:UpdateUnlocks(true)
+            end
+            
+        end
 
         -- notify the client so that we can print the xp gain on screen
         Server.SendNetworkMessage(Server.GetOwner(self), "CombatScoreUpdate", { xp = xp, source = source, targetId = targetId }, true)

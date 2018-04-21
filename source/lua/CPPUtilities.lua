@@ -193,6 +193,116 @@ function CombatPlusPlus_GetRequiredRankByTechId(techId)
 
 end
 
+function CombatPlusPlus_GetIsMarineClassTechId(techId)
+
+    local marineClassIdTable =
+    {
+        [kTechId.Marine] = true,
+        [kTechId.Jetpack] = true,
+        [kTechId.DualMinigunExosuit] = true,
+        [kTechId.DualRailgunExosuit] = true
+    }
+
+    return marineClassIdTable[techId]
+
+end
+
+function CombatPlusPlus_GetIsStructureTechId(techId)
+
+    local structureIdTable =
+    { 
+        [kTechId.Armory] = true,
+        [kTechId.PhaseGate] = true,
+        [kTechId.Observatory] = true,
+        [kTechId.Sentry] = true,
+        [kTechId.RoboticsFactory] = true
+    }
+
+    return structureIdTable[techId]
+
+end
+
+function CombatPlusPlus_GetIsMarineCooldownAbility(techId)
+
+    local abilityIdTable =
+    {
+        [kTechId.MedPack] = true,
+        [kTechId.AmmoPack] = true,
+        [kTechId.CatPack] = true,
+        [kTechId.Scan] = true
+    }
+
+    return abilityIdTable[techId]
+
+end
+
+function CombatPlusPlus_GetIsMarineArmorUpgrade(techId)
+
+    local armorIdTable =
+    {
+        [kTechId.Armor1] = true,
+        [kTechId.Armor2] = true,
+        [kTechId.Armor3] = true
+    }
+
+    return armorIdTable[techId]
+
+end
+
+function CombatPlusPlus_GetIsMarineWeaponUpgrade(techId)
+
+    local wpnIdTable =
+    {
+        [kTechId.Weapons1] = true,
+        [kTechId.Weapons2] = true,
+        [kTechId.Weapons3] = true
+    }
+
+    return wpnIdTable[techId]
+
+end
+
+function CombatPlusPlus_GetTechIdByArmorLevel(level)
+
+    local techId = kTechId.None
+
+    if level == 1 then
+        techId = kTechId.Armor1
+    elseif level == 2 then
+        techId = kTechId.Armor2
+    elseif level == 3 then
+        techId = kTechId.Armor3
+    end
+
+    return techId
+    
+end
+
+function CombatPlusPlus_GetTechIdByWeaponLevel(level)
+
+    local techId = kTechId.None
+
+    if level == 1 then
+        techId = kTechId.Weapons1
+    elseif level == 2 then
+        techId = kTechId.Weapons2
+    elseif level == 3 then
+        techId = kTechId.Weapons3
+    end
+
+    return techId
+    
+end
+
+function CombatPlusPlus_GetTimeString(duration)
+
+    local minutes = math.floor(duration / 60)
+    local seconds = duration % 60
+
+    return ConditionalValue(seconds < 10, string.format("%s:0%s", minutes, seconds), string.format("%s:%s", minutes, seconds))
+
+end
+
 function CombatPlusPlus_AlienPurchase(purchaseTable)
 
     ASSERT(type(purchaseTable) == "table")

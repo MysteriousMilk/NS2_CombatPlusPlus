@@ -67,11 +67,10 @@ function AmmoPackAbilityMixin:CanApplyAmmoPack()
             return false
         end
 
-        local userId = Server.GetOwner(self):GetUserId()
         local coolDownTime = GetRemainingCooldownTime(self)
         local alive = self:GetIsAlive()
         local vortexed = GetIsVortexed()
-        local hasAbility = GetGameMaster():GetMarinePersistData():GetHasAbility(userId, kTechId.AmmoPack)
+        local hasAbility = self.UpgradeManager:GetTree():GetIsPurchased(kTechId.AmmoPack)
         local needsAmmo = CheckNeedsAmmo(self)
 
         return hasAbility and self.ammoPackAbilityEnabled and coolDownTime == 0 and alive and not vortexed and needsAmmo

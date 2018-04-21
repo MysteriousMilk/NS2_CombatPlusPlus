@@ -144,7 +144,7 @@ function Hive:OnUpdate(deltaTime)
 
     else
 
-        ns2ns2_Hive_OnUpdate(self, deltaTime)
+        ns2_Hive_OnUpdate(self, deltaTime)
 
     end
 

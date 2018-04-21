@@ -1,3 +1,15 @@
+--[[
+ * Natural Selection 2 - Combat++ Mod
+ * Authors:
+ *          WhiteWizard
+ *
+ * Add some additional capabilities to the Marine entity.
+ *
+ * Hooked Functions:
+ *  'Marine:OnCreate' - Add some new ability mixins and create the Upgrade Manager.
+ *  'Marine:OnInitialized' - Set the initial armor and weapon levels and initialize the Upgrade Manager.
+]]
+
 Script.Load("lua/Abilities/MedPackAbilityMixin.lua")
 Script.Load("lua/Abilities/AmmoPackAbilityMixin.lua")
 Script.Load("lua/Abilities/CatPackAbilityMixin.lua")
@@ -7,8 +19,6 @@ local networkVarsEx =
 {
     armorLevel = "integer",
     weaponLevel = "integer",
-    purchasedPistol = "boolean",
-    purchasedWelder = "boolean"
 }
 
 AddMixinNetworkVars(MedPackAbilityMixin, networkVarsEx)
@@ -26,6 +36,10 @@ function Marine:OnCreate()
 
     ns2_Marine_OnCreate(self)
 
+    if Server then
+        self.UpgradeManager = MarineUpgradeManager()
+    end
+
 end
 
 local ns2_Marine_OnInitialized = Marine.OnInitialized
@@ -35,8 +49,11 @@ function Marine:OnInitialized()
 
     self.armorLevel = 0
     self.weaponLevel = 0
-    self.purchasedPistol = false
-    self.purchasedWelder = false
+
+    if Server then
+        self.UpgradeManager:Initialize()
+        self.UpgradeManager:SetPlayer(self)
+    end
 
 end
 
@@ -49,12 +66,7 @@ function Marine:GetWeaponLevel()
 end
 
 function Marine:SetArmorLevel(level)
-
     self.armorLevel = Clamp(level, 0, 3)
-
-    local userId = Server.GetOwner(self):GetUserId()
-    GetGameMaster():GetMarinePersistData():UpdateArmorLevel(userId, self.armorLevel)
-
 end
 
 function Marine:SetArmorLevelByTechId(techId)
@@ -72,12 +84,7 @@ function Marine:SetArmorLevelByTechId(techId)
 end
 
 function Marine:SetWeaponLevel(level)
-
     self.weaponLevel = Clamp(level, 0, 3)
-
-    local userId = Server.GetOwner(self):GetUserId()
-    GetGameMaster():GetMarinePersistData():UpdateWeaponLevel(userId, self.weaponLevel)
-
 end
 
 function Marine:SetWeaponLevelByTechId(techId)

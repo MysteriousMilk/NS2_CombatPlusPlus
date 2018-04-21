@@ -28,7 +28,7 @@ function Marine:UpdateClientEffects(deltaTime, isLocal)
 
         if self.lastAliveClient ~= self:GetIsAlive() then
             ClientUI.SetScriptVisibility("Hud/Marine/GUIMarineHUD", "Alive", self:GetIsAlive())
-            ClientUI.SetScriptVisibility("GUICombatMarineStatus", "Alive", self:GetIsAlive())
+            ClientUI.SetScriptVisibility("Combat/GUI/MarineStatusHUD", "Alive", self:GetIsAlive())
             self.lastAliveClient = self:GetIsAlive()
         end
 
@@ -114,7 +114,7 @@ local ns2_Marine_OnCountDown = Marine.OnCountDown
 function Marine:OnCountDown()
 
     ns2_Marine_OnCountDown(self)
-    ClientUI.SetScriptVisibility("GUICombatMarineStatus", "Countdown", false)
+    ClientUI.SetScriptVisibility("Combat/GUI/MarineStatusHUD", "Countdown", false)
 
 end
 
@@ -122,12 +122,7 @@ local ns2_Marine_OnCountDownEnd = Marine.OnCountDownEnd
 function Marine:OnCountDownEnd()
 
     ns2_Marine_OnCountDownEnd(self)
-    ClientUI.SetScriptVisibility("GUICombatMarineStatus", "Countdown", true)
-
-    --local script = ClientUI.GetScript("GUICombatMarineStatus")
-    --if script then
-    --    script:Reset()
-    --end
+    ClientUI.SetScriptVisibility("Combat/GUI/MarineStatusHUD", "Countdown", true)
 
 end
 
@@ -138,7 +133,7 @@ function Marine:Buy()
 
       if not self.buyMenu then
 
-          self.buyMenu = GetGUIManager():CreateGUIScript("CPPGUICombatMarineBuyMenu")
+          self.buyMenu = GetGUIManager():CreateGUIScript("Combat/GUI/MarineBuyMenu")
           self:TriggerEffects("marine_buy_menu_open")
 
       else

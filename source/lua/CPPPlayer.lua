@@ -33,8 +33,25 @@ end
 
 function Player:OnStructureCreated()
 
-    self:SpendSkillPoints(CombatPlusPlus_GetCostByTechId(self.currentCreateStructureTechId))
+    if self.UpgradeManager then
+
+        local cost = LookupUpgradeData(self.currentCreateStructureTechId, kUpDataCostIndex)
+        self:SpendSkillPoints(cost)
+
+    end
+
     self.currentCreateStructureTechId = kTechId.None
+
+end
+
+local ns2_Player_OnJoinTeam = Player.OnJoinTeam
+function Player:OnJoinTeam()
+
+    ns2_Player_OnJoinTeam(self)
+
+    if Server and self.UpgradeManager then
+        self.UpgradeManager:GetTree():SendFullTree(self)
+    end
 
 end
 
