@@ -5,6 +5,10 @@ function Player:CopyPlayerDataFrom(player)
 
     self.currentCreateStructureTechId = player.currentCreateStructureTechId
 
+    if self.UpgradeManager and player.UpgradeManager then
+        self.UpgradeManager:GetTree():CopyFrom(player.UpgradeManager:GetTree(), false)
+    end
+
 end
 
 -- A table of tech Ids is passed in.
@@ -13,16 +17,15 @@ function Player:ProcessBuyAction(techIds)
     ASSERT(type(techIds) == "table")
     ASSERT(table.icount(techIds) > 0)
 
-    local techId = techIds[1]
     local success = false
 
     if self.UpgradeManager then
 
-        if CombatPlusPlus_GetIsStructureTechId(techId) then
+        if CombatPlusPlus_GetIsStructureTechId(techIds[1]) then
             -- use override cost flag because the cost will be subtracted when the structure is actually placed
-            success = self.UpgradeManager:GiveUpgrade(techId, self, true)
+            success = self.UpgradeManager:GiveUpgrades(techIds, self, true)
         else
-            success = self.UpgradeManager:GiveUpgrade(techId, self)
+            success = self.UpgradeManager:GiveUpgrades(techIds, self)
         end
 
     end
@@ -54,27 +57,27 @@ function Player:Replace(mapName, newTeamNumber, preserveWeapons, atOrigin, extra
     -- active player is one currently playing on Marines or Aliens
     local newPlayerActive = player:GetTeamNumber() == kTeam1Index or player:GetTeamNumber() == kTeam2Index
 
-    if player.UpgradeManager then
+    -- if player.UpgradeManager then
 
-        if player:isa("Spectator") and upgradeTree and oldPlayerActive then
+    --     if player:isa("Spectator") and upgradeTree and oldPlayerActive then
 
-            -- When the player is spectating between spawns, copy the tree to the "spectator" player so the
-            -- persist items can be given when the player respawns
-            player.UpgradeManager:GetTree():CopyFrom(upgradeTree, false)
+    --         -- When the player is spectating between spawns, copy the tree to the "spectator" player so the
+    --         -- persist items can be given when the player respawns
+    --         --player.UpgradeManager:GetTree():CopyFrom(upgradeTree, false)
 
-        elseif newPlayerActive and persistUpgrades then
+    --     elseif newPlayerActive and persistUpgrades then
 
-            player.UpgradeManager:UpdateUnlocks(false)
-            player.UpgradeManager:GetTree():SendFullTree(player)
+    --         player.UpgradeManager:UpdateUnlocks(false)
+    --         player.UpgradeManager:GetTree():SendFullTree(player)
 
-            -- Respawning players get the certain "persistent" upgrades back
-            for k, node in ipairs(persistUpgrades) do
-                player.UpgradeManager:GiveUpgrade(node:GetTechId(), player, true)
-            end
+    --         -- Respawning players get the certain "persistent" upgrades back
+    --         for k, node in ipairs(persistUpgrades) do
+    --             player.UpgradeManager:GiveUpgrade(node:GetTechId(), player, true)
+    --         end
 
-        end
+    --     end
 
-    end
+    -- end
 
     return player
 

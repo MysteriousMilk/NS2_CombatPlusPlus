@@ -14,8 +14,6 @@ function UpgradeTree:Initialize()
     self.treeChanged = false
     self.complete = false
 
-    self.teamNumber = kTeamReadyRoom
-
     if Server then
         self.nodesChanged = {}
         self.player = nil
@@ -69,7 +67,16 @@ end
 
 function UpgradeTree:CopyFrom(originalTree, sendToClient)
 
+    local player = nil
+    if Server then
+         player = self.player
+    end
+
     self:Initialize()
+
+    if Server then
+        self:SetPlayer(player)
+    end
 
     for _, nodeTechId in ipairs(originalTree.techIdList) do
         
@@ -213,17 +220,5 @@ function UpgradeTree:GetPurchasedPersistentUpgrades()
     end
 
     return purchasedUpgrades
-
-end
-
-function UpgradeTree:GetTeamNumber()
-
-    return self.teamNumber
-
-end
-
-function UpgradeTree:SetTeamNumber(teamNumber)
-
-    self.teamNumber = teamNumber
 
 end

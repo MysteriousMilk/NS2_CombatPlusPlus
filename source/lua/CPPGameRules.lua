@@ -256,9 +256,22 @@ if Server then
             Shared.Message("GameState changed to Started.")
         end
 
-        -- PreGame Resets persist data from warmup mode
+        -- Reset player upgrade trees
         if state ~= self.gameState and state == kGameState.PreGame then
-            GetGameMaster():GetMarinePersistData():Reset()
+            
+            if Server then
+
+                for _, player in ientitylist(Shared.GetEntitiesWithClassname("Player")) do
+
+                    if player.UpgradeManager then
+                        player.UpgradeManager:Reset()
+                        --player.UpgradeManager:GetTree():SendFullTree(player)
+                    end
+
+                end
+
+            end
+
         end
 
         ns2_SetGameState(self, state)

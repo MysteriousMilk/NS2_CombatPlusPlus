@@ -13,6 +13,7 @@ Script.Load("lua/Combat/UpgradeNode.lua")
 Script.Load("lua/Combat/UpgradeTree.lua")
 Script.Load("lua/Combat/UpgradeManager.lua")
 Script.Load("lua/Combat/MarineUpgradeManager.lua")
+Script.Load("lua/Combat/CombatAlienUpgradeManager.lua")
 
 local old_CreateVoiceMessage = CreateVoiceMessage
 function CreateVoiceMessage(player, voiceId)

@@ -15,7 +15,23 @@ function Player:OnCreate()
 
     ns2_Player_OnCreate(self)
 
+    if Server and not self.UpgradeManager then
+        self.UpgradeManager = UpgradeManager()
+    end
+
     self.currentCreateStructureTechId = kTechId.None
+
+end
+
+local ns2_Player_OnInitialized = Player.OnInitialized
+function Player:OnInitialized()
+
+    ns2_Player_OnInitialized(self)
+
+    if Server and self.UpgradeManager then
+        self.UpgradeManager:Initialize()
+        self.UpgradeManager:SetPlayer(self)
+    end
 
 end
 
@@ -50,6 +66,7 @@ function Player:OnJoinTeam()
     ns2_Player_OnJoinTeam(self)
 
     if Server and self.UpgradeManager then
+        self.UpgradeManager:Reset()
         self.UpgradeManager:GetTree():SendFullTree(self)
     end
 

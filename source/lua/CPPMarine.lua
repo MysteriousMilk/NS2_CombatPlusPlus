@@ -34,11 +34,11 @@ function Marine:OnCreate()
     InitMixin(self, CatPackAbilityMixin)
     InitMixin(self, ScanAbilityMixin)
 
-    ns2_Marine_OnCreate(self)
-
     if Server then
         self.UpgradeManager = MarineUpgradeManager()
     end
+
+    ns2_Marine_OnCreate(self)
 
 end
 
@@ -49,11 +49,6 @@ function Marine:OnInitialized()
 
     self.armorLevel = 0
     self.weaponLevel = 0
-
-    if Server then
-        self.UpgradeManager:Initialize()
-        self.UpgradeManager:SetPlayer(self)
-    end
 
 end
 

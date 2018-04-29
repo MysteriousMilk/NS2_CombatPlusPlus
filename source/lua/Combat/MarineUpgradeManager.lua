@@ -54,45 +54,25 @@ local function BuyWeaponUpgrade(techId, player)
 
 end
 
-function MarineUpgradeManager:CreateUpgradeTree()
+local function BuyStructureUpgrade(techId, player)
 
-    self.Upgrades:SetTeamNumber(kTeam1Index)
+    local success = true
 
-    self.Upgrades:AddClassNode(kTechId.Marine, kTechId.None, nil)
-    self.Upgrades:AddClassNode(kTechId.Jetpack, kTechId.None, nil)
-    self.Upgrades:AddClassNode(kTechId.DualMinigunExosuit, kTechId.None, nil)
-    self.Upgrades:AddClassNode(kTechId.DualRailgunExosuit, kTechId.None, nil)
+    -- tell the player which structure to create
+    player:SetCreateStructureTechId(techId)
 
-    self.Upgrades:AddUpgradeNode(kTechId.Pistol, kTechId.None, nil)
-    self.Upgrades:AddUpgradeNode(kTechId.Rifle, kTechId.None, nil)
-    self.Upgrades:AddUpgradeNode(kTechId.Shotgun, kTechId.None, nil)
-    self.Upgrades:AddUpgradeNode(kTechId.Flamethrower, kTechId.None, nil)
-    self.Upgrades:AddUpgradeNode(kTechId.GrenadeLauncher, kTechId.None, nil)
-    self.Upgrades:AddUpgradeNode(kTechId.HeavyMachineGun, kTechId.None, nil)
-    self.Upgrades:AddUpgradeNode(kTechId.Welder, kTechId.None, nil)
-    self.Upgrades:AddUpgradeNode(kTechId.LayMines, kTechId.None, nil)
-    self.Upgrades:AddUpgradeNode(kTechId.ClusterGrenade, kTechId.None, nil)
-    self.Upgrades:AddUpgradeNode(kTechId.GasGrenade, kTechId.None, nil)
-    self.Upgrades:AddUpgradeNode(kTechId.PulseGrenade, kTechId.None, nil)
-    self.Upgrades:AddUpgradeNode(kTechId.Armor1, kTechId.None, BuyArmorUpgrade)
-    self.Upgrades:AddUpgradeNode(kTechId.Armor2, kTechId.Armor1, BuyArmorUpgrade)
-    self.Upgrades:AddUpgradeNode(kTechId.Armor3, kTechId.Armor2, BuyArmorUpgrade)
-    self.Upgrades:AddUpgradeNode(kTechId.Weapons1, kTechId.None, BuyWeaponUpgrade)
-    self.Upgrades:AddUpgradeNode(kTechId.Weapons2, kTechId.Weapons1, nil)
-    self.Upgrades:AddUpgradeNode(kTechId.Weapons3, kTechId.Weapons2, nil)
-    self.Upgrades:AddUpgradeNode(kTechId.MedPack, kTechId.None, BuyMedPackAbility)
-    self.Upgrades:AddUpgradeNode(kTechId.AmmoPack, kTechId.None, BuyAmmoPackAbility)
-    self.Upgrades:AddUpgradeNode(kTechId.CatPack, kTechId.None, BuyCatPackAbility)
-    self.Upgrades:AddUpgradeNode(kTechId.Scan, kTechId.None, BuyScanAbility)
-    self.Upgrades:AddUpgradeNode(kTechId.Armory, kTechId.None, nil)
-    self.Upgrades:AddUpgradeNode(kTechId.PhaseGate, kTechId.None, nil)
-    self.Upgrades:AddUpgradeNode(kTechId.Observatory, kTechId.None, nil)
-    self.Upgrades:AddUpgradeNode(kTechId.Sentry, kTechId.None, nil)
+    -- switch to the builder tool
+    player:SetActiveWeapon(Builder.kMapName)
 
-    self.Upgrades:SetIsUnlocked(kTechId.Marine, true)
-    self.Upgrades:SetIsPurchased(kTechId.Marine, true)
-    self.Upgrades:SetIsUnlocked(kTechId.Rifle, true)
-    self.Upgrades:SetIsPurchased(kTechId.Rifle, true)
+    -- put the builder tool in "create" mode
+    local weapon = player:GetActiveWeapon()
+    if weapon and weapon:isa("Builder") then
+        weapon:SetBuilderMode(kBuilderMode.Create)
+    else
+        success = false
+    end
+
+    return success
 
 end
 
@@ -104,73 +84,37 @@ local function ConfigureLoadout(player)
         player:SetHUDSlotActive(primaryWpn:GetHUDSlot())
     end
 
-    if player.UpgradeManager:GetTree():GetIsUnlocked(kTechId.Pistol) then
-        player:SetQuickSwitchTarget(Pistol.kMapName)
-    end
-
-    if player.UpgradeManager:GetTree():GetIsUnlocked(kTechId.Welder) then
+    if player.UpgradeManager:GetTree():GetIsPurchased(kTechId.Welder) then
         player:SetQuickSwitchTarget(Welder.kMapName)
     end
 
+    if player.UpgradeManager:GetTree():GetIsPurchased(kTechId.Pistol) then
+        player:SetQuickSwitchTarget(Pistol.kMapName)
+    end    
+
 end
 
+local function BuyItemUpgrade(techId, player)
 
-function MarineUpgradeManager:TeamSpecificLogic(node, player, overrideCost)
-
-    Shared.Message("TeamSpecificLogic called")
-    local techId = node:GetTechId()
-    local bypass = CombatPlusPlus_GetIsMarineClassTechId(techId) or CombatPlusPlus_GetIsMarineCooldownAbility(techId) or CombatPlusPlus_GetIsMarineArmorUpgrade(techId) or CombatPlusPlus_GetIsMarineWeaponUpgrade(techId)
     local success = false
+    local mapName = LookupTechData(techId, kTechDataMapName)
 
-    if bypass then
+    if mapName then
 
-        success = true
+        -- Make sure we're ready to deploy new weapon so we switch to it properly.
+        local newItem = player:GiveItem(mapName)
 
-    else
+        if newItem then
 
-        if CombatPlusPlus_GetIsStructureTechId(techId) then
-
-            -- tell the player which structure to create
-            player:SetCreateStructureTechId(techId)
-
-            -- switch to the builder tool
-            player:SetActiveWeapon(Builder.kMapName)
-
-            -- put the builder tool in "create" mode
-            local weapon = player:GetActiveWeapon()
-            if weapon and weapon:isa("Builder") then
-                weapon:SetBuilderMode(kBuilderMode.Create)
+            if newItem.UpdateWeaponSkins then
+                -- Apply weapon variant
+                newItem:UpdateWeaponSkins( player:GetClient() )
             end
+
+            StartSoundEffectAtOrigin(Marine.kGunPickupSound, player:GetOrigin())
+            ConfigureLoadout(player)
 
             success = true
-
-        else
-
-            local mapName = LookupTechData(techId, kTechDataMapName)
-
-            if mapName then
-
-                -- Make sure we're ready to deploy new weapon so we switch to it properly.
-                local newItem = player:GiveItem(mapName)
-
-                if newItem then
-
-                    if newItem.UpdateWeaponSkins then
-                        -- Apply weapon variant
-                        newItem:UpdateWeaponSkins( player:GetClient() )
-                    end
-
-                    if not overrideCost then
-                        StartSoundEffectAtOrigin(Marine.kGunPickupSound, player:GetOrigin())
-                    end
-
-                    ConfigureLoadout(player)
-
-                    success = true
-
-                end
-
-            end
 
         end
 
@@ -180,9 +124,49 @@ function MarineUpgradeManager:TeamSpecificLogic(node, player, overrideCost)
 
 end
 
-function MarineUpgradeManager:PostGiveUpgrade(node, player, overrideCost)
+function MarineUpgradeManager:CreateUpgradeTree()
 
-    UpgradeManager.PostGiveUpgrade(self, node, player, overrideCost)
+    self.Upgrades:AddClassNode(kTechId.Marine, kTechId.None, nil)
+    self.Upgrades:AddClassNode(kTechId.Jetpack, kTechId.None, nil)
+    self.Upgrades:AddClassNode(kTechId.DualMinigunExosuit, kTechId.None, nil)
+    self.Upgrades:AddClassNode(kTechId.DualRailgunExosuit, kTechId.None, nil)
+
+    self.Upgrades:AddUpgradeNode(kTechId.Pistol, kTechId.None, BuyItemUpgrade)
+    self.Upgrades:AddUpgradeNode(kTechId.Rifle, kTechId.None, BuyItemUpgrade)
+    self.Upgrades:AddUpgradeNode(kTechId.Shotgun, kTechId.None, BuyItemUpgrade)
+    self.Upgrades:AddUpgradeNode(kTechId.Flamethrower, kTechId.None, BuyItemUpgrade)
+    self.Upgrades:AddUpgradeNode(kTechId.GrenadeLauncher, kTechId.None, BuyItemUpgrade)
+    self.Upgrades:AddUpgradeNode(kTechId.HeavyMachineGun, kTechId.None, BuyItemUpgrade)
+    self.Upgrades:AddUpgradeNode(kTechId.Welder, kTechId.None, BuyItemUpgrade)
+    self.Upgrades:AddUpgradeNode(kTechId.LayMines, kTechId.None, BuyItemUpgrade)
+    self.Upgrades:AddUpgradeNode(kTechId.ClusterGrenade, kTechId.None, BuyItemUpgrade)
+    self.Upgrades:AddUpgradeNode(kTechId.GasGrenade, kTechId.None, BuyItemUpgrade)
+    self.Upgrades:AddUpgradeNode(kTechId.PulseGrenade, kTechId.None, BuyItemUpgrade)
+    self.Upgrades:AddUpgradeNode(kTechId.Armor1, kTechId.None, BuyArmorUpgrade)
+    self.Upgrades:AddUpgradeNode(kTechId.Armor2, kTechId.Armor1, BuyArmorUpgrade)
+    self.Upgrades:AddUpgradeNode(kTechId.Armor3, kTechId.Armor2, BuyArmorUpgrade)
+    self.Upgrades:AddUpgradeNode(kTechId.Weapons1, kTechId.None, BuyWeaponUpgrade)
+    self.Upgrades:AddUpgradeNode(kTechId.Weapons2, kTechId.Weapons1, BuyWeaponUpgrade)
+    self.Upgrades:AddUpgradeNode(kTechId.Weapons3, kTechId.Weapons2, BuyWeaponUpgrade)
+    self.Upgrades:AddUpgradeNode(kTechId.MedPack, kTechId.None, BuyMedPackAbility)
+    self.Upgrades:AddUpgradeNode(kTechId.AmmoPack, kTechId.None, BuyAmmoPackAbility)
+    self.Upgrades:AddUpgradeNode(kTechId.CatPack, kTechId.None, BuyCatPackAbility)
+    self.Upgrades:AddUpgradeNode(kTechId.Scan, kTechId.None, BuyScanAbility)
+    self.Upgrades:AddUpgradeNode(kTechId.Armory, kTechId.None, BuyStructureUpgrade)
+    self.Upgrades:AddUpgradeNode(kTechId.PhaseGate, kTechId.None, BuyStructureUpgrade)
+    self.Upgrades:AddUpgradeNode(kTechId.Observatory, kTechId.None, BuyStructureUpgrade)
+    self.Upgrades:AddUpgradeNode(kTechId.Sentry, kTechId.None, BuyStructureUpgrade)
+
+    self.Upgrades:SetIsUnlocked(kTechId.Marine, true)
+    self.Upgrades:SetIsPurchased(kTechId.Marine, true)
+    self.Upgrades:SetIsUnlocked(kTechId.Rifle, true)
+    self.Upgrades:SetIsPurchased(kTechId.Rifle, true)
+
+end
+
+function MarineUpgradeManager:PostGiveUpgrades(techIds, player, cost, overrideCost)
+
+    UpgradeManager.PostGiveUpgrades(self, techIds, player, cost, overrideCost)
 
     if not overrideCost then
         Shared.PlayPrivateSound(player, Marine.kSpendResourcesSoundName, nil, 1.0, player:GetOrigin())
