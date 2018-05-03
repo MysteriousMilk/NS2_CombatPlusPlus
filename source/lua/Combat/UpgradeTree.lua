@@ -65,6 +65,31 @@ function UpgradeTree:GetUpgradesByCategory(category)
 
 end
 
+function UpgradeTree:GetUpgradesByPrereq(prereqTechId)
+
+    local upgrades = {}
+
+    for _, nodeTechId in ipairs(self.techIdList) do
+
+        local node = self:GetNode(nodeTechId)
+
+        if node.prereqTechId == prereqTechId then
+            table.insert(upgrades, nodeTechId)
+        end
+
+    end
+
+    table.sort(upgrades,
+        function(a,b)
+            local rankA = LookupUpgradeData(a, kUpDataRankIndex)
+            local rankB = LookupUpgradeData(b, kUpDataRankIndex)
+            return rankA < rankB
+        end)
+
+    return upgrades
+
+end
+
 function UpgradeTree:CopyFrom(originalTree, sendToClient)
 
     local player = nil

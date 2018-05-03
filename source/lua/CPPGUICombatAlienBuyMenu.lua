@@ -7,6 +7,7 @@
 ]]
 
 Script.Load("lua/GUIAnimatedScript.lua")
+Script.Load("lua/Combat/GUI/AnimatedTechButton.lua")
 
 class 'CPPGUICombatAlienBuyMenu' (GUIAnimatedScript)
 
@@ -77,19 +78,46 @@ local kFont = Fonts.kAgencyFB_Small
 local kFontSmall = Fonts.kAgencyFB_Tiny
 local kOffsetToCircleCenter = Vector(-70, 0, 0)
 
+local function CreateLine(startPoint, endPoint, color)
+
+    local delta = startPoint - endPoint
+    local direction = GetNormalizedVector(delta)
+    local length = math.sqrt(delta.x ^ 2 + delta.y ^ 2)    
+    local rotation = math.atan2(direction.x, direction.y)
+    
+    if rotation < 0 then
+        rotation = rotation + math.pi * 2
+    end
+
+    rotation = rotation + math.pi * 0.5
+    local rotationVec = Vector(0, 0, rotation)
+    
+    local line = GetGUIManager():CreateGraphicItem()
+    line:SetSize(Vector(length, 2, 0))
+    line:SetPosition(startPoint)
+    line:SetRotationOffset(Vector(-length, 0, 0))
+    line:SetRotation(rotationVec)
+    line:SetColor(color)
+    line:SetLayer(0) 
+
+    return line
+
+end
+
+
 local function GetTotalCost(self)
 
     local totalCost = 0
 
     -- alien cost
     if self.selectedAlienType ~= AlienBuy_GetCurrentAlien() then
-        totalCost = CombatPlusPlus_GetCostByTechId(self.kAlienTypes[self.selectedAlienType].TechId)
+        totalCost = LookupUpgradeData(self.kAlienTypes[self.selectedAlienType].TechId, kUpDataCostIndex)
     end
 
     -- upgrade costs
-    for i, currentButton in ipairs(self.upgradeButtons) do
+    for i, currentButton in ipairs(self.techButtons) do
 
-        local upgradeCost = CombatPlusPlus_GetCostByTechId(currentButton.TechId)
+        local upgradeCost = LookupUpgradeData(currentButton.TechId, kUpDataCostIndex)
 
         -- Skulks have free upgrades even in Combat++ :)
         if self.kAlienTypes[self.selectedAlienType].TechId == kTechId.Skulk then
@@ -97,7 +125,7 @@ local function GetTotalCost(self)
         end
 
         local player = Client.GetLocalPlayer()
-        if currentButton.Selected and not player:GetHasUpgrade(currentButton.TechId) then
+        if currentButton.IsSelected then
             totalCost = totalCost + upgradeCost
         end
 
@@ -282,8 +310,8 @@ function CPPGUICombatAlienBuyMenu:Uninitialize()
 
     GUIAnimatedScript.Uninitialize(self)
 
-    GUI.DestroyItem(self.background)
-    self.background = nil
+    -- GUI.DestroyItem(self.background)
+    -- self.background = nil
 
     self.corners = { }
     self.cornerTweeners = { }
@@ -301,13 +329,13 @@ end
 
 function CPPGUICombatAlienBuyMenu:_InitializeBackground()
 
-    self.background = GUIManager:CreateGraphicItem()
+    self.background = self:CreateAnimatedGraphicItem()
     self.background:SetSize( Vector(Client.GetScreenWidth(), Client.GetScreenHeight(), 0) )
     self.background:SetAnchor(GUIItem.Left, GUIItem.Top)
     self.background:SetColor(CPPGUICombatAlienBuyMenu.kBackgroundColor)
     self.background:SetLayer(kGUILayerPlayerHUDForeground4)
 
-    self.backgroundCenteredArea = GUIManager:CreateGraphicItem()
+    self.backgroundCenteredArea = self:CreateAnimatedGraphicItem()
     self.backgroundCenteredArea:SetSize( Vector(1000, Client.GetScreenHeight(), 0) )
     self.backgroundCenteredArea:SetAnchor(GUIItem.Middle, GUIItem.Top)
     self.backgroundCenteredArea:SetPosition( Vector(-500, 0, 0) )
@@ -808,16 +836,21 @@ function CPPGUICombatAlienBuyMenu:_InitializeAlienButtons()
 
 end
 
+local function CreateTechButton(self, techId, position)
+
+    local button = AnimatedTechButton()
+    button:Initialize(self, techId, position)
+    button:SetColors(kIconColors[kAlienTeamType], Color(0,0,0,1), Color(0.4, 0.7, 0, 1), Color(0.4, 0.7, 0, 1))
+    return button
+
+end
+
+
 function CPPGUICombatAlienBuyMenu:_InitializeUpgrades()
 
-    local categories =
-    {
-        kTechId.ShiftHive,
-        kTechId.ShadeHive,
-        kTechId.CragHive
-    }
-
+    local categories = GetUpgradeTree():GetUpgradesByCategory("UpgradeType")
     self.upgradeButtons = { }
+    self.techButtons = { }
 
     local binSize = (self.backgroundCenteredArea:GetSize().x - (CPPGUICombatAlienBuyMenu.kUpgradesTitleOffest.x * 2)) / #categories
 
@@ -847,55 +880,92 @@ function CPPGUICombatAlienBuyMenu:_InitializeUpgrades()
     headerText:SetText("Upgrades")
     headerTextShadow:AddChild(headerText)
 
+    -- upgrade roots/types
     for i = 1, #categories do
 
-        local upgrades = AlienUI_GetUpgradesForCategory(categories[i])
-        local xOffsetText = (i - 1) * binSize
+        local bin = i - 1
+        local posInBin = (binSize / 2) - (CPPGUICombatAlienBuyMenu.kUpgradeButtonSize / 2)
+        local parentIconOffsetX = CPPGUICombatAlienBuyMenu.kUpgradesTitleOffest.x + (bin * binSize) + posInBin
+        local parentIconPos = Vector(parentIconOffsetX, GUIScale(650), 0)
 
-        local categoryText = GUIManager:CreateTextItem()
-        categoryText:SetAnchor(GUIItem.Left, GUIItem.Top)
-        categoryText:SetPosition(Vector(xOffsetText + (binSize / 2), 100, 0))
-        categoryText:SetFontName(CPPGUICombatAlienBuyMenu.kSubHeaderFont)
-        categoryText:SetFontIsBold(true)
-        categoryText:SetScale(GetScaledVector())
-        GUIMakeFontScale(categoryText)
-        categoryText:SetTextAlignmentX(GUIItem.Align_Center)
-        categoryText:SetTextAlignmentY(GUIItem.Align_Center)
-        categoryText:SetColor(CPPGUICombatAlienBuyMenu.kTextColor)
-        categoryText:SetText(GetDisplayNameForTechId(categories[i]))
-        headerTextShadow:AddChild(categoryText)
+        local upsByCategory = GetUpgradeTree():GetUpgradesByPrereq(categories[i])
 
-        local totalWidth = #upgrades * (CPPGUICombatAlienBuyMenu.kUpgradeButtonSize + 20)
+        for j = 1, #upsByCategory do
 
-        for upgradeIndex = 1, #upgrades do
+            local smallBinSize = binSize / #upsByCategory
+            local iconOffsetX = (bin * binSize) + CPPGUICombatAlienBuyMenu.kUpgradesTitleOffest.x + ((j - 1) * smallBinSize) + ((smallBinSize / 2) - (CPPGUICombatAlienBuyMenu.kUpgradeButtonSize / 2))
+            local iconPos = Vector(iconOffsetX, GUIScale(720), 0)
+            local lineOffset = Vector(CPPGUICombatAlienBuyMenu.kUpgradeButtonSize / 2, CPPGUICombatAlienBuyMenu.kUpgradeButtonSize / 2, 0)
 
-            local techId = upgrades[upgradeIndex]
-            
-            -- Every upgrade has an icon.
-            local buttonIcon = GUIManager:CreateGraphicItem()
+            local line = CreateLine(parentIconPos + lineOffset, iconPos + lineOffset, CPPGUICombatAlienBuyMenu.kTextColor)
+            line:SetAnchor(GUIItem.Left, GUIItem.Top)
+            self.backgroundCenteredArea:AddChild(line)
 
-            local iconX, iconY = GetMaterialXYOffset(techId, false)
-            iconX = iconX * CPPGUICombatAlienBuyMenu.kUpgradeButtonTextureSize
-            iconY = iconY * CPPGUICombatAlienBuyMenu.kUpgradeButtonTextureSize
-
-            local xPos = ((upgradeIndex - 1) * (CPPGUICombatAlienBuyMenu.kUpgradeButtonSize + 20 )) - (totalWidth / 2) - 20
-            local yPos = -80
-
-            buttonIcon:SetAnchor(GUIItem.Middle, GUIItem.Center)
-            buttonIcon:SetSize(Vector(CPPGUICombatAlienBuyMenu.kUpgradeButtonSize, CPPGUICombatAlienBuyMenu.kUpgradeButtonSize, 0))
-            buttonIcon:SetPosition(Vector(xPos, yPos, 0))
-            buttonIcon:SetTexture(CPPGUICombatAlienBuyMenu.kBuyHUDTexture)
-            buttonIcon:SetTexturePixelCoordinates(iconX, iconY, iconX + CPPGUICombatAlienBuyMenu.kUpgradeButtonTextureSize, iconY + CPPGUICombatAlienBuyMenu.kUpgradeButtonTextureSize)
-            categoryText:AddChild(buttonIcon)
-
-            local purchased = AlienBuy_GetUpgradePurchased(techId)
-
-            table.insert(self.upgradeButtons, { Background = nil, Icon = buttonIcon, TechId = techId, Selected = purchased,
-                         Cost = 0, Purchased = purchased, Index = nil })
+            local subTechButton = CreateTechButton(self, upsByCategory[j], iconPos)
+            subTechButton:SetToolTip(GetTooltipInfoText(upsByCategory[i]))
+            subTechButton:SetIsEnabled(true)
+            self.backgroundCenteredArea:AddChild(subTechButton.Icon)
+            table.insert(self.techButtons, subTechButton)
 
         end
 
+        local parentTechButton = CreateTechButton(self, categories[i], parentIconPos)
+        parentTechButton:SetToolTip(GetTooltipInfoText(categories[i]))
+        parentTechButton:SetIsEnabled(true)
+        self.backgroundCenteredArea:AddChild(parentTechButton.Icon)
+        table.insert(self.techButtons, parentTechButton)
+
     end
+
+    -- for i = 1, #categories do
+
+    --     local upgrades = AlienUI_GetUpgradesForCategory(categories[i])
+    --     local xOffsetText = (i - 1) * binSize
+
+    --     local categoryText = GUIManager:CreateTextItem()
+    --     categoryText:SetAnchor(GUIItem.Left, GUIItem.Top)
+    --     categoryText:SetPosition(Vector(xOffsetText + (binSize / 2), 100, 0))
+    --     categoryText:SetFontName(CPPGUICombatAlienBuyMenu.kSubHeaderFont)
+    --     categoryText:SetFontIsBold(true)
+    --     categoryText:SetScale(GetScaledVector())
+    --     GUIMakeFontScale(categoryText)
+    --     categoryText:SetTextAlignmentX(GUIItem.Align_Center)
+    --     categoryText:SetTextAlignmentY(GUIItem.Align_Center)
+    --     categoryText:SetColor(CPPGUICombatAlienBuyMenu.kTextColor)
+    --     categoryText:SetText(GetDisplayNameForTechId(categories[i]))
+    --     headerTextShadow:AddChild(categoryText)
+
+    --     local totalWidth = #upgrades * (CPPGUICombatAlienBuyMenu.kUpgradeButtonSize + 20)
+
+    --     for upgradeIndex = 1, #upgrades do
+
+    --         local techId = upgrades[upgradeIndex]
+            
+    --         -- Every upgrade has an icon.
+    --         local buttonIcon = GUIManager:CreateGraphicItem()
+
+    --         local iconX, iconY = GetMaterialXYOffset(techId, false)
+    --         iconX = iconX * CPPGUICombatAlienBuyMenu.kUpgradeButtonTextureSize
+    --         iconY = iconY * CPPGUICombatAlienBuyMenu.kUpgradeButtonTextureSize
+
+    --         local xPos = ((upgradeIndex - 1) * (CPPGUICombatAlienBuyMenu.kUpgradeButtonSize + 20 )) - (totalWidth / 2) - 20
+    --         local yPos = -80
+
+    --         buttonIcon:SetAnchor(GUIItem.Middle, GUIItem.Center)
+    --         buttonIcon:SetSize(Vector(CPPGUICombatAlienBuyMenu.kUpgradeButtonSize, CPPGUICombatAlienBuyMenu.kUpgradeButtonSize, 0))
+    --         buttonIcon:SetPosition(Vector(xPos, yPos, 0))
+    --         buttonIcon:SetTexture(CPPGUICombatAlienBuyMenu.kBuyHUDTexture)
+    --         buttonIcon:SetTexturePixelCoordinates(iconX, iconY, iconX + CPPGUICombatAlienBuyMenu.kUpgradeButtonTextureSize, iconY + CPPGUICombatAlienBuyMenu.kUpgradeButtonTextureSize)
+    --         categoryText:AddChild(buttonIcon)
+
+    --         local purchased = AlienBuy_GetUpgradePurchased(techId)
+
+    --         table.insert(self.upgradeButtons, { Background = nil, Icon = buttonIcon, TechId = techId, Selected = purchased,
+    --                      Cost = 0, Purchased = purchased, Index = nil })
+
+    --     end
+
+    -- end
 
 end
 
@@ -1234,39 +1304,63 @@ function CPPGUICombatAlienBuyMenu:_UpdateUpgrades(deltaTime)
 
     local player = Client.GetLocalPlayer()
 
-    for i, currentButton in ipairs(self.upgradeButtons) do
+    -- for i, currentButton in ipairs(self.upgradeButtons) do
 
-        local cost = CombatPlusPlus_GetCostByTechId(currentButton.TechId)
-        local canAfford = cost <= player.combatSkillPoints
-        local hasRequiredRank = CombatPlusPlus_GetRequiredRankByTechId(currentButton.TechId) <= player.combatRank
+    --     local cost = CombatPlusPlus_GetCostByTechId(currentButton.TechId)
+    --     local canAfford = cost <= player.combatSkillPoints
+    --     local hasRequiredRank = CombatPlusPlus_GetRequiredRankByTechId(currentButton.TechId) <= player.combatRank
 
-        local useColor = kDefaultColor
+    --     local useColor = kDefaultColor
 
-        if currentButton.Purchased then
+    --     if currentButton.Purchased then
 
-            useColor = kPurchasedColor
+    --         useColor = kPurchasedColor
 
-        elseif not hasRequiredRank then
+    --     elseif not hasRequiredRank then
 
-            useColor = kNotAvailableColor
+    --         useColor = kNotAvailableColor
 
-            -- unselect button if tech becomes unavailable
-            if currentButton.Selected then
-                currentButton.Selected = false
-            end
+    --         -- unselect button if tech becomes unavailable
+    --         if currentButton.Selected then
+    --             currentButton.Selected = false
+    --         end
 
+    --     end
+
+    --     currentButton.Icon:SetColor(useColor)
+
+    --     if self:_GetIsMouseOver(currentButton.Icon) then
+        
+    --         local currentUpgradeInfoText = GetDisplayNameForTechId(currentButton.TechId)
+    --         local tooltipText = GetTooltipInfoText(currentButton.TechId)
+    --         local cost = CombatPlusPlus_GetCostByTechId(currentButton.TechId)
+        
+    --         self:_ShowMouseOverInfo(currentUpgradeInfoText, tooltipText, cost)
+        
+    --     end
+
+    -- end
+
+    for _, button in ipairs(self.techButtons) do
+
+        local spendableSkillPoints = player:GetCombatSkillPoints() - GetTotalCost(self)
+        
+        if spendableSkillPoints > 0 then
+            button:SetCanAfford(true)
+        else
+            button:SetCanAfford(false)
         end
 
-        currentButton.Icon:SetColor(useColor)
+        button:SetIsEnabled(GetUpgradeTree():GetIsUnlocked(button.TechId))
+        button:Update(deltaTime)
 
-        if self:_GetIsMouseOver(currentButton.Icon) then
-        
-            local currentUpgradeInfoText = GetDisplayNameForTechId(currentButton.TechId)
-            local tooltipText = GetTooltipInfoText(currentButton.TechId)
-            local cost = CombatPlusPlus_GetCostByTechId(currentButton.TechId)
-        
-            self:_ShowMouseOverInfo(currentUpgradeInfoText, tooltipText, cost)
-        
+        if self:_GetIsMouseOver(button.Icon) then
+
+            local currentUpgradeInfoText = GetDisplayNameForTechId(button.TechId)
+            local cost = LookupUpgradeData(button.TechId, kUpDataCostIndex)
+
+            self:_ShowMouseOverInfo(currentUpgradeInfoText, button.ToolTip, cost)
+
         end
 
     end
@@ -1320,21 +1414,21 @@ local function MarkAlreadyPurchased( self )
 end
 
 local function SelectButton( self, button )
-    if not button.Selected then
-        button.Selected = true
+    if not button.IsSelected then
+        button:SetIsSelected(true)
         table.insertunique(self.upgradeList, button.TechId)
     end
 end
 
 local function DeselectButton( self, button )
-    if button.Selected then
-        button.Selected = false
+    if button.IsSelected then
+        button:SetIsSelected(false)
         table.removevalue( self.upgradeList, button.TechId )
     end
 end
 
 local function ToggleButton( self,  button )
-    if button.Selected then
+    if button.IsSelected then
         DeselectButton( self, button )
     else
         SelectButton( self, button )
@@ -1381,10 +1475,10 @@ function CPPGUICombatAlienBuyMenu:SendKeyEvent(key, down)
                 end
 
                 -- Buy all selected upgrades.
-                for i, currentButton in ipairs(self.upgradeButtons) do
+                for i, currentButton in ipairs(self.techButtons) do
 
-                    if currentButton.Selected then
-                        table.insert(purchases, { Type = "Upgrade", Alien = self.selectedAlienType, UpgradeIndex = currentButton.Index, TechId = currentButton.TechId })
+                    if currentButton.IsSelected then
+                        table.insert(purchases, { Type = "Upgrade", Alien = self.selectedAlienType, TechId = currentButton.TechId })
                     end
 
                 end
@@ -1465,10 +1559,13 @@ end
 
 function CPPGUICombatAlienBuyMenu:GetCanSelect(upgradeButton, player)
 
-    local hasRequiredRank = CombatPlusPlus_GetRequiredRankByTechId(upgradeButton.TechId) <= player.combatRank
+    --local hasRequiredRank = CombatPlusPlus_GetRequiredRankByTechId(upgradeButton.TechId) <= player.combatRank
+    local isPassive = LookupUpgradeData(upgradeButton.TechId, kUpDataPassiveIndex)
+    local unlocked = GetUpgradeTree():GetIsUnlocked(upgradeButton.TechId)
+    local purchased = GetUpgradeTree():GetIsPurchased(upgradeButton.TechId)
 
     -- since you've already purchased it, it should be selectable
-    return upgradeButton.Purchased or hasRequiredRank
+    return unlocked and not purchased and not isPassive
 
 end
 
@@ -1478,33 +1575,33 @@ function CPPGUICombatAlienBuyMenu:_HandleUpgradeClicked(mouseX, mouseY)
     local inputHandled = false
     local player = Client.GetLocalPlayer()
 
-    for i, currentButton in ipairs(self.upgradeButtons) do
+    for i, currentButton in ipairs(self.techButtons) do
         -- Can't select if it has been purchased already.
 
-        local allowedToUnselect = currentButton.Selected
-        local allowedToPuchase = not currentButton.Selected and self:GetCanSelect(currentButton, player)
+        local allowedToUnselect = currentButton.IsSelected
+        local allowedToPuchase = not currentButton.IsSelected and self:GetCanSelect(currentButton, player)
 
         if (allowedToUnselect or allowedToPuchase) and self:_GetIsMouseOver(currentButton.Icon) then
 
             -- Deselect or Select current button
             ToggleButton( self, currentButton )
 
-            if currentButton.Selected then
+            if currentButton.IsSelected then
 
-                local hiveTypeCurrent = GetHiveTypeForUpgrade( currentButton.TechId )
+                --local hiveTypeCurrent = GetHiveTypeForUpgrade( currentButton.TechId )
 
-                for j, otherButton in ipairs(self.upgradeButtons) do
+                -- for j, otherButton in ipairs(self.upgradeButtons) do
 
-                    if currentButton ~= otherButton and otherButton.Selected then
+                --     if currentButton ~= otherButton and otherButton.Selected then
 
-                        local hiveTypeOther = GetHiveTypeForUpgrade( otherButton.TechId )
-                        if hiveTypeCurrent == hiveTypeOther then
-                            DeselectButton( self, otherButton )
-                        end
+                --         local hiveTypeOther = GetHiveTypeForUpgrade( otherButton.TechId )
+                --         if hiveTypeCurrent == hiveTypeOther then
+                --             DeselectButton( self, otherButton )
+                --         end
 
-                    end
+                --     end
 
-                end
+                -- end
 
                 AlienBuy_OnUpgradeSelected()
 

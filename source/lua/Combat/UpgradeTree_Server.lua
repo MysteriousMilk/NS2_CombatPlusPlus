@@ -64,11 +64,15 @@ function UpgradeTree:UpdateUnlocks(sendNetUpdate)
             local rankForTechId = LookupUpgradeData(nodeTechId, kUpDataRankIndex)
 
             if rankForTechId <= currentRank and not node:GetIsUnlocked() then
+
+                local passive = LookupUpgradeData(nodeTechId, kUpDataPassiveIndex)
                 
                 if sendNetUpdate then
                     self:SetIsUnlocked(nodeTechId, true)
+                    if passive then self:SetIsPurchased(nodeTechId, true) end
                 else
                     node:SetIsUnlocked(true)
+                    node:SetIsPurchased(passive)
                 end
 
             end
