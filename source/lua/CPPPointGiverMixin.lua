@@ -80,7 +80,7 @@ if Server then
                     currentAttacker:AddAssistKill()
 
                     if HasMixin(self, "CombatScore") and HasMixin(currentAttacker, "CombatScore") then
-                        currentAttacker:AddCombatAssistKill(self:GetCombatRank())
+                        currentAttacker:AddCombatAssistKill(self:GetCombatRank(), damageFraction)
                     end
 
                 end

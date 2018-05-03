@@ -161,7 +161,7 @@ function CombatScoreMixin:AddCombatKill(victimRank)
 
 end
 
-function CombatScoreMixin:AddCombatAssistKill(victimRank)
+function CombatScoreMixin:AddCombatAssistKill(victimRank, fraction)
 
     if GetGameInfoEntity():GetWarmUpActive() then return end
 
@@ -179,7 +179,7 @@ function CombatScoreMixin:AddCombatAssistKill(victimRank)
         self:GiveSkillPoints(kSkillPointSourceType.AssistStreak)
     end
 
-    local xp = CombatPlusPlus_GetBaseKillXP(victimRank) * kXPAssistModifier
+    local xp = CombatPlusPlus_GetBaseKillXP(victimRank) * kXPAssistModifier * fraction
     self:AddXP(xp, kXPSourceType.Assist, Entity.invalidId)
 
 end
