@@ -132,9 +132,10 @@ function Hive:OnUpdate(deltaTime)
 
         ns2_Hive_OnUpdate(self, deltaTime)
 
-        if self:GetIsAlive() then
-            self:AutoCyst()
-        end
+        -- temp disable auto-cyst
+        -- if self:GetIsAlive() then
+        --     self:AutoCyst()
+        -- end
 
     else
 
