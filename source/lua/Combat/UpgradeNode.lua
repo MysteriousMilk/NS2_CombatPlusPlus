@@ -55,9 +55,18 @@ function UpgradeNode:MeetsPreconditions(upgradeTree)
 
 end
 
-function UpgradeNode:GetIsMutuallyExclusiveTo(techId)
+function UpgradeNode:IsMutuallyExclusiveTo(techId)
 
 	local isMutuallyExclusive = false
+
+	for _, mutuallyExclusiveTechId in ipairs(LookupUpgradeData(techId, kUpDataMutuallyExclusiveIndex)) do
+
+		if techId == mutuallyExclusiveTechId then
+			isMutuallyExclusive = true
+			break
+		end
+
+	end
 
 	return isMutuallyExclusive
 

@@ -840,7 +840,7 @@ local function CreateTechButton(self, techId, position)
 
     local button = AnimatedTechButton()
     button:Initialize(self, techId, position)
-    button:SetColors(kIconColors[kAlienTeamType], Color(0,0,0,1), Color(0.4, 0.7, 0, 1), Color(0.4, 0.7, 0, 1))
+    button:SetColors(kIconColors[kAlienTeamType], Color(1,0,0,1), Color(0.4, 0.7, 0, 1), Color(0.4, 0.7, 0, 1))
     return button
 
 end
@@ -903,7 +903,6 @@ function CPPGUICombatAlienBuyMenu:_InitializeUpgrades()
 
             local subTechButton = CreateTechButton(self, upsByCategory[j], iconPos)
             subTechButton:SetToolTip(GetTooltipInfoText(upsByCategory[i]))
-            subTechButton:SetIsEnabled(true)
             self.backgroundCenteredArea:AddChild(subTechButton.Icon)
             table.insert(self.techButtons, subTechButton)
 
@@ -911,7 +910,6 @@ function CPPGUICombatAlienBuyMenu:_InitializeUpgrades()
 
         local parentTechButton = CreateTechButton(self, categories[i], parentIconPos)
         parentTechButton:SetToolTip(GetTooltipInfoText(categories[i]))
-        parentTechButton:SetIsEnabled(true)
         self.backgroundCenteredArea:AddChild(parentTechButton.Icon)
         table.insert(self.techButtons, parentTechButton)
 
@@ -1300,6 +1298,54 @@ function CPPGUICombatAlienBuyMenu:_UpdateAbilities()
 
 end
 
+local function HasMutualExclusivity(self, techId)
+
+    -- check purchased upgrades for mutual exclusivity
+    -- for k, node in ipairs(GetUpgradeTree():GetPurchasedUpgrades()) do
+
+    --     if node:IsMutuallyExclusiveTo(techId) then
+    --         return true
+    --     end
+
+    -- end
+
+    -- check queued 'potential' upgrades for mutual exclusivity
+    for j, upgradeTechId in ipairs(self.upgradeList) do
+        
+        for _, mutualExclusiveTechId in ipairs(LookupUpgradeData(upgradeTechId, kUpDataMutuallyExclusiveIndex)) do
+
+            if techId == mutualExclusiveTechId then
+                return true
+            end
+
+        end
+
+    end
+
+    return false
+    
+end
+
+local function IsPurchasedOrPurchasing(self, techId)
+
+    local node = GetUpgradeTree():GetNode(techId)
+
+    if node:GetIsPurchased() then
+        return true
+    end
+
+    for j, upgradeTechId in ipairs(self.upgradeList) do
+
+        if techId == upgradeTechId then
+            return true
+        end
+
+    end
+
+    return false
+
+end
+
 function CPPGUICombatAlienBuyMenu:_UpdateUpgrades(deltaTime)
 
     local player = Client.GetLocalPlayer()
@@ -1343,15 +1389,12 @@ function CPPGUICombatAlienBuyMenu:_UpdateUpgrades(deltaTime)
 
     for _, button in ipairs(self.techButtons) do
 
-        local spendableSkillPoints = player:GetCombatSkillPoints() - GetTotalCost(self)
-        
-        if spendableSkillPoints > 0 then
-            button:SetCanAfford(true)
-        else
-            button:SetCanAfford(false)
-        end
+        button:SetIsUnlocked(GetUpgradeTree():GetIsUnlocked(button.TechId))
+        button:SetIsPurchased(GetUpgradeTree():GetNode(button.TechId):GetIsPurchased())
 
-        button:SetIsEnabled(GetUpgradeTree():GetIsUnlocked(button.TechId))
+        local canAfford = (player:GetCombatSkillPoints() - GetTotalCost(self)) > 0
+        button:SetIsEnabled(IsPurchasedOrPurchasing(self, button.TechId) or (canAfford and not HasMutualExclusivity(self, button.TechId)))
+
         button:Update(deltaTime)
 
         if self:_GetIsMouseOver(button.Icon) then
@@ -1565,7 +1608,7 @@ function CPPGUICombatAlienBuyMenu:GetCanSelect(upgradeButton, player)
     local purchased = GetUpgradeTree():GetIsPurchased(upgradeButton.TechId)
 
     -- since you've already purchased it, it should be selectable
-    return unlocked and not purchased and not isPassive
+    return upgradeButton.IsEnabled and unlocked and not purchased and not isPassive
 
 end
 

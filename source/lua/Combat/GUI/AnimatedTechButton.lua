@@ -25,13 +25,13 @@ function AnimatedTechButton:Initialize(script, techId, position)
     self.IsEnabled = false
     self.IsSelected = false
     self.IsPurchased = false
-    self.CanAfford = false
+    self.IsUnlocked = false
 
     self.EnabledColor = Color(1, 1, 1, 1)
-    self.DisabledColor = Color(0, 0, 0, 1)
+    self.DisabledColor = Color(1, 0, 0, 1)
     self.PurcahsedColor = Color(1, 1, 1, 1)
     self.SelectedColor = Color(1, 1, 1, 1)
-    self.RedColor = Color(1, 0, 0, 1)
+    self.LockedColor = Color(0, 0, 0, 1)
 
     -- create the graphic
     local iconX, iconY = GetMaterialXYOffset(techId, false)
@@ -61,21 +61,15 @@ function AnimatedTechButton:SetColors(enabledColor, disabledColor, purchasedColo
 end
 
 function AnimatedTechButton:SetIsPurchased(isPurchased)
-
     self.IsPurchased = isPurchased
-
 end
 
 function AnimatedTechButton:SetIsEnabled(isEnabled)
-
     self.IsEnabled = isEnabled
-
 end
 
-function AnimatedTechButton:SetCanAfford(canAfford)
-    
-    self.CanAfford = canAfford
-
+function AnimatedTechButton:SetIsUnlocked(isUnlocked)
+    self.IsUnlocked = isUnlocked
 end
 
 function AnimatedTechButton:SetIsSelected(isSelected)
@@ -108,6 +102,11 @@ function AnimatedTechButton:Update(deltaTime)
         self.elapsedSinceColorSwap = 0
         self.Icon:SetColor(self.PurcahsedColor)
 
+    elseif not self.IsUnlocked then
+
+        self.elapsedSinceColorSwap = 0
+        self.Icon:SetColor(self.LockedColor)
+
     elseif self.IsEnabled and self.IsSelected then
 
         self.elapsedSinceColorSwap = self.elapsedSinceColorSwap + deltaTime
@@ -125,12 +124,7 @@ function AnimatedTechButton:Update(deltaTime)
     elseif self.IsEnabled and not self.IsSelected then
 
         self.elapsedSinceColorSwap = 0
-
-        if self.CanAfford then
-            self.Icon:SetColor(self.EnabledColor)
-        else
-            self.Icon:SetColor(self.RedColor)
-        end
+        self.Icon:SetColor(self.EnabledColor)
 
     elseif not self.IsEnabled then
 
