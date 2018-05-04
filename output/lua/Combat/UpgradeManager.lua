@@ -131,18 +131,27 @@ function UpgradeManager:GiveUpgrades(techIdList, player, overrideCost)
         -- cost check
         if (totalCost <= player:GetCombatSkillPoints()) or overrideCost then
 
+            local newPlayerClass = nil
+
             for k, techId in ipairs(techIdList) do
 
                 local node = self.Upgrades:GetNode(techId)
+                local logicSuccess = false
 
-                -- apply the upgreade
-                success = success and self:UpgradeLogic(techIdList, node, player, overrideCost)
+                -- apply the upgrade
+                logicSuccess, newPlayerClass = self:UpgradeLogic(techIdList, node, player, overrideCost)
+                success = success and logicSuccess
 
             end
 
             if success then
                 -- update the tree and spend the points
-                self:PostGiveUpgrades(techIdList, player, totalCost, overrideCost)
+                if newPlayerClass then
+                    newPlayerClass.UpgradeManager:PostGiveUpgrades(techIdList, newPlayerClass, totalCost, overrideCost)
+                    newPlayerClass.UpgradeManager:SpawnUpgrades(newPlayerClass)
+                else
+                    self:PostGiveUpgrades(techIdList, player, totalCost, overrideCost)
+                end
             end
 
         else
@@ -167,13 +176,14 @@ end
 function UpgradeManager:UpgradeLogic(techIdList, currNode, player, overrideCost)
 
     local success = true
+    local newPlayerClass = nil
 
     -- run the upgrade func for the node
     if currNode.upgradeFunc then
-        success = currNode.upgradeFunc(currNode:GetTechId(), player)
+        success, newPlayerClass = currNode.upgradeFunc(currNode:GetTechId(), player)
     end
 
-    return success
+    return success, newPlayerClass
 
 end
 

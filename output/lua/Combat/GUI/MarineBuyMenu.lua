@@ -103,6 +103,7 @@ local function GetTechIcon(itemTechId, enabled)
         gTechIconIndex[kTechId.PulseGrenade] = 4
         gTechIconIndex[kTechId.Jetpack] = 5
         gTechIconIndex[kTechId.DualMinigunExosuit] = 6
+        gTechIconIndex[kTechId.DualRailgunExosuit] = 7
     end
 
     local x1 = 0

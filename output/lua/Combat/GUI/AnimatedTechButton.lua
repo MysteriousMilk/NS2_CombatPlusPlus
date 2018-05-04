@@ -82,11 +82,9 @@ function AnimatedTechButton:SetIsSelected(isSelected)
     if isSelected then
         self.Icon:SetSize(self.Icon:GetSize() + AnimatedTechButton.ButtonExpandSize)
         self.Icon:SetPosition(self.unexpandedPosition - AnimatedTechButton.ButtonExpandSize / 2)
-        Shared.Message("Selected")
     else
         self.Icon:SetSize(Vector(AnimatedTechButton.kTechButtonSize, AnimatedTechButton.kTechButtonSize, 0))
         self.Icon:SetPosition(self.unexpandedPosition)
-        Shared.Message("Deselected")
     end
 
 end

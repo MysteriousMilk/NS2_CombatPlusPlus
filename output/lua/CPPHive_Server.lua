@@ -49,8 +49,6 @@ end
 
 local function CreateCyst(self, point, normal)
 
-    Shared.Message("Create Cyst.")
-
     local cyst = CreateEntity(Cyst.kMapName, point, self:GetTeamNumber())
     cyst:SetCoords(AlignCyst(Coords.GetTranslation(point), normal))
 
@@ -68,7 +66,6 @@ function Hive:CreateNextCyst()
 
     if disconnectedCysts and #disconnectedCysts > 0 then
 
-        Shared.Message(string.format("Number of disconnected cysts: %s", #disconnectedCysts))
         local position = disconnectedCysts[1]:GetOrigin()
         local extents = GetExtents(kTechId.Cyst)
 
@@ -96,8 +93,6 @@ function Hive:CreateNextCyst()
 
         if not rp then return end
 
-        Shared.Message(string.format("Cysting towards %s.", rp:GetLocationName()))
-
         local position = rp and rp:GetOrigin()
         local extents = GetExtents(kTechId.Cyst)
 
@@ -123,7 +118,6 @@ function Hive:AutoCyst()
 
     if Shared.GetTime() - self.timeLastCyst >= kHiveAutoCystFrequency then
 
-        Shared.Message("AutoCyst timer expired.")
         self:CreateNextCyst()
         self.timeLastCyst = Shared.GetTime()
 

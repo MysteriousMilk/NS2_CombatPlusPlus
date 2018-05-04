@@ -177,7 +177,7 @@ function CombatAlienUpgradeManager:UpgradeLogic(techIdList, currNode, player, ov
         success = UpgradeManager.UpgradeLogic(self, techIdList, currNode, player, overrideCost)
     end
 
-    return success
+    return success, nil
 
 end
 

@@ -25,8 +25,6 @@ if Server then
     -- Combat++ - Removed refrences to the commmand (relogin of previous commander.. etc)
     function NS2Gamerules:ResetGame()
 
-        Shared.Message("ResetGame called.")
-
         self:SetGameState(kGameState.NotStarted)
 
         TournamentModeOnReset()
@@ -244,17 +242,17 @@ if Server then
     local ns2_SetGameState = NS2Gamerules.SetGameState
     function NS2Gamerules:SetGameState(state)
 
-        if (state == kGameState.NotStarted) then
-            Shared.Message("GameState changed to NotStarted.")
-        elseif (state == kGameState.WarmUp) then
-            Shared.Message("GameState changed to WarmUp.")
-        elseif (state == kGameState.PreGame) then
-            Shared.Message("GameState changed to PreGame.")
-        elseif (state == kGameState.Countdown) then
-            Shared.Message("GameState changed to Countdown.")
-        elseif (state == kGameState.Started) then
-            Shared.Message("GameState changed to Started.")
-        end
+        -- if (state == kGameState.NotStarted) then
+        --     Shared.Message("GameState changed to NotStarted.")
+        -- elseif (state == kGameState.WarmUp) then
+        --     Shared.Message("GameState changed to WarmUp.")
+        -- elseif (state == kGameState.PreGame) then
+        --     Shared.Message("GameState changed to PreGame.")
+        -- elseif (state == kGameState.Countdown) then
+        --     Shared.Message("GameState changed to Countdown.")
+        -- elseif (state == kGameState.Started) then
+        --     Shared.Message("GameState changed to Started.")
+        -- end
 
         -- Reset player upgrade trees
         if state ~= self.gameState and state == kGameState.PreGame then
@@ -265,7 +263,6 @@ if Server then
 
                     if player.UpgradeManager then
                         player.UpgradeManager:Reset()
-                        --player.UpgradeManager:GetTree():SendFullTree(player)
                     end
 
                 end

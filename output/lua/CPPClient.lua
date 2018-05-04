@@ -25,5 +25,5 @@ end
 
 function ClearUpgradeTree()
     gUpgradeTree:Initialize()
-    Shared.Message("Tree cleared")
+    Print("Tree cleared")
 end

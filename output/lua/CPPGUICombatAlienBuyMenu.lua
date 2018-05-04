@@ -40,13 +40,6 @@ local kVeinsMargin = GUIScale(4)
 
 CPPGUICombatAlienBuyMenu.kResourceIconTexture = PrecacheAsset("ui/pres_icon_big.dds")
 
-CPPGUICombatAlienBuyMenu.kButtonTexture = PrecacheAsset("ui/combatui_alien_button.dds")
-CPPGUICombatAlienBuyMenu.kButtonHighlightTexture = PrecacheAsset("ui/combatui_alien_button_highlight.dds")
-CPPGUICombatAlienBuyMenu.kButtonSize = Vector(128, 128, 0)
-CPPGUICombatAlienBuyMenu.kButtonPadding = Vector(60, 20, 0)
-
-CPPGUICombatAlienBuyMenu.kLifeformIconTexture = PrecacheAsset("ui/combatui_alien_lifeforms.dds")
-
 CPPGUICombatAlienBuyMenu.kTitleFont = Fonts.kStamp_Large
 CPPGUICombatAlienBuyMenu.kHeaderFont = Fonts.kStamp_Medium
 CPPGUICombatAlienBuyMenu.kHeaderAltFont = Fonts.kAgencyFB_Small
@@ -1530,7 +1523,6 @@ function CPPGUICombatAlienBuyMenu:SendKeyEvent(key, down)
                 inputHandled = true
 
                 if #purchases > 0 then
-                    Shared.Message(string.format("Purchase Count: %s", #purchases))
                     CombatPlusPlus_AlienPurchase(purchases)
                 end
 

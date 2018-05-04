@@ -16,7 +16,6 @@ end
 Client.HookNetworkMessage("CombatSkillPointUpdate", OnCombatSkillPointUpdate)
 
 local function OnCommandClearUpgradeTree()
-    Shared.Message("Clear message received")
     ClearUpgradeTree()
 end
 Client.HookNetworkMessage("ClearUpgradeTree", OnCommandClearUpgradeTree)
