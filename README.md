@@ -4,6 +4,8 @@
 The intent of this mod is to bring back a gameplay type using the orignial Natural Selection 1 Combat Mod for primary insiration, use the [Natural Selection 2 Combat Mod](https://github.com/AlexHayton/NS2Combat) as a reference and possibly incorporate some ideas from the Combat Standalone (placing structures, etc).  Seeing as how the title is still 'Combat', I'd like to keep that original gametype feel as much as possible (individual xp, no commanders), an not alter the lifeform, gun, or game physics as many players use combat for practicing for the vanilla game.
 
 ## Latest Changes
+**5/4/2018** - Major overhaul to the upgrade system, some updates to the Marine Buy Menu, more progress on Alien Buy Menu.
+
 **4/3/2018** - Players now gain xp for teammate kills nearby, ejecting from Exos has been disabled, and players now receive credit for sentry and babbler kills if they are the one that placed/created it.
 
 **1/24/2018** - Added the xp bar and text to the Alien HUD, track healing for Aliens, and added an Auto-Cyst feature to the Hive.
