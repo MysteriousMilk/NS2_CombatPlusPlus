@@ -53,7 +53,7 @@ kCombatUpgradeData =
 	[kTechId.Jetpack] =
 	{
 		[kUpDataTeamIndex] = 1,
-		[kUpDataRankIndex] = 9,
+		[kUpDataRankIndex] = 7,
 		[kUpDataCostIndex] = 2,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "jp",
@@ -66,7 +66,7 @@ kCombatUpgradeData =
 	[kTechId.DualMinigunExosuit] =
 	{
 		[kUpDataTeamIndex] = 1,
-		[kUpDataRankIndex] = 10,
+		[kUpDataRankIndex] = 8,
 		[kUpDataCostIndex] = 2,
 		[kUpDataHardCapIndex] = 1/3,
 		[kUpDataConsoleNameIndex] = "minigunexo",
@@ -80,7 +80,7 @@ kCombatUpgradeData =
 	[kTechId.DualRailgunExosuit] =
 	{
 		[kUpDataTeamIndex] = 1,
-		[kUpDataRankIndex] = 10,
+		[kUpDataRankIndex] = 8,
 		[kUpDataCostIndex] = 2,
 		[kUpDataHardCapIndex] = 1/3,
 		[kUpDataConsoleNameIndex] = "railgunexo",
@@ -133,7 +133,7 @@ kCombatUpgradeData =
 	[kTechId.Flamethrower] =
 	{
 		[kUpDataTeamIndex] = 1,
-		[kUpDataRankIndex] = 6,
+		[kUpDataRankIndex] = 5,
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 1/2,
 		[kUpDataConsoleNameIndex] = "flamethrower",
@@ -146,7 +146,7 @@ kCombatUpgradeData =
 	[kTechId.GrenadeLauncher] =
 	{
 		[kUpDataTeamIndex] = 1,
-		[kUpDataRankIndex] = 7,
+		[kUpDataRankIndex] = 6,
 		[kUpDataCostIndex] = 2,
 		[kUpDataHardCapIndex] = 1/2,
 		[kUpDataConsoleNameIndex] = "gl",
@@ -159,7 +159,7 @@ kCombatUpgradeData =
 	[kTechId.HeavyMachineGun] =
 	{
 		[kUpDataTeamIndex] = 1,
-		[kUpDataRankIndex] = 8,
+		[kUpDataRankIndex] = 6,
 		[kUpDataCostIndex] = 2,
 		[kUpDataHardCapIndex] = 1/2,
 		[kUpDataConsoleNameIndex] = "hmg",
@@ -185,7 +185,7 @@ kCombatUpgradeData =
 	[kTechId.LayMines] =
 	{
 		[kUpDataTeamIndex] = 1,
-		[kUpDataRankIndex] = 5,
+		[kUpDataRankIndex] = 4,
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "mines",
@@ -198,7 +198,7 @@ kCombatUpgradeData =
 	[kTechId.ClusterGrenade] =
 	{
 		[kUpDataTeamIndex] = 1,
-		[kUpDataRankIndex] = 6,
+		[kUpDataRankIndex] = 4,
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "clustergrenade",
@@ -211,7 +211,7 @@ kCombatUpgradeData =
 	[kTechId.GasGrenade] =
 	{
 		[kUpDataTeamIndex] = 1,
-		[kUpDataRankIndex] = 6,
+		[kUpDataRankIndex] = 4,
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "gasgrenade",
@@ -224,7 +224,7 @@ kCombatUpgradeData =
 	[kTechId.PulseGrenade] =
 	{
 		[kUpDataTeamIndex] = 1,
-		[kUpDataRankIndex] = 6,
+		[kUpDataRankIndex] = 4,
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "pulsegrenade",
@@ -343,7 +343,7 @@ kCombatUpgradeData =
 	[kTechId.CatPack] =
 	{
 		[kUpDataTeamIndex] = 1,
-		[kUpDataRankIndex] = 7,
+		[kUpDataRankIndex] = 5,
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "catpack",
@@ -371,7 +371,7 @@ kCombatUpgradeData =
 	[kTechId.Armory] =
 	{
 		[kUpDataTeamIndex] = 1,
-		[kUpDataRankIndex] = 3,
+		[kUpDataRankIndex] = 2,
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "armory",
@@ -384,7 +384,7 @@ kCombatUpgradeData =
 	[kTechId.PhaseGate] =
 	{
 		[kUpDataTeamIndex] = 1,
-		[kUpDataRankIndex] = 4,
+		[kUpDataRankIndex] = 3,
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "phasegate",
@@ -397,7 +397,7 @@ kCombatUpgradeData =
 	[kTechId.Observatory] =
 	{
 		[kUpDataTeamIndex] = 1,
-		[kUpDataRankIndex] = 5,
+		[kUpDataRankIndex] = 4,
 		[kUpDataCostIndex] = 2,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "observatory",
@@ -410,7 +410,7 @@ kCombatUpgradeData =
 	[kTechId.Sentry] =
 	{
 		[kUpDataTeamIndex] = 1,
-		[kUpDataRankIndex] = 6,
+		[kUpDataRankIndex] = 5,
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "sentry",
@@ -466,7 +466,7 @@ kCombatUpgradeData =
 	[kTechId.Fade] =
 	{
 		[kUpDataTeamIndex] = 2,
-		[kUpDataRankIndex] = 6,
+		[kUpDataRankIndex] = 5,
 		[kUpDataCostIndex] = 2,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "fade",
@@ -480,7 +480,7 @@ kCombatUpgradeData =
 	[kTechId.Onos] =
 	{
 		[kUpDataTeamIndex] = 2,
-		[kUpDataRankIndex] = 9,
+		[kUpDataRankIndex] = 6,
 		[kUpDataCostIndex] = 2,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "onos",
@@ -690,7 +690,7 @@ kCombatUpgradeData =
 	[kTechId.Xenocide] =
 	{
 		[kUpDataTeamIndex] = 2,
-		[kUpDataRankIndex] = 8,
+		[kUpDataRankIndex] = 7,
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "xenocide",
@@ -718,7 +718,7 @@ kCombatUpgradeData =
 	[kTechId.Umbra] =
 	{
 		[kUpDataTeamIndex] = 2,
-		[kUpDataRankIndex] = 6,
+		[kUpDataRankIndex] = 5,
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "umbra",
@@ -732,7 +732,7 @@ kCombatUpgradeData =
 	[kTechId.MetabolizeEnergy] =
 	{
 		[kUpDataTeamIndex] = 2,
-		[kUpDataRankIndex] = 6,
+		[kUpDataRankIndex] = 5,
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "meta",
@@ -746,7 +746,7 @@ kCombatUpgradeData =
 	[kTechId.MetabolizeHealth] =
 	{
 		[kUpDataTeamIndex] = 2,
-		[kUpDataRankIndex] = 7,
+		[kUpDataRankIndex] = 6,
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "advmeta",
@@ -774,7 +774,7 @@ kCombatUpgradeData =
 	[kTechId.Charge] =
 	{
 		[kUpDataTeamIndex] = 2,
-		[kUpDataRankIndex] = 9,
+		[kUpDataRankIndex] = 6,
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "charge",
@@ -788,7 +788,7 @@ kCombatUpgradeData =
 	[kTechId.BoneShield] =
 	{
 		[kUpDataTeamIndex] = 2,
-		[kUpDataRankIndex] = 10,
+		[kUpDataRankIndex] = 7,
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "boneshield",
@@ -802,7 +802,7 @@ kCombatUpgradeData =
 	[kTechId.Stomp] =
 	{
 		[kUpDataTeamIndex] = 2,
-		[kUpDataRankIndex] = 10,
+		[kUpDataRankIndex] = 8,
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "stomp",
