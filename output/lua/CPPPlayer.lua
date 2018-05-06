@@ -28,9 +28,15 @@ function Player:OnInitialized()
 
     ns2_Player_OnInitialized(self)
 
-    if Server and self.UpgradeManager then
-        self.UpgradeManager:Initialize()
-        self.UpgradeManager:SetPlayer(self)
+    if Server then
+
+        if self.UpgradeManager then
+            self.UpgradeManager:Initialize()
+            self.UpgradeManager:SetPlayer(self)
+        end
+
+        self.ownedStructures = {}
+
     end
 
 end
@@ -47,12 +53,23 @@ function Player:SetCreateStructureTechId(techId)
 
 end
 
-function Player:OnStructureCreated()
+function Player:OnStructureCreated(structure)
 
-    if self.UpgradeManager then
+    if Server then
 
-        local cost = LookupUpgradeData(self.currentCreateStructureTechId, kUpDataCostIndex)
-        self:SpendSkillPoints(cost)
+        if self.UpgradeManager then
+
+            local cost = LookupUpgradeData(self.currentCreateStructureTechId, kUpDataCostIndex)
+            self:SpendSkillPoints(cost)
+
+        end
+
+        -- put builder back into build mode
+        builder = self:GetWeapon(Builder.kMapName)
+        builder:SetBuilderMode(kBuilderMode.Build)
+
+        -- track the entity id's of the structures that player places
+        table.insert(self.ownedStructures, structure:GetId())
 
     end
 
@@ -60,16 +77,16 @@ function Player:OnStructureCreated()
 
 end
 
-local ns2_Player_OnJoinTeam = Player.OnJoinTeam
-function Player:OnJoinTeam()
+-- local ns2_Player_OnJoinTeam = Player.OnJoinTeam
+-- function Player:OnJoinTeam()
 
-    ns2_Player_OnJoinTeam(self)
+--     ns2_Player_OnJoinTeam(self)
 
-    if Server and self.UpgradeManager then
-        self.UpgradeManager:Reset()
-        self.UpgradeManager:GetTree():SendFullTree(self)
-    end
+--     if Server and self.UpgradeManager then
+--         self.UpgradeManager:Reset()
+--         self.UpgradeManager:GetTree():SendFullTree(self)
+--     end
 
-end
+-- end
 
 Shared.LinkClassToMap("Player", Player.kMapName, networkVarsEx, true)

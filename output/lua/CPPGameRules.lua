@@ -20,6 +20,41 @@
 
 if Server then
 
+    local ns2_NS2Gamerules_OnClientDisconnect = NS2Gamerules.OnClientDisconnect
+    function NS2Gamerules:OnClientDisconnect(client)
+
+        local player = client:GetControllingPlayer()
+
+        if player then
+            player:KillOwnedStructures()
+        end
+
+    end
+
+    local ns2_NS2Gamerules_OnEntityKilled = NS2Gamerules.OnEntityKilled
+    function NS2Gamerules:OnEntityKilled(targetEntity, attacker, doer, point, direction)
+
+        -- refund upgrade points for any structure that was destroyed
+        local mapName = targetEntity:GetMapName()
+        local techId = LookupTechId(mapName, kTechDataMapName, kTechId.None)
+
+        if CombatPlusPlus_GetIsStructureTechId(techId) then
+
+            local owner = targetEntity:GetOwner()
+
+            if owner and owner:isa("Player") then
+
+                local cost = LookupUpgradeData(techId, kUpDataCostIndex)
+                owner:GiveCombatSkillPoints(cost, kXPSourceType.Refund)
+
+            end
+
+        end
+
+        ns2_NS2Gamerules_OnEntityKilled(self, targetEntity, attacker, doer, point, direction)
+
+    end
+
     -- Starts a new game by resetting the map and all of the players. Keep everyone on current teams (readyroom, playing teams, etc.) but
     -- respawn playing players.
     -- Combat++ - Removed refrences to the commmand (relogin of previous commander.. etc)
@@ -227,6 +262,33 @@ if Server then
 
     end
 
+    local ns2_NS2GameRules_JoinTeam = NS2Gamerules.JoinTeam
+    function NS2Gamerules:JoinTeam(player, newTeamNumber, force)
+
+        local oldTeamNumber = player:GetTeamNumber()
+        local success = false
+        local newPlayer = nil
+
+        success, newPlayer = ns2_NS2GameRules_JoinTeam(self, player, newTeamNumber, force)
+
+        if success and oldTeamNumber ~= newTeamNumber then
+
+            -- kill any structures the player owned on their old team
+            player:KillOwnedStructures()
+
+            -- reset the player's upgrades
+            if newPlayer.UpgradeManager then
+                newPlayer.UpgradeManager:Reset()
+                newPlayer.UpgradeManager:UpdateUnlocks(false)
+                newPlayer.UpgradeManager:GetTree():SendFullTree(newPlayer)
+            end
+
+        end
+
+        return success, newPlayer
+
+    end
+
     function NS2Gamerules:ResetPlayerScores()
 
         for _, player in ientitylist(Shared.GetEntitiesWithClassname("Player")) do
@@ -255,21 +317,17 @@ if Server then
         -- end
 
         -- Reset player upgrade trees
-        if state ~= self.gameState and state == kGameState.PreGame then
+        -- if state ~= self.gameState and state == kGameState.PreGame then
             
-            if Server then
+        --     if Server then
 
-                for _, player in ientitylist(Shared.GetEntitiesWithClassname("Player")) do
+        --         for _, player in ientitylist(Shared.GetEntitiesWithClassname("Player")) do
+        --             player:Reset()
+        --         end
 
-                    if player.UpgradeManager then
-                        player.UpgradeManager:Reset()
-                    end
+        --     end
 
-                end
-
-            end
-
-        end
+        -- end
 
         ns2_SetGameState(self, state)
 

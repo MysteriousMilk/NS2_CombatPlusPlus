@@ -26,3 +26,14 @@ function Marine:InitWeapons()
     self:SetActiveWeapon(Rifle.kMapName)
 
 end
+
+local ns2_Marine_OnKill = Marine.OnKill
+function Marine:OnKill(attacker, doer, point, direction)
+
+    -- put builder back into build mode
+    builder = self:GetWeapon(Builder.kMapName)
+    builder:SetBuilderMode(kBuilderMode.Build)
+
+    ns2_Marine_OnKill(self, attacker, doer, point, direction)
+
+end

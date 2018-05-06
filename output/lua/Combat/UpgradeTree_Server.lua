@@ -52,6 +52,14 @@ function UpgradeTree:AddUpgradeNode(techId, prereqId, upgradeFunc)
 
 end
 
+function UpgradeTree:AddStructureNode(techId, prereqId, upgradeFunc)
+
+    local node = UpgradeNode()
+    node:Initialize(techId, kCombatUpgradeType.Structure, prereqId, upgradeFunc)
+    self:AddNode(node)
+
+end
+
 function UpgradeTree:UpdateUnlocks(sendNetUpdate)
 
     if self.player then

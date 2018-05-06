@@ -70,7 +70,6 @@ function Builder:OnPrimaryAttack(player)
                 if self:PerformPrimaryAttack(player) then
 
                     self.createdSuccessfully = true
-                    player:OnStructureCreated()
                     self:OnHolster(player)
                     player:SwitchWeapon(1)
 
@@ -143,6 +142,7 @@ local function DropStructure(self, player)
                     end
 
                     struct:TriggerEffects("spawn")
+                    player:OnStructureCreated(struct)
 
                     return true
 
