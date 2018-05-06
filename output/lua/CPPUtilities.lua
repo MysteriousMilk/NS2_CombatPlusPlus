@@ -358,6 +358,19 @@ function ScaleXPByDistance(player, baseXp)
 
 end
 
+function CombatPlusPlus_GetStructureCountForTeam(techId, teamNumber)
+
+    local className = LookupUpgradeData(techId, kUpDataClassIndex)
+
+    if className then
+        local structList = GetEntitiesForTeam(className, teamNumber)
+        return #structList
+    end
+
+    return 0
+
+end
+
 function CreateTechEntity( techPoint, techId, rightOffset, forwardOffset, teamType )
 
     local origin = techPoint:GetOrigin() + Vector(0, 2, 0)

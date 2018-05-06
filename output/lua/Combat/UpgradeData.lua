@@ -1,5 +1,8 @@
 Script.Load("lua/TechTreeConstants.lua")
 
+-- Index used to retrieve the class name for some tech ids
+kUpDataClassIndex = "class"
+
 -- Index used to retrieve the team the upgrade is tied to
 kUpDataTeamIndex = "team"
 
@@ -370,53 +373,57 @@ kCombatUpgradeData =
 
 	[kTechId.Armory] =
 	{
+		[kUpDataClassIndex] = "Armory",
 		[kUpDataTeamIndex] = 1,
 		[kUpDataRankIndex] = 2,
 		[kUpDataCostIndex] = 1,
-		[kUpDataHardCapIndex] = 0,
+		[kUpDataHardCapIndex] = 3,
 		[kUpDataConsoleNameIndex] = "armory",
 		[kUpDataCategoryIndex] = "Structures",
-		[kUpDataPersistIndex] = true,
+		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { }
 	},
 
 	[kTechId.PhaseGate] =
 	{
+		[kUpDataClassIndex] = "PhaseGate",
 		[kUpDataTeamIndex] = 1,
 		[kUpDataRankIndex] = 3,
 		[kUpDataCostIndex] = 1,
-		[kUpDataHardCapIndex] = 0,
+		[kUpDataHardCapIndex] = 3,
 		[kUpDataConsoleNameIndex] = "phasegate",
 		[kUpDataCategoryIndex] = "Structures",
-		[kUpDataPersistIndex] = true,
+		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { }
 	},
 
 	[kTechId.Observatory] =
 	{
+		[kUpDataClassIndex] = "Observatory",
 		[kUpDataTeamIndex] = 1,
 		[kUpDataRankIndex] = 4,
 		[kUpDataCostIndex] = 2,
-		[kUpDataHardCapIndex] = 0,
+		[kUpDataHardCapIndex] = 4,
 		[kUpDataConsoleNameIndex] = "observatory",
 		[kUpDataCategoryIndex] = "Structures",
-		[kUpDataPersistIndex] = true,
+		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { }
 	},
 
 	[kTechId.Sentry] =
 	{
+		[kUpDataClassIndex] = "Sentry",
 		[kUpDataTeamIndex] = 1,
 		[kUpDataRankIndex] = 5,
 		[kUpDataCostIndex] = 1,
-		[kUpDataHardCapIndex] = 0,
+		[kUpDataHardCapIndex] = 8,
 		[kUpDataConsoleNameIndex] = "sentry",
 		[kUpDataCategoryIndex] = "Structures",
 		[kUpDataDescIndex] = "An AI torrent that fires on enemy units.  Requires an active power node for the area it is located.",
-		[kUpDataPersistIndex] = true,
+		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { }
 	},

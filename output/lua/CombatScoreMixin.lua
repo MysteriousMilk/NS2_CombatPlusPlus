@@ -55,7 +55,7 @@ function CombatScoreMixin:AddXP(xp, source, targetId)
         if numberOfRanksEarned > 0 then
 
             --give skill points for number of ranks earned
-            self:GiveSkillPoints(kSkillPointSourceType.LevelUp, numberOfRanksEarned)
+            self:GiveCombatSkillPoints(kSkillPointSourceType.LevelUp, numberOfRanksEarned)
 
             if self.UpgradeManager then
                 self.UpgradeManager:UpdateUnlocks(true)
@@ -97,7 +97,7 @@ function CombatScoreMixin:SetCombatSkillPoints(skillPoints)
     self.combatSkillPoints = Clamp(skillPoints, 0, kMaxCombatSkillPoints)
 end
 
-function CombatScoreMixin:GiveSkillPoints(source, points)
+function CombatScoreMixin:GiveCombatSkillPoints(source, points)
 
     if Server and not GetGameInfoEntity():GetWarmUpActive() then
 
@@ -107,8 +107,10 @@ function CombatScoreMixin:GiveSkillPoints(source, points)
 
         self.combatSkillPoints = Clamp(self.combatSkillPoints + points, 0, kMaxCombatSkillPoints)
 
-        -- notify the client about the new skill points
-        Server.SendNetworkMessage(Server.GetOwner(self), "CombatSkillPointUpdate", { source = source, kills = self.killsGainedCurrentLife, assists = self.assistsGainedCurrentLife }, true)
+        if source ~= kXPSourceType.Refund then
+            -- notify the client about the new skill points
+            Server.SendNetworkMessage(Server.GetOwner(self), "CombatSkillPointUpdate", { source = source, kills = self.killsGainedCurrentLife, assists = self.assistsGainedCurrentLife }, true)
+        end
 
     end
 
@@ -117,7 +119,13 @@ end
 function CombatScoreMixin:SpendSkillPoints(pointsToSpend)
 
     if Server and not GetGameInfoEntity():GetWarmUpActive() then
-        self.combatSkillPoints = self.combatSkillPoints - pointsToSpend
+
+        if (self.combatSkillPoints - pointsToSpend) < 0 then
+            Shared.Message("Warning: Skill points spent that were not available.")
+        end
+
+        self.combatSkillPoints = Clamp(self.combatSkillPoints - pointsToSpend, 0, kMaxCombatSkillPoints)
+
     end
 
 end
@@ -162,7 +170,7 @@ function CombatScoreMixin:AddCombatKill(victimRank)
     self.killsGainedCurrentLife = self.killsGainedCurrentLife + 1
 
     if self.killsGainedCurrentLife == kKillsForRampageReward then
-        self:GiveSkillPoints(kSkillPointSourceType.KillStreak)
+        self:GiveCombatSkillPoints(kSkillPointSourceType.KillStreak)
     end
 
     self:AddXP(CombatPlusPlus_GetBaseKillXP(victimRank), kXPSourceType.Kill, Entity.invalidId)
@@ -184,7 +192,7 @@ function CombatScoreMixin:AddCombatAssistKill(victimRank)
     self.assistsGainedCurrentLife = self.assistsGainedCurrentLife + 1
 
     if self.assistsGainedCurrentLife == kAssistsForAssistReward then
-        self:GiveSkillPoints(kSkillPointSourceType.AssistStreak)
+        self:GiveCombatSkillPoints(kSkillPointSourceType.AssistStreak)
     end
 
     local xp = CombatPlusPlus_GetBaseKillXP(victimRank) * kXPAssistModifier
@@ -218,7 +226,7 @@ function CombatScoreMixin:AddCombatDamage(damage)
     self.damageDealtCurrentLife = self.damageDealtCurrentLife + damage
 
     if not self.damageDealerAwardReceived and self.damageDealtCurrentLife >= kDamageForDamageDealerAward then
-        self:GiveSkillPoints(kSkillPointSourceType.DamageDealer)
+        self:GiveCombatSkillPoints(kSkillPointSourceType.DamageDealer)
         self.damageDealerAwardReceived = true
     end
 

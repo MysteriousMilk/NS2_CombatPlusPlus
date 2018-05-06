@@ -1,9 +1,39 @@
+--[[
+ * Natural Selection 2 - Combat++ Mod
+ * Authors:
+ *          WhiteWizard
+ *
+ * Server-side player logic.
+ *
+ * Hooked Functions:
+ *  'Player:Reset' - Resets player upgrades and clears owned structures.
+ *  'Player:CopyPlayerDataFrom' - Copies important information from the old player object to the new player object.
+ *
+ * Overriden Functions:
+ *  'Player:ProcessBuyAction' - Uses the Upgrade Manager to purchase new upgrades.
+]]
+
+local ns2_Player_Reset = Player.Reset
+function Player:Reset()
+
+    ns2_Player_Reset(self)
+
+    if self.UpgradeManager then
+        self.UpgradeManager:Reset()
+        self.UpgradeManager:UpdateUnlocks(true)
+    end
+
+    self.ownedStructures = {}
+
+end
+
 local ns2_Player_CopyPlayerDataFrom = Player.CopyPlayerDataFrom
 function Player:CopyPlayerDataFrom(player)
 
     ns2_Player_CopyPlayerDataFrom(self, player)
 
     self.currentCreateStructureTechId = player.currentCreateStructureTechId
+    self.ownedStructures = player.ownedStructures
 
     if self.UpgradeManager and player.UpgradeManager then
         self.UpgradeManager:GetTree():CopyFrom(player.UpgradeManager:GetTree(), false)
@@ -34,51 +64,22 @@ function Player:ProcessBuyAction(techIds)
 
 end
 
-local ns2_Player_Replace = Player.Replace
-function Player:Replace(mapName, newTeamNumber, preserveWeapons, atOrigin, extraValues)
+--[[
+    Call this function to destroy/kill any structures created by the player.
+]]
+function Player:KillOwnedStructures()
 
-    local persistUpgrades = nil
-    local upgradeTree = nil
-    local oldPlayerActive = self:GetTeamNumber() == kTeam1Index or self:GetTeamNumber() == kTeam2Index
+    for _, entId in ipairs(self.ownedStructures) do
 
-    if self.UpgradeManager then
+        entity = Shared.GetEntity(entId)
 
-        -- cache off the upgrade tree and persistent upgrades from the "old" player
-        upgradeTree = self.UpgradeManager:GetTree()
-        persistUpgrades = upgradeTree:GetPurchasedPersistentUpgrades()
-
-        --Shared.Message(string.format("Number of persist upgrades: %s", #persistUpgrades))
+        -- kill the entity
+        if HasMixin(entity, "Live") and entity:GetIsAlive() and entity:GetCanDie(true) then
+            entity:Kill()
+        end
 
     end
 
-    -- do the normal replace
-    local player = ns2_Player_Replace(self, mapName, newTeamNumber, preserveWeapons, atOrigin, extraValues)
-
-    -- active player is one currently playing on Marines or Aliens
-    local newPlayerActive = player:GetTeamNumber() == kTeam1Index or player:GetTeamNumber() == kTeam2Index
-
-    -- if player.UpgradeManager then
-
-    --     if player:isa("Spectator") and upgradeTree and oldPlayerActive then
-
-    --         -- When the player is spectating between spawns, copy the tree to the "spectator" player so the
-    --         -- persist items can be given when the player respawns
-    --         --player.UpgradeManager:GetTree():CopyFrom(upgradeTree, false)
-
-    --     elseif newPlayerActive and persistUpgrades then
-
-    --         player.UpgradeManager:UpdateUnlocks(false)
-    --         player.UpgradeManager:GetTree():SendFullTree(player)
-
-    --         -- Respawning players get the certain "persistent" upgrades back
-    --         for k, node in ipairs(persistUpgrades) do
-    --             player.UpgradeManager:GiveUpgrade(node:GetTechId(), player, true)
-    --         end
-
-    --     end
-
-    -- end
-
-    return player
+    self.ownedStructures = {}
 
 end

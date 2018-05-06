@@ -4,6 +4,14 @@
 The intent of this mod is to bring back a gameplay type using the orignial Natural Selection 1 Combat Mod for primary insiration, use the [Natural Selection 2 Combat Mod](https://github.com/AlexHayton/NS2Combat) as a reference and possibly incorporate some ideas from the Combat Standalone (placing structures, etc).  Seeing as how the title is still 'Combat', I'd like to keep that original gametype feel as much as possible (individual xp, no commanders), an not alter the lifeform, gun, or game physics as many players use combat for practicing for the vanilla game.
 
 ## Latest Changes
+**5/6/2018** - Overall uplift to the structure logic.
+    - Fixed issue with player spawning with the builder in create mode if they died with the builder open.  This also corrected the issue where the skill points could go negative.
+    - Fixed issue with only being able to select a certain structure once from the buy menu.
+    - Added hard caps to structures so that there is a limit for how many of a structure type the team can place.
+    - If a player leaves the team or disconnects, the structures they placed will now be killed.
+    - If a player's structure is destroyed, they are refunded the skill points they spent on that structure.
+    - There is still no good way to reselect the builder tool (create mode).  The workaround is to select the structure from the buy menu again.
+
 **5/4/2018** - Major overhaul to the upgrade system, some updates to the Marine Buy Menu, more progress on Alien Buy Menu.
 
 **4/3/2018** - Players now gain xp for teammate kills nearby, ejecting from Exos has been disabled, and players now receive credit for sentry and babbler kills if they are the one that placed/created it.

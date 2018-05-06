@@ -13,6 +13,7 @@ kMaxCombatSkillPoints = 100
 kXPSourceType = enum(
 {
     "Console",
+    "Refund",
     "Kill",
     "Assist",
     "Damage",
@@ -45,5 +46,6 @@ kDamageXPIndicatorOffset = 30
 kCombatUpgradeType = enum( 
 { 
 	"Class", 
-	"Upgrade" 
+    "Upgrade",
+    "Structure"
 }) 

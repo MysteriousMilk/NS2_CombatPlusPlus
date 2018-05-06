@@ -295,6 +295,16 @@ local function GetIsEquipped(techId)
 
 end
 
+local function GetIsHardCapped(techId, player)
+
+    if CombatPlusPlus_GetIsStructureTechId(techId) then
+        return CombatPlusPlus_GetStructureCountForTeam(techId, player:GetTeamNumber()) >= LookupUpgradeData(techId, kUpDataHardCapIndex)
+    end
+
+    return false
+
+end
+
 --
 -- Checks if the mouse is over the passed in GUIItem and plays a sound if it has just moved over.
 --
@@ -310,6 +320,9 @@ local function GetIsMouseOver(self, overItem)
 end
 
 local function UpdateItemsGUIScale(self)
+
+    --background
+    MarineBuyMenu.kBkgCenteredWidth = GUIScale(1000)
 
     -- marine logo
     MarineBuyMenu.kLogoSize = GUIScale(Vector(90, 90, 0))
@@ -426,9 +439,9 @@ function MarineBuyMenu:_InitializeBackground()
     self.background:SetLayer(kGUILayerPlayerHUDForeground4)
 
     self.backgroundCenteredArea = GUIManager:CreateGraphicItem()
-    self.backgroundCenteredArea:SetSize( Vector(1000, Client.GetScreenHeight(), 0) )
+    self.backgroundCenteredArea:SetSize( Vector(MarineBuyMenu.kBkgCenteredWidth, Client.GetScreenHeight(), 0) )
     self.backgroundCenteredArea:SetAnchor(GUIItem.Middle, GUIItem.Top)
-    self.backgroundCenteredArea:SetPosition( Vector(-500, 0, 0) )
+    self.backgroundCenteredArea:SetPosition( Vector(-(MarineBuyMenu.kBkgCenteredWidth / 2), 0, 0) )
     self.backgroundCenteredArea:SetColor(MarineBuyMenu.kBackgroundCenterColor)
     self.background:AddChild(self.backgroundCenteredArea)
 
@@ -843,11 +856,12 @@ local function InitStructureButtons(self, player)
         local rankRequired = LookupUpgradeData(itemTechId, kUpDataRankIndex)
         local canAfford = cost <= player.combatSkillPoints
         local hasRequiredRank = rankRequired <= player.combatRank
+        local isHardcapped = GetIsHardCapped(itemTechId, player)
 
         local enabled = canAfford and hasRequiredRank
         local iconColor = Color(1, 1, 1, 1)
 
-        if hasRequiredRank and not canAfford then
+        if (hasRequiredRank and not canAfford) or isHardcapped then
             iconColor = MarineBuyMenu.kRedHighlight
         end
 
@@ -894,12 +908,29 @@ local function InitStructureButtons(self, player)
         resText:SetScale(GetScaledVector())
         GUIMakeFontScale(resText)
         resText:SetAnchor(GUIItem.Right, GUIItem.Bottom)
-        resText:SetPosition( Vector(-8, -14, 0) )
+        resText:SetPosition( GUIScale(Vector(-8, -14, 0)) )
         resText:SetTextAlignmentX(GUIItem.Align_Max)
         resText:SetTextAlignmentY(GUIItem.Align_Center)
         resText:SetColor(resColor)
         resText:SetText(string.format("%s", cost))
         buttonGraphic:AddChild(resText)
+
+        local hardCapColor = MarineBuyMenu.kTextColor
+        if isHardcapped then
+            hardCapColor = MarineBuyMenu.kRedHighlight
+        end
+
+        local hardCapText = GUIManager:CreateTextItem()
+        hardCapText:SetFontName(Fonts.kAgencyFB_Tiny)
+        hardCapText:SetScale(GetScaledVector())
+        GUIMakeFontScale(hardCapText)
+        hardCapText:SetAnchor(GUIItem.Right, GUIItem.Top)
+        hardCapText:SetPosition( GUIScale(Vector(-26, 4, 0)) )
+        hardCapText:SetTextAlignmentX(GUIItem.Align_Min)
+        hardCapText:SetTextAlignmentY(GUIItem.Align_Min)
+        hardCapText:SetColor(hardCapColor)
+        hardCapText:SetText(string.format("%s/%s", CombatPlusPlus_GetStructureCountForTeam(itemTechId, player:GetTeamNumber()), LookupUpgradeData(itemTechId, kUpDataHardCapIndex)))
+        buttonGraphic:AddChild(hardCapText)
 
         columnIndex = columnIndex + 1
 
@@ -1151,10 +1182,11 @@ function MarineBuyMenu:_UpdateItemButtons(deltaTime)
                 local player = Client.GetLocalPlayer()
                 local cost = LookupUpgradeData(item.TechId, kUpDataCostIndex)
                 local rankRequired = LookupUpgradeData(item.TechId, kUpDataRankIndex)
-                local equipped = GetIsEquipped(item.TechId)
+                local equipped = GetIsEquipped(item.TechId) and not CombatPlusPlus_GetIsStructureTechId(item.TechId)
                 local hasPrereq = GetHasPrerequisite(item.TechId)
                 local canAfford = cost <= player.combatSkillPoints
                 local hasRequiredRank = rankRequired <= player.combatRank
+                local isHardcapped = GetIsHardCapped(item.TechId, player)
                 local helpString = ""
 
                 if equipped then
@@ -1177,6 +1209,17 @@ function MarineBuyMenu:_UpdateItemButtons(deltaTime)
                 elseif not canAfford then
 
                     helpString = "Cannot purchase. Not enough skill points."
+                    self.helpText:SetColor(MarineBuyMenu.kRedHighlight)
+                    item.Button:SetColor(MarineBuyMenu.kRedHighlight)
+
+                elseif isHardcapped then
+
+                    if CombatPlusPlus_GetIsStructureTechId(item.TechId) then
+                        helpString = "Cannot purchase.  Too many of this structure type are already built."
+                    else
+                        helpString = "Cannot purchase.  Too many players already have this upgrade."
+                    end
+
                     self.helpText:SetColor(MarineBuyMenu.kRedHighlight)
                     item.Button:SetColor(MarineBuyMenu.kRedHighlight)
 
@@ -1221,12 +1264,13 @@ local function HandleItemClicked(self, mouseX, mouseY)
                 local player = Client.GetLocalPlayer()
                 local cost = LookupUpgradeData(item.TechId, kUpDataCostIndex)
                 local rankRequired = LookupUpgradeData(item.TechId, kUpDataRankIndex)
-                local equipped = GetIsEquipped(item.TechId)
+                local equipped = GetIsEquipped(item.TechId) and not CombatPlusPlus_GetIsStructureTechId(item.TechId)
                 local hasPrereq = GetHasPrerequisite(item.TechId)
                 local canAfford = cost <= player.combatSkillPoints
                 local hasRequiredRank = rankRequired <= player.combatRank
+                local isHardcapped = GetIsHardCapped(item.TechId, player)
 
-                if hasRequiredRank and canAfford and hasPrereq and not equipped then
+                if hasRequiredRank and canAfford and hasPrereq and not equipped and not isHardcapped then
 
                     MarineBuy_PurchaseItem(item.TechId)
                     MarineBuy_OnClose()
