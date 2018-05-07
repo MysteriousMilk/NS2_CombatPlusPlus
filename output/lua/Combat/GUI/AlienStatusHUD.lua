@@ -3,32 +3,32 @@ Script.Load("lua/GUIUtility.lua")
 Script.Load("lua/Hud/Alien/GUIAlienHUDStyle.lua")
 Script.Load("lua/GUIAnimatedScript.lua")
 
-class 'CPPGUIAlienCombatHUD' (GUIAnimatedScript)
+class 'AlienStatusHUD' (GUIAnimatedScript)
 
-CPPGUIAlienCombatHUD.kXpBarBkgTexture = PrecacheAsset("ui/combatui_alien_xpbar_bkg.dds")
-CPPGUIAlienCombatHUD.kXpBarOverlayTexture = PrecacheAsset("ui/combatui_alien_xpbar_overlay.dds")
+AlienStatusHUD.kXpBarBkgTexture = PrecacheAsset("ui/combatui_alien_xpbar_bkg.dds")
+AlienStatusHUD.kXpBarOverlayTexture = PrecacheAsset("ui/combatui_alien_xpbar_overlay.dds")
 
-CPPGUIAlienCombatHUD.kXPBarSize = Vector(800, 32, 0)
-CPPGUIAlienCombatHUD.kXPBarSizeScaled = Vector(800, 32, 0)
+AlienStatusHUD.kXPBarSize = Vector(800, 32, 0)
+AlienStatusHUD.kXPBarSizeScaled = Vector(800, 32, 0)
 
-CPPGUIAlienCombatHUD.kAnimSpeedDown = 0.2
-CPPGUIAlienCombatHUD.kAnimSpeedUp = 0.5
+AlienStatusHUD.kAnimSpeedDown = 0.2
+AlienStatusHUD.kAnimSpeedUp = 0.5
 
-CPPGUIAlienCombatHUD.kXPFontName = Fonts.kArial_13
-CPPGUIAlienCombatHUD.kXPTextPosition = Vector(0, -123, 0)
+AlienStatusHUD.kXPFontName = Fonts.kArial_13
+AlienStatusHUD.kXPTextPosition = Vector(0, -123, 0)
 
-CPPGUIAlienCombatHUD.kRankFontName = Fonts.kStamp_Medium
-CPPGUIAlienCombatHUD.kRankTextPosition = Vector(0, -154, 0)
+AlienStatusHUD.kRankFontName = Fonts.kStamp_Medium
+AlienStatusHUD.kRankTextPosition = Vector(0, -154, 0)
 
-CPPGUIAlienCombatHUD.kSkillIconTexture = PrecacheAsset("ui/alien_HUD_presicon.dds")
-CPPGUIAlienCombatHUD.kSkillIconPixelCoords = { 6, 25, 26, 45 }
-CPPGUIAlienCombatHUD.kSkillIconSize = Vector(25, 25, 0)
-CPPGUIAlienCombatHUD.kSkillIconPos = Vector(-160, -28, 0)
+AlienStatusHUD.kSkillIconTexture = PrecacheAsset("ui/alien_HUD_presicon.dds")
+AlienStatusHUD.kSkillIconPixelCoords = { 6, 25, 26, 45 }
+AlienStatusHUD.kSkillIconSize = Vector(25, 25, 0)
+AlienStatusHUD.kSkillIconPos = Vector(-160, -28, 0)
 
-CPPGUIAlienCombatHUD.kSkillPointFontName = Fonts.kAgencyFB_Small
-CPPGUIAlienCombatHUD.kSkillPointTextPos = Vector(-130, -17, 0)
+AlienStatusHUD.kSkillPointFontName = Fonts.kAgencyFB_Small
+AlienStatusHUD.kSkillPointTextPos = Vector(-130, -17, 0)
 
-function CPPGUIAlienCombatHUD:Initialize()
+function AlienStatusHUD:Initialize()
 
     GUIAnimatedScript.Initialize(self)
 
@@ -47,19 +47,19 @@ function CPPGUIAlienCombatHUD:Initialize()
 
     self.xpBarBackground = self:CreateAnimatedGraphicItem()
     self.xpBarBackground:SetAnchor(GUIItem.Middle, GUIItem.Bottom)
-    self.xpBarBackground:SetTexture(CPPGUIAlienCombatHUD.kXpBarBkgTexture)
+    self.xpBarBackground:SetTexture(AlienStatusHUD.kXpBarBkgTexture)
     self.xpBarBackground:SetIsVisible(true)
     self.background:AddChild(self.xpBarBackground)
 
     self.xpBar = self:CreateAnimatedGraphicItem()
     self.xpBar:SetAnchor(GUIItem.Middle, GUIItem.Bottom)
-    self.xpBar:SetTexture(CPPGUIAlienCombatHUD.kXpBarOverlayTexture)
+    self.xpBar:SetTexture(AlienStatusHUD.kXpBarOverlayTexture)
     self.xpBar:SetTexturePixelCoordinates(0, 0, 0, 32)
     self.xpBar:SetIsVisible(true)
     self.background:AddChild(self.xpBar)
 
     self.currentXPText = GetGUIManager():CreateTextItem()
-    self.currentXPText:SetFontName(CPPGUIAlienCombatHUD.kXPFontName)
+    self.currentXPText:SetFontName(AlienStatusHUD.kXPFontName)
     self.currentXPText:SetAnchor(GUIItem.Middle, GUIItem.Bottom)
     self.currentXPText:SetTextAlignmentX(GUIItem.Align_Center)
     self.currentXPText:SetTextAlignmentY(GUIItem.Align_Center)
@@ -69,7 +69,7 @@ function CPPGUIAlienCombatHUD:Initialize()
     self.background:AddChild(self.currentXPText)
 
     self.currentRankText = GetGUIManager():CreateTextItem()
-    self.currentRankText:SetFontName(CPPGUIAlienCombatHUD.kRankFontName)
+    self.currentRankText:SetFontName(AlienStatusHUD.kRankFontName)
     self.currentRankText:SetAnchor(GUIItem.Middle, GUIItem.Bottom)
     self.currentRankText:SetTextAlignmentX(GUIItem.Align_Center)
     self.currentRankText:SetTextAlignmentY(GUIItem.Align_Center)
@@ -80,12 +80,12 @@ function CPPGUIAlienCombatHUD:Initialize()
 
     self.skillPointIcon = self:CreateAnimatedGraphicItem()
     self.skillPointIcon:SetAnchor(GUIItem.Right, GUIItem.Top)
-    self.skillPointIcon:SetTexture(CPPGUIAlienCombatHUD.kSkillIconTexture)
-    self.skillPointIcon:SetTexturePixelCoordinates(unpack(CPPGUIAlienCombatHUD.kSkillIconPixelCoords))
+    self.skillPointIcon:SetTexture(AlienStatusHUD.kSkillIconTexture)
+    self.skillPointIcon:SetTexturePixelCoordinates(unpack(AlienStatusHUD.kSkillIconPixelCoords))
     self.xpBarBackground:AddChild(self.skillPointIcon)
 
     self.skillPointText = GetGUIManager():CreateTextItem()
-    self.skillPointText:SetFontName(CPPGUIAlienCombatHUD.kSkillPointFontName)
+    self.skillPointText:SetFontName(AlienStatusHUD.kSkillPointFontName)
     self.skillPointText:SetAnchor(GUIItem.Right, GUIItem.Top)
     self.skillPointText:SetTextAlignmentX(GUIItem.Align_Min)
     self.skillPointText:SetTextAlignmentY(GUIItem.Align_Center)
@@ -101,45 +101,45 @@ function CPPGUIAlienCombatHUD:Initialize()
 
 end
 
-function CPPGUIAlienCombatHUD:Reset(scale)
+function AlienStatusHUD:Reset(scale)
 
     self.scale = scale
     GUIAnimatedScript.Reset(self)
 
     self.background:SetSize(Vector(Client.GetScreenWidth(), Client.GetScreenHeight(),0))
 
-    local xpBarWidthBkg = GUIScaleWidth(CPPGUIAlienCombatHUD.kXPBarSize.x)
+    local xpBarWidthBkg = GUIScaleWidth(AlienStatusHUD.kXPBarSize.x)
     self.xpBarBackground:SetUniformScale(self.scale)
     self.xpBarBackground:SetSize( Vector(xpBarWidthBkg, 32, 0) )
     self.xpBarBackground:SetPosition( Vector(-1 * xpBarWidthBkg / 2, -140, 0) )
 
-    CPPGUIAlienCombatHUD.kXPBarSizeScaled = Vector(GUIScaleWidth(CPPGUIAlienCombatHUD.kXPBarSizeScaled.x), CPPGUIAlienCombatHUD.kXPBarSizeScaled.y, 0)
+    AlienStatusHUD.kXPBarSizeScaled = Vector(GUIScaleWidth(AlienStatusHUD.kXPBarSizeScaled.x), AlienStatusHUD.kXPBarSizeScaled.y, 0)
     self.xpBar:SetUniformScale(self.scale)
-    self.xpBar:SetSize( Vector(0, CPPGUIAlienCombatHUD.kXPBarSizeScaled.y, 0) )
+    self.xpBar:SetSize( Vector(0, AlienStatusHUD.kXPBarSizeScaled.y, 0) )
     self.xpBar:SetPosition( Vector(-1 * xpBarWidthBkg / 2, -140, 0) )
 
     self.currentXPText:SetScale(GetScaledVector())
-    self.currentXPText:SetPosition(CPPGUIAlienCombatHUD.kXPTextPosition)
-    self.currentXPText:SetFontName(CPPGUIAlienCombatHUD.kXPFontName)
+    self.currentXPText:SetPosition(AlienStatusHUD.kXPTextPosition)
+    self.currentXPText:SetFontName(AlienStatusHUD.kXPFontName)
     GUIMakeFontScale(self.currentXPText)
 
     self.currentRankText:SetScale(GetScaledVector())
-    self.currentRankText:SetPosition(CPPGUIAlienCombatHUD.kRankTextPosition)
-    self.currentRankText:SetFontName(CPPGUIAlienCombatHUD.kRankFontName)
+    self.currentRankText:SetPosition(AlienStatusHUD.kRankTextPosition)
+    self.currentRankText:SetFontName(AlienStatusHUD.kRankFontName)
     GUIMakeFontScale(self.currentRankText)
 
     self.skillPointIcon:SetUniformScale(self.scale)
-    self.skillPointIcon:SetPosition(CPPGUIAlienCombatHUD.kSkillIconPos)
-    self.skillPointIcon:SetSize(CPPGUIAlienCombatHUD.kSkillIconSize)
+    self.skillPointIcon:SetPosition(AlienStatusHUD.kSkillIconPos)
+    self.skillPointIcon:SetSize(AlienStatusHUD.kSkillIconSize)
 
     self.skillPointText:SetScale(GetScaledVector())
-    self.skillPointText:SetPosition(CPPGUIAlienCombatHUD.kSkillPointTextPos)
-    self.skillPointText:SetFontName(CPPGUIAlienCombatHUD.kSkillPointFontName)
+    self.skillPointText:SetPosition(AlienStatusHUD.kSkillPointTextPos)
+    self.skillPointText:SetFontName(AlienStatusHUD.kSkillPointFontName)
     GUIMakeFontScale(self.skillPointText)
 
 end
 
-function CPPGUIAlienCombatHUD:Uninitialize()
+function AlienStatusHUD:Uninitialize()
 
     GUIAnimatedScript.Uninitialize(self)
 
@@ -154,7 +154,7 @@ function CPPGUIAlienCombatHUD:Uninitialize()
 
 end
 
-function CPPGUIAlienCombatHUD:UpdateVisibility()
+function AlienStatusHUD:UpdateVisibility()
 
     self.xpBarBackground:SetIsVisible(self.visible)
     self.xpBar:SetIsVisible(self.visible)
@@ -165,20 +165,20 @@ function CPPGUIAlienCombatHUD:UpdateVisibility()
 
 end
 
-function CPPGUIAlienCombatHUD:SetIsVisible(isVisible)
+function AlienStatusHUD:SetIsVisible(isVisible)
 
     self.visible = isVisible
     self:UpdateVisibility()
 
 end
 
-function CPPGUIAlienCombatHUD:GetIsVisible()
+function AlienStatusHUD:GetIsVisible()
 
     return self.visible
 
 end
 
-function CPPGUIAlienCombatHUD:OnResolutionChanged(oldX, oldY, newX, newY)
+function AlienStatusHUD:OnResolutionChanged(oldX, oldY, newX, newY)
 
     self:Reset(newY / kBaseScreenHeight)
 
@@ -187,7 +187,7 @@ function CPPGUIAlienCombatHUD:OnResolutionChanged(oldX, oldY, newX, newY)
 
 end
 
-function CPPGUIAlienCombatHUD:Update(deltaTime)
+function AlienStatusHUD:Update(deltaTime)
 
     GUIAnimatedScript.Update(self, deltaTime)
 
@@ -230,8 +230,8 @@ function CPPGUIAlienCombatHUD:Update(deltaTime)
 
             if currentRank > self.lastRank then
                 self.xpBar:DestroyAnimations()
-                self.xpBar:SetSize(Vector(0, CPPGUIAlienCombatHUD.kXPBarSizeScaled.y, 0))
-                self.xpBar:SetTexturePixelCoordinates(0, 0, 0, CPPGUIAlienCombatHUD.kXPBarSizeScaled.y)
+                self.xpBar:SetSize(Vector(0, AlienStatusHUD.kXPBarSizeScaled.y, 0))
+                self.xpBar:SetTexturePixelCoordinates(0, 0, 0, AlienStatusHUD.kXPBarSizeScaled.y)
             end
 
             self.lastRank = currentRank
@@ -240,10 +240,10 @@ function CPPGUIAlienCombatHUD:Update(deltaTime)
 
         if currentXP ~= self.lastXP then
 
-            local animSpeed = ConditionalValue(currentXP < self.lastXP, CPPGUIAlienCombatHUD.kAnimSpeedDown, CPPGUIAlienCombatHUD.kAnimSpeedUp)
+            local animSpeed = ConditionalValue(currentXP < self.lastXP, AlienStatusHUD.kAnimSpeedDown, AlienStatusHUD.kAnimSpeedUp)
 
             local xpFraction = currentXPNorm / newXPThresholdNorm
-            local xpBarSize = Vector(CPPGUIAlienCombatHUD.kXPBarSizeScaled.x * xpFraction, CPPGUIAlienCombatHUD.kXPBarSizeScaled.y, 0)
+            local xpBarSize = Vector(AlienStatusHUD.kXPBarSizeScaled.x * xpFraction, AlienStatusHUD.kXPBarSizeScaled.y, 0)
 
             self.xpBar:DestroyAnimations()
             self.xpBar:SetSize(xpBarSize, animSpeed)

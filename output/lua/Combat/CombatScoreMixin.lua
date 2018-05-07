@@ -31,15 +31,12 @@ function CombatScoreMixin:GetCombatXP()
     return self.combatXP
 end
 
-local kNonScalableXPTypes = { [kXPSourceType.Console] = true, [kXPSourceType.Damage] = true, [kXPSourceType.Weld] = true, [kXPSourceType.Heal] = true }
 function CombatScoreMixin:AddXP(xp, source, targetId)
 
     if Server and xp and xp ~= 0 and not GetGameInfoEntity():GetWarmUpActive() then
 
-        -- Console command to give rank should be excluded from xp scaling
-        -- XP given due to damage should be excluded from scaling
-        -- XP given due to welding should be excluded from scaling
-        if not kNonScalableXPTypes[source] then
+        -- Check to see if xp should be scaled
+        if CombatPlusPlus_GetIsScalableXPType(source) then
             xp = ScaleXPByDistance(self, xp)
         end
 
@@ -235,7 +232,7 @@ function CombatScoreMixin:AddCombatDamage(damage)
     -- if the current damage amount crosses the threshold required, reward a little xp
     if self.damageSinceLastXPAward >= kDamageRequiredXPReward then
 
-        -- make sure not to let the remaining weld points "leak"
+        -- make sure not to let the remaining damage points "leak"
         self.damageSinceLastXPAward = self.damageSinceLastXPAward - kDamageRequiredXPReward
 
         -- add the xp

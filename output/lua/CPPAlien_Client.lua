@@ -15,7 +15,7 @@ function Alien:OnCountDown()
 
     ns2_Alien_OnCountDown(self)
 
-    ClientUI.SetScriptVisibility("CPPGUIAlienCombatHUD", "Countdown", false)
+    ClientUI.SetScriptVisibility("Combat/GUI/AlienStatusHUD", "Countdown", false)
 
 end
 
@@ -24,7 +24,7 @@ function Alien:OnCountDownEnd()
 
     ns2_Alien_OnCountDownEnd(self)
 
-    ClientUI.SetScriptVisibility("CPPGUIAlienCombatHUD", "Countdown", true)
+    ClientUI.SetScriptVisibility("Combat/GUI/AlienStatusHUD", "Countdown", true)
 
 end
 
@@ -41,7 +41,7 @@ function Alien:Buy()
             if not self.buyMenu then
 
                 -- new Combat Alien Buy Menu (WhiteWizard)
-                self.buyMenu = GetGUIManager():CreateGUIScript("CPPGUICombatAlienBuyMenu")
+                self.buyMenu = GetGUIManager():CreateGUIScript("Combat/GUI/AlienBuyMenu")
 
             else
                 self:CloseMenu()

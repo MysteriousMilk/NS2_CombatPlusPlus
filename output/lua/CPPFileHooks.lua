@@ -7,6 +7,7 @@
 ]]
 
 ModLoader.SetupFileHook( "lua/NS2Gamerules.lua", "lua/CPPGameRules.lua", "post" )
+ModLoader.SetupFileHook( "lua/NS2Utility.lua", "lua/CPPNS2Utility.lua", "post" )
 ModLoader.SetupFileHook( "lua/Balance.lua", "lua/CPPBalance.lua", "post" )
 ModLoader.SetupFileHook( "lua/Globals.lua", "lua/CPPGlobals.lua", "post" )
 ModLoader.SetupFileHook( "lua/ClientUI.lua", "lua/CPPClientUI.lua", "post" )

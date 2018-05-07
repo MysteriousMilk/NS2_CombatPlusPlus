@@ -9,7 +9,6 @@
 
 Script.Load("lua/Utility.lua")
 Script.Load("lua/Globals.lua")
-Script.Load("lua/MarinePersistData.lua")
 
 local gameMaster = nil
 
@@ -48,13 +47,6 @@ class 'CPPGameMaster'
 
 function CPPGameMaster:OnCreate()
 
-    self.marinePersistData = MarinePersistData()
-    self.marinePersistData:OnCreate()
-
-end
-
-function CPPGameMaster:GetMarinePersistData()
-    return self.marinePersistData
 end
 
 function CPPGameMaster:GetMarineTechPoint()
@@ -71,9 +63,4 @@ end
 
 function CPPGameMaster:SetAlientTechPoint(techPoint)
     self.AlienTechPoint = techPoint
-end
-
-function CPPGameMaster:GetCommandStation()
-    local ents = GetEntitiesForTeam("CommandStation", kMarineTeamType)
-    return ents[1]
 end

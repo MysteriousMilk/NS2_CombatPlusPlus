@@ -9,62 +9,62 @@
 Script.Load("lua/GUIAnimatedScript.lua")
 Script.Load("lua/Combat/GUI/AnimatedTechButton.lua")
 
-class 'CPPGUICombatAlienBuyMenu' (GUIAnimatedScript)
+class 'AlienBuyMenu' (GUIAnimatedScript)
 
-CPPGUICombatAlienBuyMenu.kBackgroundColor = Color(0.28, 0.17, 0.04, 0.6)
-CPPGUICombatAlienBuyMenu.kBackgroundCenterColor = Color(0.4, 0.1, 0.06, 0.8)
-CPPGUICombatAlienBuyMenu.kBackgroundSize = Vector(1024, 1024, 0)
-CPPGUICombatAlienBuyMenu.kBackgroundTexture = PrecacheAsset("ui/combatui_alienbuy_bkg.dds")
+AlienBuyMenu.kBackgroundColor = Color(0.28, 0.17, 0.04, 0.6)
+AlienBuyMenu.kBackgroundCenterColor = Color(0.4, 0.1, 0.06, 0.8)
+AlienBuyMenu.kBackgroundSize = Vector(1024, 1024, 0)
+AlienBuyMenu.kBackgroundTexture = PrecacheAsset("ui/combatui_alienbuy_bkg.dds")
 
-CPPGUICombatAlienBuyMenu.kBuyMenuTexture = PrecacheAsset("ui/alien_buymenu.dds")
-CPPGUICombatAlienBuyMenu.kBuyMenuMaskTexture = PrecacheAsset("ui/alien_buymenu_mask.dds")
-CPPGUICombatAlienBuyMenu.kBuyHUDTexture = "ui/buildmenu.dds"
-CPPGUICombatAlienBuyMenu.kAbilityIcons = "ui/buildmenu.dds"
-CPPGUICombatAlienBuyMenu.kAlienLogoTexture = PrecacheAsset("ui/logo_alien.dds")
+AlienBuyMenu.kBuyMenuTexture = PrecacheAsset("ui/alien_buymenu.dds")
+AlienBuyMenu.kBuyMenuMaskTexture = PrecacheAsset("ui/alien_buymenu_mask.dds")
+AlienBuyMenu.kBuyHUDTexture = "ui/buildmenu.dds"
+AlienBuyMenu.kAbilityIcons = "ui/buildmenu.dds"
+AlienBuyMenu.kAlienLogoTexture = PrecacheAsset("ui/logo_alien.dds")
 
-CPPGUICombatAlienBuyMenu.KCurrentEvoBorderTexture = PrecacheAsset("ui/alien_commander_background.dds")
-CPPGUICombatAlienBuyMenu.kEvolvePanelBkgTexture = PrecacheAsset("ui/combatui_alienbuy_evolvequeuepanel.dds")
-CPPGUICombatAlienBuyMenu.kCloseIconTexture = PrecacheAsset("ui/close_icon.dds")
+AlienBuyMenu.KCurrentEvoBorderTexture = PrecacheAsset("ui/alien_commander_background.dds")
+AlienBuyMenu.kEvolvePanelBkgTexture = PrecacheAsset("ui/combatui_alienbuy_evolvequeuepanel.dds")
+AlienBuyMenu.kCloseIconTexture = PrecacheAsset("ui/close_icon.dds")
 
-CPPGUICombatAlienBuyMenu.kSlotTexture = PrecacheAsset("ui/alien_buyslot.dds")
-CPPGUICombatAlienBuyMenu.kSlotLockedTexture = PrecacheAsset("ui/alien_buyslot_locked.dds")
+AlienBuyMenu.kSlotTexture = PrecacheAsset("ui/alien_buyslot.dds")
+AlienBuyMenu.kSlotLockedTexture = PrecacheAsset("ui/alien_buyslot_locked.dds")
 
-CPPGUICombatAlienBuyMenu.kBackgroundTextureCoordinates = { 9, 1, 602, 424 }
+AlienBuyMenu.kBackgroundTextureCoordinates = { 9, 1, 602, 424 }
 
-CPPGUICombatAlienBuyMenu.kAlienSelectedBackground = PrecacheAsset("ui/AlienBackground.dds")
+AlienBuyMenu.kAlienSelectedBackground = PrecacheAsset("ui/AlienBackground.dds")
 
-CPPGUICombatAlienBuyMenu.kEvolveButtonNeedResourcesTextureCoordinates = { 87, 429, 396, 511 }
-CPPGUICombatAlienBuyMenu.kEvolveButtonTextureCoordinates = { 396, 428, 706, 511 }
-CPPGUICombatAlienBuyMenu.kEvolveButtonVeinsTextureCoordinates = { 600, 350, 915, 419 }
+AlienBuyMenu.kEvolveButtonNeedResourcesTextureCoordinates = { 87, 429, 396, 511 }
+AlienBuyMenu.kEvolveButtonTextureCoordinates = { 396, 428, 706, 511 }
+AlienBuyMenu.kEvolveButtonVeinsTextureCoordinates = { 600, 350, 915, 419 }
 local kVeinsMargin = GUIScale(4)
 
-CPPGUICombatAlienBuyMenu.kResourceIconTexture = PrecacheAsset("ui/pres_icon_big.dds")
+AlienBuyMenu.kResourceIconTexture = PrecacheAsset("ui/pres_icon_big.dds")
 
-CPPGUICombatAlienBuyMenu.kTitleFont = Fonts.kStamp_Large
-CPPGUICombatAlienBuyMenu.kHeaderFont = Fonts.kStamp_Medium
-CPPGUICombatAlienBuyMenu.kHeaderAltFont = Fonts.kAgencyFB_Small
-CPPGUICombatAlienBuyMenu.kSubHeaderFont = Fonts.kArial_Tiny
-CPPGUICombatAlienBuyMenu.kTextColor = Color(kAlienFontColor)
+AlienBuyMenu.kTitleFont = Fonts.kStamp_Large
+AlienBuyMenu.kHeaderFont = Fonts.kStamp_Medium
+AlienBuyMenu.kHeaderAltFont = Fonts.kAgencyFB_Small
+AlienBuyMenu.kSubHeaderFont = Fonts.kArial_Tiny
+AlienBuyMenu.kTextColor = Color(kAlienFontColor)
 
-CPPGUICombatAlienBuyMenu.kCornerPulseTime = 4
-CPPGUICombatAlienBuyMenu.kCornerTextureCoordinates = { TopLeft = { 605, 1, 765, 145 },  BottomLeft = { 605, 145, 765, 290 }, TopRight = { 765, 1, 910, 145 }, BottomRight = { 765, 145, 910, 290 } }
-CPPGUICombatAlienBuyMenu.kCornerWidths = { }
-CPPGUICombatAlienBuyMenu.kCornerHeights = { }
+AlienBuyMenu.kCornerPulseTime = 4
+AlienBuyMenu.kCornerTextureCoordinates = { TopLeft = { 605, 1, 765, 145 },  BottomLeft = { 605, 145, 765, 290 }, TopRight = { 765, 1, 910, 145 }, BottomRight = { 765, 145, 910, 290 } }
+AlienBuyMenu.kCornerWidths = { }
+AlienBuyMenu.kCornerHeights = { }
 
-CPPGUICombatAlienBuyMenu.kMaxNumberOfUpgradeButtons = 8
-CPPGUICombatAlienBuyMenu.kUpgradeButtonTextureSize = 80
-CPPGUICombatAlienBuyMenu.kUpgradeButtonBackgroundTextureCoordinates = { 15, 434, 85, 505 }
-CPPGUICombatAlienBuyMenu.kUpgradeButtonMoveTime = 0.5
+AlienBuyMenu.kMaxNumberOfUpgradeButtons = 8
+AlienBuyMenu.kUpgradeButtonTextureSize = 80
+AlienBuyMenu.kUpgradeButtonBackgroundTextureCoordinates = { 15, 434, 85, 505 }
+AlienBuyMenu.kUpgradeButtonMoveTime = 0.5
 
 local kTooltipTextWidth = GUIScale(300)
 
-CPPGUICombatAlienBuyMenu.kHealthIconTextureCoordinates = { 854, 318, 887, 351 }
-CPPGUICombatAlienBuyMenu.kArmorIconTextureCoordinates = { 887, 318, 920, 351 }
+AlienBuyMenu.kHealthIconTextureCoordinates = { 854, 318, 887, 351 }
+AlienBuyMenu.kArmorIconTextureCoordinates = { 887, 318, 920, 351 }
 
-CPPGUICombatAlienBuyMenu.kRedHighlight = Color(1, 0.3, 0.3, 1)
-CPPGUICombatAlienBuyMenu.kDisabledColor = Color(0.5, 0.5, 0.5, 0.5)
-CPPGUICombatAlienBuyMenu.kCannotBuyColor = Color(1, 0, 0, 0.5)
-CPPGUICombatAlienBuyMenu.kEnabledColor = Color(1, 1, 1, 1)
+AlienBuyMenu.kRedHighlight = Color(1, 0.3, 0.3, 1)
+AlienBuyMenu.kDisabledColor = Color(0.5, 0.5, 0.5, 0.5)
+AlienBuyMenu.kCannotBuyColor = Color(1, 0, 0, 0.5)
+AlienBuyMenu.kEnabledColor = Color(1, 1, 1, 1)
 
 local kLargeFont = Fonts.kAgencyFB_Large
 local kFont = Fonts.kAgencyFB_Small
@@ -152,7 +152,7 @@ end
 --
 -- Checks if the mouse is over the passed in GUIItem and plays a sound if it has just moved over.
 --
-function CPPGUICombatAlienBuyMenu:_GetIsMouseOver(overItem)
+function AlienBuyMenu:_GetIsMouseOver(overItem)
 
     local mouseOver = GUIItemContainsPoint(overItem, Client.GetCursorPosScreen())
     if mouseOver and not self.mouseOverStates[overItem] then
@@ -165,95 +165,95 @@ end
 
 local function UpdateItemsGUIScale(self)
 
-    CPPGUICombatAlienBuyMenu.kAlienTypes = { { LocaleName = Locale.ResolveString("FADE"), Name = "Fade", Width = GUIScale(188), Height = GUIScale(220), XPos = 2, Index = 1, TechId = kTechId.Fade },
+    AlienBuyMenu.kAlienTypes = { { LocaleName = Locale.ResolveString("FADE"), Name = "Fade", Width = GUIScale(188), Height = GUIScale(220), XPos = 2, Index = 1, TechId = kTechId.Fade },
         { LocaleName = Locale.ResolveString("GORGE"), Name = "Gorge", Width = GUIScale(200), Height = GUIScale(167), XPos = 4, Index = 2, TechId = kTechId.Gorge },
         { LocaleName = Locale.ResolveString("LERK"), Name = "Lerk", Width = GUIScale(284), Height = GUIScale(253), XPos = 3, Index = 3, TechId = kTechId.Lerk },
         { LocaleName = Locale.ResolveString("ONOS"), Name = "Onos", Width = GUIScale(304), Height = GUIScale(326), XPos = 1, Index = 4, TechId = kTechId.Onos },
         { LocaleName = Locale.ResolveString("SKULK"), Name = "Skulk", Width = GUIScale(240), Height = GUIScale(170), XPos = 5, Index = 5, TechId = kTechId.Skulk } }
 
 
-    CPPGUICombatAlienBuyMenu.kLogoSize = GUIScale(128)
-    CPPGUICombatAlienBuyMenu.kBackgroundTextureSize = GUIScale(Vector(1000, 1080, 0))
+    AlienBuyMenu.kLogoSize = GUIScale(128)
+    AlienBuyMenu.kBackgroundTextureSize = GUIScale(Vector(1000, 1080, 0))
 
     -- title offsets
-    CPPGUICombatAlienBuyMenu.kTitleOffset = GUIScale(Vector(158, 40, 0))
-    CPPGUICombatAlienBuyMenu.kCurrentEvoTitleOffset = GUIScale(Vector(16, 6, 0))
-    CPPGUICombatAlienBuyMenu.kLifeformsTitleOffset = GUIScale(Vector(60, 248, 0))
-    CPPGUICombatAlienBuyMenu.kUpgradesTitleOffest = GUIScale(Vector(60, 620, 0))
+    AlienBuyMenu.kTitleOffset = GUIScale(Vector(158, 40, 0))
+    AlienBuyMenu.kCurrentEvoTitleOffset = GUIScale(Vector(16, 6, 0))
+    AlienBuyMenu.kLifeformsTitleOffset = GUIScale(Vector(60, 248, 0))
+    AlienBuyMenu.kUpgradesTitleOffest = GUIScale(Vector(60, 620, 0))
 
     -- header and mouse over info offsets
-    CPPGUICombatAlienBuyMenu.kResIconOffset = GUIScale(Vector(158, 75, 0))
+    AlienBuyMenu.kResIconOffset = GUIScale(Vector(158, 75, 0))
 
-    CPPGUICombatAlienBuyMenu.kMouseOverPanelOffset = GUIScale(Vector(60, 140, 0))
-    CPPGUICombatAlienBuyMenu.kMouseOverTitleOffset = GUIScale(Vector(16, 6, 0))
-    CPPGUICombatAlienBuyMenu.kMouseOverInfoOffset = GUIScale(Vector(16, 50, 0))
-    CPPGUICombatAlienBuyMenu.kMouseOverCostOffset = GUIScale(Vector(-20, 6, 0))
-    CPPGUICombatAlienBuyMenu.kMouseOverInfoResIconOffset = GUIScale(Vector(-40, 8, 0))
-    CPPGUICombatAlienBuyMenu.kStatsPadding = GUIScale(Vector(5, 0, 0))
-    CPPGUICombatAlienBuyMenu.kStatsPaddingY = GUIScale(Vector(0, 2,0))
+    AlienBuyMenu.kMouseOverPanelOffset = GUIScale(Vector(60, 140, 0))
+    AlienBuyMenu.kMouseOverTitleOffset = GUIScale(Vector(16, 6, 0))
+    AlienBuyMenu.kMouseOverInfoOffset = GUIScale(Vector(16, 50, 0))
+    AlienBuyMenu.kMouseOverCostOffset = GUIScale(Vector(-20, 6, 0))
+    AlienBuyMenu.kMouseOverInfoResIconOffset = GUIScale(Vector(-40, 8, 0))
+    AlienBuyMenu.kStatsPadding = GUIScale(Vector(5, 0, 0))
+    AlienBuyMenu.kStatsPaddingY = GUIScale(Vector(0, 2,0))
 
     -- current evolution section
-    CPPGUICombatAlienBuyMenu.kCurrentEvoBorderOffset = GUIScale(Vector(-320, 20, 0))
-    CPPGUICombatAlienBuyMenu.kCurrentEvoBorderSize = GUIScale(Vector(262, 222, 0))
-    CPPGUICombatAlienBuyMenu.kCurrentEvoAlienIconOffset = GUIScale(Vector(0, 5, 0))
-    CPPGUICombatAlienBuyMenu.kBiomassIconSize = GUIScale(Vector(72, 72, 0))
-    CPPGUICombatAlienBuyMenu.kBiomassIconOffset = GUIScale(Vector(-CPPGUICombatAlienBuyMenu.kBiomassIconSize.x - 20, 45, 0))
-    CPPGUICombatAlienBuyMenu.kCurrentEvoUpgradeOffset = GUIScale(Vector(16, 130, 0))
+    AlienBuyMenu.kCurrentEvoBorderOffset = GUIScale(Vector(-320, 20, 0))
+    AlienBuyMenu.kCurrentEvoBorderSize = GUIScale(Vector(262, 222, 0))
+    AlienBuyMenu.kCurrentEvoAlienIconOffset = GUIScale(Vector(0, 5, 0))
+    AlienBuyMenu.kBiomassIconSize = GUIScale(Vector(72, 72, 0))
+    AlienBuyMenu.kBiomassIconOffset = GUIScale(Vector(-AlienBuyMenu.kBiomassIconSize.x - 20, 45, 0))
+    AlienBuyMenu.kCurrentEvoUpgradeOffset = GUIScale(Vector(16, 130, 0))
 
     -- alien buttons
-    CPPGUICombatAlienBuyMenu.kAlienButtonOffsetY = GUIScale(-60)
-    CPPGUICombatAlienBuyMenu.kAlienIconSize = GUIScale(94)
+    AlienBuyMenu.kAlienButtonOffsetY = GUIScale(-60)
+    AlienBuyMenu.kAlienIconSize = GUIScale(94)
 
     -- evolve panel
-    CPPGUICombatAlienBuyMenu.kEvolvePanelSize = GUIScale(Vector(600, 100, 0))
-    CPPGUICombatAlienBuyMenu.kEvolvePanelOffset = GUIScale(Vector(60, -140, 0))
-    CPPGUICombatAlienBuyMenu.kEvolveTitleOffset = GUIScale(Vector(16, 6, 0))
-    CPPGUICombatAlienBuyMenu.kEvolveIconSize = GUIScale(58)
-    CPPGUICombatAlienBuyMenu.kEvolveLifeformIconOffset = GUIScale(Vector(10, 40, 0))
-    CPPGUICombatAlienBuyMenu.kCloseIconSize = GUIScale(16)
-    CPPGUICombatAlienBuyMenu.kEvolveUpgradePadding = GUIScale(12)
+    AlienBuyMenu.kEvolvePanelSize = GUIScale(Vector(600, 100, 0))
+    AlienBuyMenu.kEvolvePanelOffset = GUIScale(Vector(60, -140, 0))
+    AlienBuyMenu.kEvolveTitleOffset = GUIScale(Vector(16, 6, 0))
+    AlienBuyMenu.kEvolveIconSize = GUIScale(58)
+    AlienBuyMenu.kEvolveLifeformIconOffset = GUIScale(Vector(10, 40, 0))
+    AlienBuyMenu.kCloseIconSize = GUIScale(16)
+    AlienBuyMenu.kEvolveUpgradePadding = GUIScale(12)
     
 
-    CPPGUICombatAlienBuyMenu.kOffsetToCircleCenter = Vector(GUIScale(-70), 0, 0)
+    AlienBuyMenu.kOffsetToCircleCenter = Vector(GUIScale(-70), 0, 0)
 
-    CPPGUICombatAlienBuyMenu.kAlienButtonSize = GUIScale(180)
-    CPPGUICombatAlienBuyMenu.kPlayersTextSize = GUIScale(24)
-    CPPGUICombatAlienBuyMenu.kAlienSelectedButtonSize = CPPGUICombatAlienBuyMenu.kAlienButtonSize * 2
+    AlienBuyMenu.kAlienButtonSize = GUIScale(180)
+    AlienBuyMenu.kPlayersTextSize = GUIScale(24)
+    AlienBuyMenu.kAlienSelectedButtonSize = AlienBuyMenu.kAlienButtonSize * 2
 
-    CPPGUICombatAlienBuyMenu.kResourceIconWidth = GUIScale(33)
-    CPPGUICombatAlienBuyMenu.kResourceIconHeight = GUIScale(33)
+    AlienBuyMenu.kResourceIconWidth = GUIScale(33)
+    AlienBuyMenu.kResourceIconHeight = GUIScale(33)
 
-    CPPGUICombatAlienBuyMenu.kResourceIconWidthSm = GUIScale(20)
-    CPPGUICombatAlienBuyMenu.kResourceIconHeightSm = GUIScale(20)
+    AlienBuyMenu.kResourceIconWidthSm = GUIScale(20)
+    AlienBuyMenu.kResourceIconHeightSm = GUIScale(20)
 
-    CPPGUICombatAlienBuyMenu.kEvolveButtonWidth = GUIScale(250)
-    CPPGUICombatAlienBuyMenu.kEvolveButtonHeight = GUIScale(80)
-    CPPGUICombatAlienBuyMenu.kEvolveButtonOffset = GUIScale(Vector(-60, -40, 0))
-    CPPGUICombatAlienBuyMenu.kEvolveButtonTextSize = GUIScale(22)
+    AlienBuyMenu.kEvolveButtonWidth = GUIScale(250)
+    AlienBuyMenu.kEvolveButtonHeight = GUIScale(80)
+    AlienBuyMenu.kEvolveButtonOffset = GUIScale(Vector(-60, -40, 0))
+    AlienBuyMenu.kEvolveButtonTextSize = GUIScale(22)
 
-    CPPGUICombatAlienBuyMenu.kHealthIconWidth = GUIScale(CPPGUICombatAlienBuyMenu.kHealthIconTextureCoordinates[3] - CPPGUICombatAlienBuyMenu.kHealthIconTextureCoordinates[1])
-    CPPGUICombatAlienBuyMenu.kHealthIconHeight = GUIScale(CPPGUICombatAlienBuyMenu.kHealthIconTextureCoordinates[4] - CPPGUICombatAlienBuyMenu.kHealthIconTextureCoordinates[2])
+    AlienBuyMenu.kHealthIconWidth = GUIScale(AlienBuyMenu.kHealthIconTextureCoordinates[3] - AlienBuyMenu.kHealthIconTextureCoordinates[1])
+    AlienBuyMenu.kHealthIconHeight = GUIScale(AlienBuyMenu.kHealthIconTextureCoordinates[4] - AlienBuyMenu.kHealthIconTextureCoordinates[2])
 
-    CPPGUICombatAlienBuyMenu.kArmorIconWidth = GUIScale(CPPGUICombatAlienBuyMenu.kArmorIconTextureCoordinates[3] - CPPGUICombatAlienBuyMenu.kArmorIconTextureCoordinates[1])
-    CPPGUICombatAlienBuyMenu.kArmorIconHeight = GUIScale(CPPGUICombatAlienBuyMenu.kArmorIconTextureCoordinates[4] - CPPGUICombatAlienBuyMenu.kArmorIconTextureCoordinates[2])
+    AlienBuyMenu.kArmorIconWidth = GUIScale(AlienBuyMenu.kArmorIconTextureCoordinates[3] - AlienBuyMenu.kArmorIconTextureCoordinates[1])
+    AlienBuyMenu.kArmorIconHeight = GUIScale(AlienBuyMenu.kArmorIconTextureCoordinates[4] - AlienBuyMenu.kArmorIconTextureCoordinates[2])
     
-    CPPGUICombatAlienBuyMenu.kMouseOverInfoTextSize = GUIScale(20)
+    AlienBuyMenu.kMouseOverInfoTextSize = GUIScale(20)
 
     kTooltipTextWidth = GUIScale(300)
 
-    CPPGUICombatAlienBuyMenu.kUpgradeButtonSize = GUIScale(54)
-    CPPGUICombatAlienBuyMenu.kUpgradeButtonDistance = GUIScale(198)
+    AlienBuyMenu.kUpgradeButtonSize = GUIScale(54)
+    AlienBuyMenu.kUpgradeButtonDistance = GUIScale(198)
     -- The distance in pixels to move the button inside the embryo when selected.
-    CPPGUICombatAlienBuyMenu.kUpgradeButtonDistanceInside = GUIScale(74)
+    AlienBuyMenu.kUpgradeButtonDistanceInside = GUIScale(74)
 
-    for location, texCoords in pairs(CPPGUICombatAlienBuyMenu.kCornerTextureCoordinates) do
-        CPPGUICombatAlienBuyMenu.kCornerWidths[location] = GUIScale(texCoords[3] - texCoords[1])
-        CPPGUICombatAlienBuyMenu.kCornerHeights[location] = GUIScale(texCoords[4] - texCoords[2])
+    for location, texCoords in pairs(AlienBuyMenu.kCornerTextureCoordinates) do
+        AlienBuyMenu.kCornerWidths[location] = GUIScale(texCoords[3] - texCoords[1])
+        AlienBuyMenu.kCornerHeights[location] = GUIScale(texCoords[4] - texCoords[2])
     end
 
 end
 
-function CPPGUICombatAlienBuyMenu:Initialize()
+function AlienBuyMenu:Initialize()
 
     GUIAnimatedScript.Initialize(self)
 
@@ -281,9 +281,9 @@ function CPPGUICombatAlienBuyMenu:Initialize()
 
 end
 
-function CPPGUICombatAlienBuyMenu:Update(deltaTime)
+function AlienBuyMenu:Update(deltaTime)
 
-    PROFILE("CPPGUICombatAlienBuyMenu:Update")
+    PROFILE("AlienBuyMenu:Update")
 
     GUIAnimatedScript.Update(self, deltaTime)
     
@@ -299,7 +299,7 @@ function CPPGUICombatAlienBuyMenu:Update(deltaTime)
 
 end
 
-function CPPGUICombatAlienBuyMenu:Uninitialize()
+function AlienBuyMenu:Uninitialize()
 
     GUIAnimatedScript.Uninitialize(self)
 
@@ -313,71 +313,71 @@ function CPPGUICombatAlienBuyMenu:Uninitialize()
 
 end
 
-function CPPGUICombatAlienBuyMenu:OnResolutionChanged(oldX, oldY, newX, newY)
+function AlienBuyMenu:OnResolutionChanged(oldX, oldY, newX, newY)
 
     self:Uninitialize()
     self:Initialize()
 
 end
 
-function CPPGUICombatAlienBuyMenu:_InitializeBackground()
+function AlienBuyMenu:_InitializeBackground()
 
     self.background = self:CreateAnimatedGraphicItem()
     self.background:SetSize( Vector(Client.GetScreenWidth(), Client.GetScreenHeight(), 0) )
     self.background:SetAnchor(GUIItem.Left, GUIItem.Top)
-    self.background:SetColor(CPPGUICombatAlienBuyMenu.kBackgroundColor)
+    self.background:SetColor(AlienBuyMenu.kBackgroundColor)
     self.background:SetLayer(kGUILayerPlayerHUDForeground4)
 
     self.backgroundCenteredArea = self:CreateAnimatedGraphicItem()
     self.backgroundCenteredArea:SetSize( Vector(1000, Client.GetScreenHeight(), 0) )
     self.backgroundCenteredArea:SetAnchor(GUIItem.Middle, GUIItem.Top)
     self.backgroundCenteredArea:SetPosition( Vector(-500, 0, 0) )
-    self.backgroundCenteredArea:SetTexture(CPPGUICombatAlienBuyMenu.kBackgroundTexture)
+    self.backgroundCenteredArea:SetTexture(AlienBuyMenu.kBackgroundTexture)
     self.backgroundCenteredArea:SetColor(Color(1.0, 1.0, 1.0, 0.6))
-    --self.backgroundCenteredArea:SetColor(CPPGUICombatAlienBuyMenu.kBackgroundCenterColor)
+    --self.backgroundCenteredArea:SetColor(AlienBuyMenu.kBackgroundCenterColor)
     self.background:AddChild(self.backgroundCenteredArea)
 
 end
 
-function CPPGUICombatAlienBuyMenu:_InitializeCorners()
+function AlienBuyMenu:_InitializeCorners()
 
     self.corners = { }
 
     local topLeftCorner = GUIManager:CreateGraphicItem()
     topLeftCorner:SetAnchor(GUIItem.Left, GUIItem.Top)
-    topLeftCorner:SetSize(Vector(CPPGUICombatAlienBuyMenu.kCornerWidths.TopLeft, CPPGUICombatAlienBuyMenu.kCornerHeights.TopLeft, 0))
-    topLeftCorner:SetTexture(CPPGUICombatAlienBuyMenu.kBuyMenuTexture)
-    topLeftCorner:SetTexturePixelCoordinates(GUIUnpackCoords(CPPGUICombatAlienBuyMenu.kCornerTextureCoordinates.TopLeft))
+    topLeftCorner:SetSize(Vector(AlienBuyMenu.kCornerWidths.TopLeft, AlienBuyMenu.kCornerHeights.TopLeft, 0))
+    topLeftCorner:SetTexture(AlienBuyMenu.kBuyMenuTexture)
+    topLeftCorner:SetTexturePixelCoordinates(GUIUnpackCoords(AlienBuyMenu.kCornerTextureCoordinates.TopLeft))
     topLeftCorner:SetShader("shaders/GUIWavyNoMask.surface_shader")
     self.backgroundCenteredArea:AddChild(topLeftCorner)
     self.corners.TopLeft = topLeftCorner
 
     local bottomLeftCorner = GUIManager:CreateGraphicItem()
     bottomLeftCorner:SetAnchor(GUIItem.Left, GUIItem.Bottom)
-    bottomLeftCorner:SetPosition(Vector(0, -CPPGUICombatAlienBuyMenu.kCornerHeights.BottomLeft, 0))
-    bottomLeftCorner:SetSize(Vector(CPPGUICombatAlienBuyMenu.kCornerWidths.BottomLeft, CPPGUICombatAlienBuyMenu.kCornerHeights.BottomLeft, 0))
-    bottomLeftCorner:SetTexture(CPPGUICombatAlienBuyMenu.kBuyMenuTexture)
-    bottomLeftCorner:SetTexturePixelCoordinates(GUIUnpackCoords(CPPGUICombatAlienBuyMenu.kCornerTextureCoordinates.BottomLeft))
+    bottomLeftCorner:SetPosition(Vector(0, -AlienBuyMenu.kCornerHeights.BottomLeft, 0))
+    bottomLeftCorner:SetSize(Vector(AlienBuyMenu.kCornerWidths.BottomLeft, AlienBuyMenu.kCornerHeights.BottomLeft, 0))
+    bottomLeftCorner:SetTexture(AlienBuyMenu.kBuyMenuTexture)
+    bottomLeftCorner:SetTexturePixelCoordinates(GUIUnpackCoords(AlienBuyMenu.kCornerTextureCoordinates.BottomLeft))
     bottomLeftCorner:SetShader("shaders/GUIWavyNoMask.surface_shader")
     self.backgroundCenteredArea:AddChild(bottomLeftCorner)
     self.corners.BottomLeft = bottomLeftCorner
 
     local topRightCorner = GUIManager:CreateGraphicItem()
     topRightCorner:SetAnchor(GUIItem.Right, GUIItem.Top)
-    topRightCorner:SetPosition(Vector(-CPPGUICombatAlienBuyMenu.kCornerWidths.TopRight, 0, 0))
-    topRightCorner:SetSize(Vector(CPPGUICombatAlienBuyMenu.kCornerWidths.TopRight, CPPGUICombatAlienBuyMenu.kCornerHeights.TopRight, 0))
-    topRightCorner:SetTexture(CPPGUICombatAlienBuyMenu.kBuyMenuTexture)
-    topRightCorner:SetTexturePixelCoordinates(GUIUnpackCoords(CPPGUICombatAlienBuyMenu.kCornerTextureCoordinates.TopRight))
+    topRightCorner:SetPosition(Vector(-AlienBuyMenu.kCornerWidths.TopRight, 0, 0))
+    topRightCorner:SetSize(Vector(AlienBuyMenu.kCornerWidths.TopRight, AlienBuyMenu.kCornerHeights.TopRight, 0))
+    topRightCorner:SetTexture(AlienBuyMenu.kBuyMenuTexture)
+    topRightCorner:SetTexturePixelCoordinates(GUIUnpackCoords(AlienBuyMenu.kCornerTextureCoordinates.TopRight))
     topRightCorner:SetShader("shaders/GUIWavyNoMask.surface_shader")
     self.backgroundCenteredArea:AddChild(topRightCorner)
     self.corners.TopRight = topRightCorner
 
     local bottomRightCorner = GUIManager:CreateGraphicItem()
     bottomRightCorner:SetAnchor(GUIItem.Right, GUIItem.Bottom)
-    bottomRightCorner:SetPosition(Vector(-CPPGUICombatAlienBuyMenu.kCornerWidths.BottomRight, -CPPGUICombatAlienBuyMenu.kCornerHeights.BottomRight, 0))
-    bottomRightCorner:SetSize(Vector(CPPGUICombatAlienBuyMenu.kCornerWidths.BottomRight, CPPGUICombatAlienBuyMenu.kCornerHeights.BottomRight, 0))
-    bottomRightCorner:SetTexture(CPPGUICombatAlienBuyMenu.kBuyMenuTexture)
-    bottomRightCorner:SetTexturePixelCoordinates(GUIUnpackCoords(CPPGUICombatAlienBuyMenu.kCornerTextureCoordinates.BottomRight))
+    bottomRightCorner:SetPosition(Vector(-AlienBuyMenu.kCornerWidths.BottomRight, -AlienBuyMenu.kCornerHeights.BottomRight, 0))
+    bottomRightCorner:SetSize(Vector(AlienBuyMenu.kCornerWidths.BottomRight, AlienBuyMenu.kCornerHeights.BottomRight, 0))
+    bottomRightCorner:SetTexture(AlienBuyMenu.kBuyMenuTexture)
+    bottomRightCorner:SetTexturePixelCoordinates(GUIUnpackCoords(AlienBuyMenu.kCornerTextureCoordinates.BottomRight))
     bottomRightCorner:SetShader("shaders/GUIWavyNoMask.surface_shader")
     self.backgroundCenteredArea:AddChild(bottomRightCorner)
     self.corners.BottomRight = bottomRightCorner
@@ -385,27 +385,27 @@ function CPPGUICombatAlienBuyMenu:_InitializeCorners()
     self.cornerTweeners = { }
     for cornerName, _ in pairs(self.corners) do
         self.cornerTweeners[cornerName] = Tweener("loopforward")
-        self.cornerTweeners[cornerName].add(CPPGUICombatAlienBuyMenu.kCornerPulseTime, { percent = 1 }, Easing.linear)
-        self.cornerTweeners[cornerName].add(CPPGUICombatAlienBuyMenu.kCornerPulseTime, { percent = 0 }, Easing.linear)
+        self.cornerTweeners[cornerName].add(AlienBuyMenu.kCornerPulseTime, { percent = 1 }, Easing.linear)
+        self.cornerTweeners[cornerName].add(AlienBuyMenu.kCornerPulseTime, { percent = 0 }, Easing.linear)
     end
 
 end
 
-function CPPGUICombatAlienBuyMenu:_InitializeHeader()
+function AlienBuyMenu:_InitializeHeader()
 
     local player = Client.GetLocalPlayer()
 
     local logo = GUIManager:CreateGraphicItem()
-    logo:SetSize(Vector(CPPGUICombatAlienBuyMenu.kLogoSize, CPPGUICombatAlienBuyMenu.kLogoSize, 0))
+    logo:SetSize(Vector(AlienBuyMenu.kLogoSize, AlienBuyMenu.kLogoSize, 0))
     logo:SetAnchor(GUIItem.Left, GUIItem.Top)
     logo:SetPosition(Vector(20, 20, 0))
-    logo:SetTexture(CPPGUICombatAlienBuyMenu.kAlienLogoTexture)
+    logo:SetTexture(AlienBuyMenu.kAlienLogoTexture)
     self.backgroundCenteredArea:AddChild(logo)
 
     local titleShadow = GUIManager:CreateTextItem()
     titleShadow:SetAnchor(GUIItem.Left, GUIItem.Top)
-    titleShadow:SetPosition(CPPGUICombatAlienBuyMenu.kTitleOffset)
-    titleShadow:SetFontName(CPPGUICombatAlienBuyMenu.kTitleFont)
+    titleShadow:SetPosition(AlienBuyMenu.kTitleOffset)
+    titleShadow:SetFontName(AlienBuyMenu.kTitleFont)
     titleShadow:SetScale(GetScaledVector())
     GUIMakeFontScale(titleShadow)
     titleShadow:SetTextAlignmentX(GUIItem.Align_Min)
@@ -417,7 +417,7 @@ function CPPGUICombatAlienBuyMenu:_InitializeHeader()
     local title = GUIManager:CreateTextItem()
     title:SetAnchor(GUIItem.Left, GUIItem.Top)
     title:SetPosition(Vector(-2, -2, 0))
-    title:SetFontName(CPPGUICombatAlienBuyMenu.kTitleFont)
+    title:SetFontName(AlienBuyMenu.kTitleFont)
     title:SetScale(GetScaledVector())
     GUIMakeFontScale(title)
     title:SetTextAlignmentX(GUIItem.Align_Min)
@@ -427,17 +427,17 @@ function CPPGUICombatAlienBuyMenu:_InitializeHeader()
     titleShadow:AddChild(title)
 
     local resIcon = GUIManager:CreateGraphicItem()
-    resIcon:SetSize(Vector(CPPGUICombatAlienBuyMenu.kResourceIconWidth, CPPGUICombatAlienBuyMenu.kResourceIconHeight, 0))
+    resIcon:SetSize(Vector(AlienBuyMenu.kResourceIconWidth, AlienBuyMenu.kResourceIconHeight, 0))
     resIcon:SetAnchor(GUIItem.Left, GUIItem.Top)
-    resIcon:SetPosition(CPPGUICombatAlienBuyMenu.kResIconOffset)
-    resIcon:SetTexture(CPPGUICombatAlienBuyMenu.kResourceIconTexture)
+    resIcon:SetPosition(AlienBuyMenu.kResIconOffset)
+    resIcon:SetTexture(AlienBuyMenu.kResourceIconTexture)
     resIcon:SetColor(ColorIntToColor(kAlienTeamColor))
     self.backgroundCenteredArea:AddChild(resIcon)
 
     local skillPointText = GUIManager:CreateTextItem()
     skillPointText:SetAnchor(GUIItem.Right, GUIItem.Center)
     skillPointText:SetPosition(Vector(6, 0, 0))
-    skillPointText:SetFontName(CPPGUICombatAlienBuyMenu.kHeaderAltFont)
+    skillPointText:SetFontName(AlienBuyMenu.kHeaderAltFont)
     skillPointText:SetScale(GetScaledVector())
     GUIMakeFontScale(skillPointText)
     skillPointText:SetTextAlignmentX(GUIItem.Align_Min)
@@ -455,21 +455,21 @@ function CPPGUICombatAlienBuyMenu:_InitializeHeader()
 
 end
 
-function CPPGUICombatAlienBuyMenu:_InitializeMouseOverInfo()
+function AlienBuyMenu:_InitializeMouseOverInfo()
 
     self.mouseOverPanel = GUIManager:CreateGraphicItem()
     self.mouseOverPanel:SetAnchor(GUIItem.Right, GUIItem.Top)
     self.mouseOverPanel:SetSize(Vector(262, 222, 0))
     self.mouseOverPanel:SetPosition(Vector(-620, 20, 0))
-    self.mouseOverPanel:SetTexture(CPPGUICombatAlienBuyMenu.KCurrentEvoBorderTexture)
+    self.mouseOverPanel:SetTexture(AlienBuyMenu.KCurrentEvoBorderTexture)
     self.mouseOverPanel:SetTexturePixelCoordinates(474, 348, 736, 570)
     self.mouseOverPanel:SetColor(Color(1.0, 1.0, 1.0, 0.6))
     self.backgroundCenteredArea:AddChild(self.mouseOverPanel)
 
     self.mouseOverTitleShadow = GUIManager:CreateTextItem()
     self.mouseOverTitleShadow:SetAnchor(GUIItem.Left, GUIItem.Top)
-    self.mouseOverTitleShadow:SetPosition(CPPGUICombatAlienBuyMenu.kMouseOverTitleOffset)
-    self.mouseOverTitleShadow:SetFontName(CPPGUICombatAlienBuyMenu.kHeaderFont)
+    self.mouseOverTitleShadow:SetPosition(AlienBuyMenu.kMouseOverTitleOffset)
+    self.mouseOverTitleShadow:SetFontName(AlienBuyMenu.kHeaderFont)
     self.mouseOverTitleShadow:SetFontIsBold(true)
     self.mouseOverTitleShadow:SetScale(GetScaledVector())
     GUIMakeFontScale(self.mouseOverTitleShadow)
@@ -481,18 +481,18 @@ function CPPGUICombatAlienBuyMenu:_InitializeMouseOverInfo()
     self.mouseOverTitle = GUIManager:CreateTextItem()
     self.mouseOverTitle:SetAnchor(GUIItem.Left, GUIItem.Top)
     self.mouseOverTitle:SetPosition(Vector(-2, -2, 0))
-    self.mouseOverTitle:SetFontName(CPPGUICombatAlienBuyMenu.kHeaderFont)
+    self.mouseOverTitle:SetFontName(AlienBuyMenu.kHeaderFont)
     self.mouseOverTitle:SetFontIsBold(true)
     self.mouseOverTitle:SetScale(GetScaledVector())
     GUIMakeFontScale(self.mouseOverTitle)
     self.mouseOverTitle:SetTextAlignmentX(GUIItem.Align_Min)
     self.mouseOverTitle:SetTextAlignmentY(GUIItem.Align_Min)
-    self.mouseOverTitle:SetColor(CPPGUICombatAlienBuyMenu.kTextColor)
+    self.mouseOverTitle:SetColor(AlienBuyMenu.kTextColor)
     self.mouseOverTitleShadow:AddChild(self.mouseOverTitle)
 
     self.mouseOverInfo = GUIManager:CreateTextItem()
     self.mouseOverInfo:SetAnchor(GUIItem.Left, GUIItem.Top)
-    self.mouseOverInfo:SetPosition(CPPGUICombatAlienBuyMenu.kMouseOverInfoOffset)
+    self.mouseOverInfo:SetPosition(AlienBuyMenu.kMouseOverInfoOffset)
     self.mouseOverInfo:SetFontName(kFontSmall)
     self.mouseOverInfo:SetScale(GetScaledVector())
     GUIMakeFontScale(self.mouseOverInfo)
@@ -502,17 +502,17 @@ function CPPGUICombatAlienBuyMenu:_InitializeMouseOverInfo()
     self.mouseOverPanel:AddChild(self.mouseOverInfo)
 
     self.mouseOverInfoResIcon = GUIManager:CreateGraphicItem()
-    self.mouseOverInfoResIcon:SetSize(Vector(CPPGUICombatAlienBuyMenu.kResourceIconWidthSm, CPPGUICombatAlienBuyMenu.kResourceIconHeightSm, 0))
+    self.mouseOverInfoResIcon:SetSize(Vector(AlienBuyMenu.kResourceIconWidthSm, AlienBuyMenu.kResourceIconHeightSm, 0))
     self.mouseOverInfoResIcon:SetAnchor(GUIItem.Right, GUIItem.Top)
-    self.mouseOverInfoResIcon:SetPosition(CPPGUICombatAlienBuyMenu.kMouseOverInfoResIconOffset)
-    self.mouseOverInfoResIcon:SetTexture(CPPGUICombatAlienBuyMenu.kResourceIconTexture)
+    self.mouseOverInfoResIcon:SetPosition(AlienBuyMenu.kMouseOverInfoResIconOffset)
+    self.mouseOverInfoResIcon:SetTexture(AlienBuyMenu.kResourceIconTexture)
     self.mouseOverInfoResIcon:SetColor(kIconColors[kAlienTeamType])
     self.mouseOverInfoResIcon:SetInheritsParentScaling(false)
     self.mouseOverPanel:AddChild(self.mouseOverInfoResIcon)
 
     self.costText = GUIManager:CreateTextItem()
     self.costText:SetAnchor(GUIItem.Right, GUIItem.Top)
-    self.costText:SetPosition(CPPGUICombatAlienBuyMenu.kMouseOverCostOffset)
+    self.costText:SetPosition(AlienBuyMenu.kMouseOverCostOffset)
     self.costText:SetFontName(kFont)
     self.costText:SetScale(GetScaledVector())
     GUIMakeFontScale(self.costText)
@@ -524,12 +524,12 @@ function CPPGUICombatAlienBuyMenu:_InitializeMouseOverInfo()
 
     -- Create health and armor icons and text
     self.mouseOverInfoHealthIcon = GUIManager:CreateGraphicItem()
-    self.mouseOverInfoHealthIcon:SetSize(Vector(CPPGUICombatAlienBuyMenu.kResourceIconWidthSm, CPPGUICombatAlienBuyMenu.kResourceIconHeightSm, 0))
+    self.mouseOverInfoHealthIcon:SetSize(Vector(AlienBuyMenu.kResourceIconWidthSm, AlienBuyMenu.kResourceIconHeightSm, 0))
     self.mouseOverInfoHealthIcon:SetAnchor(GUIItem.Right, GUIItem.Top)
     self.mouseOverInfoHealthIcon:SetInheritsParentScaling(false)
-    self.mouseOverInfoHealthIcon:SetPosition(CPPGUICombatAlienBuyMenu.kStatsPadding + CPPGUICombatAlienBuyMenu.kStatsPaddingY)
-    self.mouseOverInfoHealthIcon:SetTexture(CPPGUICombatAlienBuyMenu.kBuyMenuTexture)
-    self.mouseOverInfoHealthIcon:SetTexturePixelCoordinates(GUIUnpackCoords(CPPGUICombatAlienBuyMenu.kHealthIconTextureCoordinates))
+    self.mouseOverInfoHealthIcon:SetPosition(AlienBuyMenu.kStatsPadding + AlienBuyMenu.kStatsPaddingY)
+    self.mouseOverInfoHealthIcon:SetTexture(AlienBuyMenu.kBuyMenuTexture)
+    self.mouseOverInfoHealthIcon:SetTexturePixelCoordinates(GUIUnpackCoords(AlienBuyMenu.kHealthIconTextureCoordinates))
     self.mouseOverTitleShadow:AddChild(self.mouseOverInfoHealthIcon)
 
     self.mouseOverInfoHealthAmount = GUIManager:CreateTextItem()
@@ -539,16 +539,16 @@ function CPPGUICombatAlienBuyMenu:_InitializeMouseOverInfo()
     GUIMakeFontScale(self.mouseOverInfoHealthAmount)
     self.mouseOverInfoHealthAmount:SetTextAlignmentX(GUIItem.Align_Min)
     self.mouseOverInfoHealthAmount:SetTextAlignmentY(GUIItem.Align_Min)
-    self.mouseOverInfoHealthAmount:SetPosition(CPPGUICombatAlienBuyMenu.kStatsPadding)
+    self.mouseOverInfoHealthAmount:SetPosition(AlienBuyMenu.kStatsPadding)
     self.mouseOverInfoHealthAmount:SetColor(ColorIntToColor(kAlienTeamColor))
     self.mouseOverInfoHealthIcon:AddChild(self.mouseOverInfoHealthAmount)
 
     self.mouseOverInfoArmorIcon = GUIManager:CreateGraphicItem()
-    self.mouseOverInfoArmorIcon:SetSize(Vector(CPPGUICombatAlienBuyMenu.kResourceIconWidthSm, CPPGUICombatAlienBuyMenu.kResourceIconHeightSm, 0))
+    self.mouseOverInfoArmorIcon:SetSize(Vector(AlienBuyMenu.kResourceIconWidthSm, AlienBuyMenu.kResourceIconHeightSm, 0))
     self.mouseOverInfoArmorIcon:SetAnchor(GUIItem.Right, GUIItem.Top)
-    self.mouseOverInfoArmorIcon:SetPosition(CPPGUICombatAlienBuyMenu.kStatsPadding)
-    self.mouseOverInfoArmorIcon:SetTexture(CPPGUICombatAlienBuyMenu.kBuyMenuTexture)
-    self.mouseOverInfoArmorIcon:SetTexturePixelCoordinates(GUIUnpackCoords(CPPGUICombatAlienBuyMenu.kArmorIconTextureCoordinates))
+    self.mouseOverInfoArmorIcon:SetPosition(AlienBuyMenu.kStatsPadding)
+    self.mouseOverInfoArmorIcon:SetTexture(AlienBuyMenu.kBuyMenuTexture)
+    self.mouseOverInfoArmorIcon:SetTexturePixelCoordinates(GUIUnpackCoords(AlienBuyMenu.kArmorIconTextureCoordinates))
     self.mouseOverInfoArmorIcon:SetInheritsParentScaling(false)
     self.mouseOverInfoHealthAmount:AddChild(self.mouseOverInfoArmorIcon)
 
@@ -559,27 +559,27 @@ function CPPGUICombatAlienBuyMenu:_InitializeMouseOverInfo()
     GUIMakeFontScale(self.mouseOverInfoArmorAmount)
     self.mouseOverInfoArmorAmount:SetTextAlignmentX(GUIItem.Align_Min)
     self.mouseOverInfoArmorAmount:SetTextAlignmentY(GUIItem.Align_Min)
-    self.mouseOverInfoArmorAmount:SetPosition(CPPGUICombatAlienBuyMenu.kStatsPadding)
+    self.mouseOverInfoArmorAmount:SetPosition(AlienBuyMenu.kStatsPadding)
     self.mouseOverInfoArmorAmount:SetColor(ColorIntToColor(kAlienTeamColor))
     self.mouseOverInfoArmorIcon:AddChild(self.mouseOverInfoArmorAmount)
 
 end
 
-function CPPGUICombatAlienBuyMenu:_InitializeCurrentEvolutionDisplay()
+function AlienBuyMenu:_InitializeCurrentEvolutionDisplay()
 
     local border = GUIManager:CreateGraphicItem()
     border:SetAnchor(GUIItem.Right, GUIItem.Top)
-    border:SetSize(CPPGUICombatAlienBuyMenu.kCurrentEvoBorderSize)
-    border:SetPosition(CPPGUICombatAlienBuyMenu.kCurrentEvoBorderOffset)
-    border:SetTexture(CPPGUICombatAlienBuyMenu.KCurrentEvoBorderTexture)
+    border:SetSize(AlienBuyMenu.kCurrentEvoBorderSize)
+    border:SetPosition(AlienBuyMenu.kCurrentEvoBorderOffset)
+    border:SetTexture(AlienBuyMenu.KCurrentEvoBorderTexture)
     border:SetTexturePixelCoordinates(474, 348, 736, 570)
     border:SetColor(Color(1.0, 1.0, 1.0, 0.6))
     self.backgroundCenteredArea:AddChild(border)
 
     local headerTextShadow = GUIManager:CreateTextItem()
     headerTextShadow:SetAnchor(GUIItem.Left, GUIItem.Top)
-    headerTextShadow:SetPosition(CPPGUICombatAlienBuyMenu.kCurrentEvoTitleOffset)
-    headerTextShadow:SetFontName(CPPGUICombatAlienBuyMenu.kHeaderFont)
+    headerTextShadow:SetPosition(AlienBuyMenu.kCurrentEvoTitleOffset)
+    headerTextShadow:SetFontName(AlienBuyMenu.kHeaderFont)
     headerTextShadow:SetFontIsBold(true)
     headerTextShadow:SetScale(GetScaledVector())
     GUIMakeFontScale(headerTextShadow)
@@ -592,31 +592,31 @@ function CPPGUICombatAlienBuyMenu:_InitializeCurrentEvolutionDisplay()
     local headerText = GUIManager:CreateTextItem()
     headerText:SetAnchor(GUIItem.Left, GUIItem.Top)
     headerText:SetPosition(Vector(-2, -2, 0))
-    headerText:SetFontName(CPPGUICombatAlienBuyMenu.kHeaderFont)
+    headerText:SetFontName(AlienBuyMenu.kHeaderFont)
     headerText:SetFontIsBold(true)
     headerText:SetScale(GetScaledVector())
     GUIMakeFontScale(headerText)
     headerText:SetTextAlignmentX(GUIItem.Align_Min)
     headerText:SetTextAlignmentY(GUIItem.Align_Min)
-    headerText:SetColor(CPPGUICombatAlienBuyMenu.kTextColor)
+    headerText:SetColor(AlienBuyMenu.kTextColor)
     headerText:SetText("Current Evolution")
     headerTextShadow:AddChild(headerText)
 
     -- The alien icon
-    local alienType = CPPGUICombatAlienBuyMenu.kAlienTypes[self.selectedAlienType]
+    local alienType = AlienBuyMenu.kAlienTypes[self.selectedAlienType]
     local alienGraphicItem = GUIManager:CreateGraphicItem()
-    local ARAdjustedHeight = (alienType.Height / alienType.Width) * CPPGUICombatAlienBuyMenu.kAlienIconSize
-    alienGraphicItem:SetSize(Vector(CPPGUICombatAlienBuyMenu.kAlienIconSize, ARAdjustedHeight, 0))
+    local ARAdjustedHeight = (alienType.Height / alienType.Width) * AlienBuyMenu.kAlienIconSize
+    alienGraphicItem:SetSize(Vector(AlienBuyMenu.kAlienIconSize, ARAdjustedHeight, 0))
     alienGraphicItem:SetAnchor(GUIItem.Left, GUIItem.Bottom)
-    alienGraphicItem:SetPosition(CPPGUICombatAlienBuyMenu.kCurrentEvoAlienIconOffset)
+    alienGraphicItem:SetPosition(AlienBuyMenu.kCurrentEvoAlienIconOffset)
     alienGraphicItem:SetTexture("ui/" .. alienType.Name .. ".dds")
     headerTextShadow:AddChild(alienGraphicItem)
 
     local biomassIcon = GUIManager:CreateGraphicItem()
     biomassIcon:SetAnchor(GUIItem.Right, GUIItem.Top)
-    biomassIcon:SetSize(CPPGUICombatAlienBuyMenu.kBiomassIconSize)
-    biomassIcon:SetPosition(CPPGUICombatAlienBuyMenu.kBiomassIconOffset)
-    biomassIcon:SetTexture(CPPGUICombatAlienBuyMenu.kBuyHUDTexture)
+    biomassIcon:SetSize(AlienBuyMenu.kBiomassIconSize)
+    biomassIcon:SetPosition(AlienBuyMenu.kBiomassIconOffset)
+    biomassIcon:SetTexture(AlienBuyMenu.kBuyHUDTexture)
     biomassIcon:SetTexturePixelCoordinates(GUIUnpackCoords(GetTextureCoordinatesForIcon(kTechId.BioMassOne)))
     biomassIcon:SetColor(kIconColors[kAlienTeamType])
     border:AddChild(biomassIcon)
@@ -668,16 +668,16 @@ function CPPGUICombatAlienBuyMenu:_InitializeCurrentEvolutionDisplay()
                 local upgradeIcon = GUIManager:CreateGraphicItem()
 
                 local iconX, iconY = GetMaterialXYOffset(upgradeTechId, false)
-                iconX = iconX * CPPGUICombatAlienBuyMenu.kUpgradeButtonTextureSize
-                iconY = iconY * CPPGUICombatAlienBuyMenu.kUpgradeButtonTextureSize
+                iconX = iconX * AlienBuyMenu.kUpgradeButtonTextureSize
+                iconY = iconY * AlienBuyMenu.kUpgradeButtonTextureSize
 
-                local offset = Vector((CPPGUICombatAlienBuyMenu.kUpgradeButtonSize + GUIScale(4)) * offsetFactor, 0, 0)
+                local offset = Vector((AlienBuyMenu.kUpgradeButtonSize + GUIScale(4)) * offsetFactor, 0, 0)
 
                 upgradeIcon:SetAnchor(GUIItem.Left, GUIItem.Top)
-                upgradeIcon:SetSize(Vector(CPPGUICombatAlienBuyMenu.kUpgradeButtonSize, CPPGUICombatAlienBuyMenu.kUpgradeButtonSize, 0))
-                upgradeIcon:SetPosition(CPPGUICombatAlienBuyMenu.kCurrentEvoUpgradeOffset + offset)
-                upgradeIcon:SetTexture(CPPGUICombatAlienBuyMenu.kBuyHUDTexture)
-                upgradeIcon:SetTexturePixelCoordinates(iconX, iconY, iconX + CPPGUICombatAlienBuyMenu.kUpgradeButtonTextureSize, iconY + CPPGUICombatAlienBuyMenu.kUpgradeButtonTextureSize)
+                upgradeIcon:SetSize(Vector(AlienBuyMenu.kUpgradeButtonSize, AlienBuyMenu.kUpgradeButtonSize, 0))
+                upgradeIcon:SetPosition(AlienBuyMenu.kCurrentEvoUpgradeOffset + offset)
+                upgradeIcon:SetTexture(AlienBuyMenu.kBuyHUDTexture)
+                upgradeIcon:SetTexturePixelCoordinates(iconX, iconY, iconX + AlienBuyMenu.kUpgradeButtonTextureSize, iconY + AlienBuyMenu.kUpgradeButtonTextureSize)
                 upgradeIcon:SetColor(kIconColors[kAlienTeamType])
                 border:AddChild(upgradeIcon)
 
@@ -692,12 +692,12 @@ function CPPGUICombatAlienBuyMenu:_InitializeCurrentEvolutionDisplay()
 
 end
 
-function CPPGUICombatAlienBuyMenu:_InitializeLifeforms()
+function AlienBuyMenu:_InitializeLifeforms()
 
     local headerTextShadow = GUIManager:CreateTextItem()
     headerTextShadow:SetAnchor(GUIItem.Left, GUIItem.Top)
-    headerTextShadow:SetPosition(CPPGUICombatAlienBuyMenu.kLifeformsTitleOffset)
-    headerTextShadow:SetFontName(CPPGUICombatAlienBuyMenu.kHeaderFont)
+    headerTextShadow:SetPosition(AlienBuyMenu.kLifeformsTitleOffset)
+    headerTextShadow:SetFontName(AlienBuyMenu.kHeaderFont)
     headerTextShadow:SetFontIsBold(true)
     headerTextShadow:SetScale(GetScaledVector())
     GUIMakeFontScale(headerTextShadow)
@@ -710,13 +710,13 @@ function CPPGUICombatAlienBuyMenu:_InitializeLifeforms()
     local headerText = GUIManager:CreateTextItem()
     headerText:SetAnchor(GUIItem.Left, GUIItem.Top)
     headerText:SetPosition(Vector(-2, -2, 0))
-    headerText:SetFontName(CPPGUICombatAlienBuyMenu.kHeaderFont)
+    headerText:SetFontName(AlienBuyMenu.kHeaderFont)
     headerText:SetFontIsBold(true)
     headerText:SetScale(GetScaledVector())
     GUIMakeFontScale(headerText)
     headerText:SetTextAlignmentX(GUIItem.Align_Min)
     headerText:SetTextAlignmentY(GUIItem.Align_Center)
-    headerText:SetColor(CPPGUICombatAlienBuyMenu.kTextColor)
+    headerText:SetColor(AlienBuyMenu.kTextColor)
     headerText:SetText("Lifeforms")
     headerTextShadow:AddChild(headerText)
 
@@ -725,17 +725,17 @@ end
 local function CreateAbilityIcon(self, alienGraphicItem, techId)
 
     local graphicItem = GetGUIManager():CreateGraphicItem()
-    graphicItem:SetTexture(CPPGUICombatAlienBuyMenu.kAbilityIcons)
-    graphicItem:SetSize(Vector(CPPGUICombatAlienBuyMenu.kUpgradeButtonSize, CPPGUICombatAlienBuyMenu.kUpgradeButtonSize, 0))
+    graphicItem:SetTexture(AlienBuyMenu.kAbilityIcons)
+    graphicItem:SetSize(Vector(AlienBuyMenu.kUpgradeButtonSize, AlienBuyMenu.kUpgradeButtonSize, 0))
     graphicItem:SetAnchor(GUIItem.Middle, GUIItem.Bottom)
     graphicItem:SetTexturePixelCoordinates(GUIUnpackCoords(GetTextureCoordinatesForIcon(techId, false)))
     graphicItem:SetColor(kIconColors[kAlienTeamType])
 
     local highLight = GetGUIManager():CreateGraphicItem()
-    highLight:SetSize(Vector(CPPGUICombatAlienBuyMenu.kUpgradeButtonSize, CPPGUICombatAlienBuyMenu.kUpgradeButtonSize, 0))
+    highLight:SetSize(Vector(AlienBuyMenu.kUpgradeButtonSize, AlienBuyMenu.kUpgradeButtonSize, 0))
     highLight:SetIsVisible(false)
-    highLight:SetTexture(CPPGUICombatAlienBuyMenu.kBuyMenuTexture)
-    highLight:SetTexturePixelCoordinates(GUIUnpackCoords(CPPGUICombatAlienBuyMenu.kUpgradeButtonBackgroundTextureCoordinates))
+    highLight:SetTexture(AlienBuyMenu.kBuyMenuTexture)
+    highLight:SetTexturePixelCoordinates(GUIUnpackCoords(AlienBuyMenu.kUpgradeButtonBackgroundTextureCoordinates))
 
     graphicItem:AddChild(highLight)
     alienGraphicItem:AddChild(graphicItem)
@@ -765,13 +765,13 @@ local function CreateAbilityIcons(self, alienGraphicItem, alienType)
     end
 
     local numAbilities = #availableAbilities
-    local totalWidth = numAbilities * (CPPGUICombatAlienBuyMenu.kUpgradeButtonSize + 10)
+    local totalWidth = numAbilities * (AlienBuyMenu.kUpgradeButtonSize + 10)
 
     for i = 1, numAbilities do
 
         local techId = availableAbilities[#availableAbilities - i + 1]
         local ability = CreateAbilityIcon(self, alienGraphicItem, techId)
-        local xPos = ( ( (i - 1) * CPPGUICombatAlienBuyMenu.kUpgradeButtonSize ) + 10 ) - (totalWidth / 2)
+        local xPos = ( ( (i - 1) * AlienBuyMenu.kUpgradeButtonSize ) + 10 ) - (totalWidth / 2)
         local yPos = 10
 
         ability.Icon:SetPosition(Vector(xPos, yPos, 0))
@@ -781,18 +781,18 @@ local function CreateAbilityIcons(self, alienGraphicItem, alienType)
 
 end
 
-function CPPGUICombatAlienBuyMenu:_InitializeAlienButtons()
+function AlienBuyMenu:_InitializeAlienButtons()
 
     self.alienButtons = { }
 
-    for k, alienType in ipairs(CPPGUICombatAlienBuyMenu.kAlienTypes) do
+    for k, alienType in ipairs(AlienBuyMenu.kAlienTypes) do
 
         -- The alien image.
         local alienGraphicItem = GUIManager:CreateGraphicItem()
-        local ARAdjustedHeight = (alienType.Height / alienType.Width) * CPPGUICombatAlienBuyMenu.kAlienButtonSize
-        alienGraphicItem:SetSize(Vector(CPPGUICombatAlienBuyMenu.kAlienButtonSize, ARAdjustedHeight, 0))
+        local ARAdjustedHeight = (alienType.Height / alienType.Width) * AlienBuyMenu.kAlienButtonSize
+        alienGraphicItem:SetSize(Vector(AlienBuyMenu.kAlienButtonSize, ARAdjustedHeight, 0))
         alienGraphicItem:SetAnchor(GUIItem.Middle, GUIItem.Center)
-        alienGraphicItem:SetPosition(Vector(-CPPGUICombatAlienBuyMenu.kAlienButtonSize / 2, -ARAdjustedHeight / 2, 0))
+        alienGraphicItem:SetPosition(Vector(-AlienBuyMenu.kAlienButtonSize / 2, -ARAdjustedHeight / 2, 0))
         alienGraphicItem:SetTexture("ui/" .. alienType.Name .. ".dds")
 
         -- Create the text that indicates how many players are playing as a specific alien type.
@@ -805,14 +805,14 @@ function CPPGUICombatAlienBuyMenu:_InitializeAlienButtons()
         playersText:SetTextAlignmentY(GUIItem.Align_Min)
         playersText:SetText("x" .. ToString(ScoreboardUI_GetNumberOfAliensByType(alienType.Name)))
         playersText:SetColor(ColorIntToColor(kAlienTeamColor))
-        playersText:SetPosition(Vector(0, -CPPGUICombatAlienBuyMenu.kPlayersTextSize, 0))
+        playersText:SetPosition(Vector(0, -AlienBuyMenu.kPlayersTextSize, 0))
         alienGraphicItem:AddChild(playersText)
 
         -- Create the selected background item for this alien item.
         local selectedBackground = GUIManager:CreateGraphicItem()
         selectedBackground:SetAnchor(GUIItem.Middle, GUIItem.Center)
-        selectedBackground:SetSize(Vector(CPPGUICombatAlienBuyMenu.kAlienSelectedButtonSize, CPPGUICombatAlienBuyMenu.kAlienSelectedButtonSize, 0))
-        selectedBackground:SetTexture(CPPGUICombatAlienBuyMenu.kAlienSelectedBackground)
+        selectedBackground:SetSize(Vector(AlienBuyMenu.kAlienSelectedButtonSize, AlienBuyMenu.kAlienSelectedButtonSize, 0))
+        selectedBackground:SetTexture(AlienBuyMenu.kAlienSelectedBackground)
         -- Hide the selected background for now.
         selectedBackground:SetColor(Color(1, 1, 1, 0))
         selectedBackground:AddChild(alienGraphicItem)
@@ -839,18 +839,18 @@ local function CreateTechButton(self, techId, position)
 end
 
 
-function CPPGUICombatAlienBuyMenu:_InitializeUpgrades()
+function AlienBuyMenu:_InitializeUpgrades()
 
     local categories = GetUpgradeTree():GetUpgradesByCategory("UpgradeType")
     self.upgradeButtons = { }
     self.techButtons = { }
 
-    local binSize = (self.backgroundCenteredArea:GetSize().x - (CPPGUICombatAlienBuyMenu.kUpgradesTitleOffest.x * 2)) / #categories
+    local binSize = (self.backgroundCenteredArea:GetSize().x - (AlienBuyMenu.kUpgradesTitleOffest.x * 2)) / #categories
 
     local headerTextShadow = GUIManager:CreateTextItem()
     headerTextShadow:SetAnchor(GUIItem.Left, GUIItem.Top)
-    headerTextShadow:SetPosition(CPPGUICombatAlienBuyMenu.kUpgradesTitleOffest)
-    headerTextShadow:SetFontName(CPPGUICombatAlienBuyMenu.kHeaderFont)
+    headerTextShadow:SetPosition(AlienBuyMenu.kUpgradesTitleOffest)
+    headerTextShadow:SetFontName(AlienBuyMenu.kHeaderFont)
     headerTextShadow:SetFontIsBold(true)
     headerTextShadow:SetScale(GetScaledVector())
     GUIMakeFontScale(headerTextShadow)
@@ -863,13 +863,13 @@ function CPPGUICombatAlienBuyMenu:_InitializeUpgrades()
     local headerText = GUIManager:CreateTextItem()
     headerText:SetAnchor(GUIItem.Left, GUIItem.Top)
     headerText:SetPosition(Vector(-2, -2, 0))
-    headerText:SetFontName(CPPGUICombatAlienBuyMenu.kHeaderFont)
+    headerText:SetFontName(AlienBuyMenu.kHeaderFont)
     headerText:SetFontIsBold(true)
     headerText:SetScale(GetScaledVector())
     GUIMakeFontScale(headerText)
     headerText:SetTextAlignmentX(GUIItem.Align_Min)
     headerText:SetTextAlignmentY(GUIItem.Align_Center)
-    headerText:SetColor(CPPGUICombatAlienBuyMenu.kTextColor)
+    headerText:SetColor(AlienBuyMenu.kTextColor)
     headerText:SetText("Upgrades")
     headerTextShadow:AddChild(headerText)
 
@@ -877,8 +877,8 @@ function CPPGUICombatAlienBuyMenu:_InitializeUpgrades()
     for i = 1, #categories do
 
         local bin = i - 1
-        local posInBin = (binSize / 2) - (CPPGUICombatAlienBuyMenu.kUpgradeButtonSize / 2)
-        local parentIconOffsetX = CPPGUICombatAlienBuyMenu.kUpgradesTitleOffest.x + (bin * binSize) + posInBin
+        local posInBin = (binSize / 2) - (AlienBuyMenu.kUpgradeButtonSize / 2)
+        local parentIconOffsetX = AlienBuyMenu.kUpgradesTitleOffest.x + (bin * binSize) + posInBin
         local parentIconPos = Vector(parentIconOffsetX, GUIScale(650), 0)
 
         local upsByCategory = GetUpgradeTree():GetUpgradesByPrereq(categories[i])
@@ -886,11 +886,11 @@ function CPPGUICombatAlienBuyMenu:_InitializeUpgrades()
         for j = 1, #upsByCategory do
 
             local smallBinSize = binSize / #upsByCategory
-            local iconOffsetX = (bin * binSize) + CPPGUICombatAlienBuyMenu.kUpgradesTitleOffest.x + ((j - 1) * smallBinSize) + ((smallBinSize / 2) - (CPPGUICombatAlienBuyMenu.kUpgradeButtonSize / 2))
+            local iconOffsetX = (bin * binSize) + AlienBuyMenu.kUpgradesTitleOffest.x + ((j - 1) * smallBinSize) + ((smallBinSize / 2) - (AlienBuyMenu.kUpgradeButtonSize / 2))
             local iconPos = Vector(iconOffsetX, GUIScale(720), 0)
-            local lineOffset = Vector(CPPGUICombatAlienBuyMenu.kUpgradeButtonSize / 2, CPPGUICombatAlienBuyMenu.kUpgradeButtonSize / 2, 0)
+            local lineOffset = Vector(AlienBuyMenu.kUpgradeButtonSize / 2, AlienBuyMenu.kUpgradeButtonSize / 2, 0)
 
-            local line = CreateLine(parentIconPos + lineOffset, iconPos + lineOffset, CPPGUICombatAlienBuyMenu.kTextColor)
+            local line = CreateLine(parentIconPos + lineOffset, iconPos + lineOffset, AlienBuyMenu.kTextColor)
             line:SetAnchor(GUIItem.Left, GUIItem.Top)
             self.backgroundCenteredArea:AddChild(line)
 
@@ -916,17 +916,17 @@ function CPPGUICombatAlienBuyMenu:_InitializeUpgrades()
     --     local categoryText = GUIManager:CreateTextItem()
     --     categoryText:SetAnchor(GUIItem.Left, GUIItem.Top)
     --     categoryText:SetPosition(Vector(xOffsetText + (binSize / 2), 100, 0))
-    --     categoryText:SetFontName(CPPGUICombatAlienBuyMenu.kSubHeaderFont)
+    --     categoryText:SetFontName(AlienBuyMenu.kSubHeaderFont)
     --     categoryText:SetFontIsBold(true)
     --     categoryText:SetScale(GetScaledVector())
     --     GUIMakeFontScale(categoryText)
     --     categoryText:SetTextAlignmentX(GUIItem.Align_Center)
     --     categoryText:SetTextAlignmentY(GUIItem.Align_Center)
-    --     categoryText:SetColor(CPPGUICombatAlienBuyMenu.kTextColor)
+    --     categoryText:SetColor(AlienBuyMenu.kTextColor)
     --     categoryText:SetText(GetDisplayNameForTechId(categories[i]))
     --     headerTextShadow:AddChild(categoryText)
 
-    --     local totalWidth = #upgrades * (CPPGUICombatAlienBuyMenu.kUpgradeButtonSize + 20)
+    --     local totalWidth = #upgrades * (AlienBuyMenu.kUpgradeButtonSize + 20)
 
     --     for upgradeIndex = 1, #upgrades do
 
@@ -936,17 +936,17 @@ function CPPGUICombatAlienBuyMenu:_InitializeUpgrades()
     --         local buttonIcon = GUIManager:CreateGraphicItem()
 
     --         local iconX, iconY = GetMaterialXYOffset(techId, false)
-    --         iconX = iconX * CPPGUICombatAlienBuyMenu.kUpgradeButtonTextureSize
-    --         iconY = iconY * CPPGUICombatAlienBuyMenu.kUpgradeButtonTextureSize
+    --         iconX = iconX * AlienBuyMenu.kUpgradeButtonTextureSize
+    --         iconY = iconY * AlienBuyMenu.kUpgradeButtonTextureSize
 
-    --         local xPos = ((upgradeIndex - 1) * (CPPGUICombatAlienBuyMenu.kUpgradeButtonSize + 20 )) - (totalWidth / 2) - 20
+    --         local xPos = ((upgradeIndex - 1) * (AlienBuyMenu.kUpgradeButtonSize + 20 )) - (totalWidth / 2) - 20
     --         local yPos = -80
 
     --         buttonIcon:SetAnchor(GUIItem.Middle, GUIItem.Center)
-    --         buttonIcon:SetSize(Vector(CPPGUICombatAlienBuyMenu.kUpgradeButtonSize, CPPGUICombatAlienBuyMenu.kUpgradeButtonSize, 0))
+    --         buttonIcon:SetSize(Vector(AlienBuyMenu.kUpgradeButtonSize, AlienBuyMenu.kUpgradeButtonSize, 0))
     --         buttonIcon:SetPosition(Vector(xPos, yPos, 0))
-    --         buttonIcon:SetTexture(CPPGUICombatAlienBuyMenu.kBuyHUDTexture)
-    --         buttonIcon:SetTexturePixelCoordinates(iconX, iconY, iconX + CPPGUICombatAlienBuyMenu.kUpgradeButtonTextureSize, iconY + CPPGUICombatAlienBuyMenu.kUpgradeButtonTextureSize)
+    --         buttonIcon:SetTexture(AlienBuyMenu.kBuyHUDTexture)
+    --         buttonIcon:SetTexturePixelCoordinates(iconX, iconY, iconX + AlienBuyMenu.kUpgradeButtonTextureSize, iconY + AlienBuyMenu.kUpgradeButtonTextureSize)
     --         categoryText:AddChild(buttonIcon)
 
     --         local purchased = AlienBuy_GetUpgradePurchased(techId)
@@ -960,23 +960,23 @@ function CPPGUICombatAlienBuyMenu:_InitializeUpgrades()
 
 end
 
-function CPPGUICombatAlienBuyMenu:_InitializeEvolvePanel()
+function AlienBuyMenu:_InitializeEvolvePanel()
 
     self.evolveQueue = { }
     self.evolveQueueIndex = 1
 
     local panel = GUIManager:CreateGraphicItem()
     panel:SetAnchor(GUIItem.Left, GUIItem.Bottom)
-    panel:SetSize(CPPGUICombatAlienBuyMenu.kEvolvePanelSize)
-    panel:SetPosition(CPPGUICombatAlienBuyMenu.kEvolvePanelOffset)
-    panel:SetTexture(CPPGUICombatAlienBuyMenu.kEvolvePanelBkgTexture)
+    panel:SetSize(AlienBuyMenu.kEvolvePanelSize)
+    panel:SetPosition(AlienBuyMenu.kEvolvePanelOffset)
+    panel:SetTexture(AlienBuyMenu.kEvolvePanelBkgTexture)
     panel:SetColor(Color(1.0, 1.0, 1.0, 0.6))
     self.backgroundCenteredArea:AddChild(panel)
 
     local headerTextShadow = GUIManager:CreateTextItem()
     headerTextShadow:SetAnchor(GUIItem.Left, GUIItem.Top)
-    headerTextShadow:SetPosition(CPPGUICombatAlienBuyMenu.kEvolveTitleOffset)
-    headerTextShadow:SetFontName(CPPGUICombatAlienBuyMenu.kHeaderFont)
+    headerTextShadow:SetPosition(AlienBuyMenu.kEvolveTitleOffset)
+    headerTextShadow:SetFontName(AlienBuyMenu.kHeaderFont)
     headerTextShadow:SetFontIsBold(true)
     headerTextShadow:SetScale(GetScaledVector())
     GUIMakeFontScale(headerTextShadow)
@@ -989,13 +989,13 @@ function CPPGUICombatAlienBuyMenu:_InitializeEvolvePanel()
     local headerText = GUIManager:CreateTextItem()
     headerText:SetAnchor(GUIItem.Left, GUIItem.Top)
     headerText:SetPosition(Vector(-2, -2, 0))
-    headerText:SetFontName(CPPGUICombatAlienBuyMenu.kHeaderFont)
+    headerText:SetFontName(AlienBuyMenu.kHeaderFont)
     headerText:SetFontIsBold(true)
     headerText:SetScale(GetScaledVector())
     GUIMakeFontScale(headerText)
     headerText:SetTextAlignmentX(GUIItem.Align_Min)
     headerText:SetTextAlignmentY(GUIItem.Align_Min)
-    headerText:SetColor(CPPGUICombatAlienBuyMenu.kTextColor)
+    headerText:SetColor(AlienBuyMenu.kTextColor)
     headerText:SetText("Evolve To")
     headerTextShadow:AddChild(headerText)
 
@@ -1003,16 +1003,16 @@ function CPPGUICombatAlienBuyMenu:_InitializeEvolvePanel()
 
         local upgradeIcon = GUIManager:CreateGraphicItem()
         upgradeIcon:SetAnchor(GUIItem.Left, GUIItem.Top)
-        upgradeIcon:SetSize(Vector(CPPGUICombatAlienBuyMenu.kEvolveIconSize, CPPGUICombatAlienBuyMenu.kEvolveIconSize, 0))
-        upgradeIcon:SetPosition(Vector((CPPGUICombatAlienBuyMenu.kEvolveUpgradePadding + CPPGUICombatAlienBuyMenu.kEvolveIconSize) * (i - 1), 0, 0) + CPPGUICombatAlienBuyMenu.kEvolveLifeformIconOffset)
+        upgradeIcon:SetSize(Vector(AlienBuyMenu.kEvolveIconSize, AlienBuyMenu.kEvolveIconSize, 0))
+        upgradeIcon:SetPosition(Vector((AlienBuyMenu.kEvolveUpgradePadding + AlienBuyMenu.kEvolveIconSize) * (i - 1), 0, 0) + AlienBuyMenu.kEvolveLifeformIconOffset)
         upgradeIcon:SetColor(Color(kIconColors[kAlienTeamType]))
         panel:AddChild(upgradeIcon)
 
         local closeBtn = GUIManager:CreateGraphicItem()
         closeBtn:SetAnchor(GUIItem.Right, GUIItem.Top)
-        closeBtn:SetSize(Vector(CPPGUICombatAlienBuyMenu.kCloseIconSize, CPPGUICombatAlienBuyMenu.kCloseIconSize, 0))
-        closeBtn:SetPosition(Vector(-CPPGUICombatAlienBuyMenu.kCloseIconSize, 0, 0))
-        closeBtn:SetTexture(CPPGUICombatAlienBuyMenu.kCloseIconTexture)
+        closeBtn:SetSize(Vector(AlienBuyMenu.kCloseIconSize, AlienBuyMenu.kCloseIconSize, 0))
+        closeBtn:SetPosition(Vector(-AlienBuyMenu.kCloseIconSize, 0, 0))
+        closeBtn:SetTexture(AlienBuyMenu.kCloseIconTexture)
         upgradeIcon:AddChild(closeBtn)
 
         self.evolveQueue[i] = { TechId = kTechId.None, Cost = 0, Icon = upgradeIcon, CloseButton = closeBtn }
@@ -1021,21 +1021,21 @@ function CPPGUICombatAlienBuyMenu:_InitializeEvolvePanel()
 
 end
 
-function CPPGUICombatAlienBuyMenu:_InitializeEvolveButton()
+function AlienBuyMenu:_InitializeEvolveButton()
 
     self.evolveButtonBackground = GUIManager:CreateGraphicItem()
     self.evolveButtonBackground:SetAnchor(GUIItem.Right, GUIItem.Bottom)
-    self.evolveButtonBackground:SetSize(Vector(CPPGUICombatAlienBuyMenu.kEvolveButtonWidth, CPPGUICombatAlienBuyMenu.kEvolveButtonHeight, 0))
-    self.evolveButtonBackground:SetPosition(Vector(-CPPGUICombatAlienBuyMenu.kEvolveButtonWidth, -CPPGUICombatAlienBuyMenu.kEvolveButtonHeight, 0) + CPPGUICombatAlienBuyMenu.kEvolveButtonOffset)
-    self.evolveButtonBackground:SetTexture(CPPGUICombatAlienBuyMenu.kBuyMenuTexture)
-    self.evolveButtonBackground:SetTexturePixelCoordinates(GUIUnpackCoords(CPPGUICombatAlienBuyMenu.kEvolveButtonTextureCoordinates))
+    self.evolveButtonBackground:SetSize(Vector(AlienBuyMenu.kEvolveButtonWidth, AlienBuyMenu.kEvolveButtonHeight, 0))
+    self.evolveButtonBackground:SetPosition(Vector(-AlienBuyMenu.kEvolveButtonWidth, -AlienBuyMenu.kEvolveButtonHeight, 0) + AlienBuyMenu.kEvolveButtonOffset)
+    self.evolveButtonBackground:SetTexture(AlienBuyMenu.kBuyMenuTexture)
+    self.evolveButtonBackground:SetTexturePixelCoordinates(GUIUnpackCoords(AlienBuyMenu.kEvolveButtonTextureCoordinates))
     self.backgroundCenteredArea:AddChild(self.evolveButtonBackground)
 
     self.evolveButtonVeins = GUIManager:CreateGraphicItem()
-    self.evolveButtonVeins:SetSize(Vector(CPPGUICombatAlienBuyMenu.kEvolveButtonWidth - kVeinsMargin * 2, CPPGUICombatAlienBuyMenu.kEvolveButtonHeight - kVeinsMargin * 2, 0))
+    self.evolveButtonVeins:SetSize(Vector(AlienBuyMenu.kEvolveButtonWidth - kVeinsMargin * 2, AlienBuyMenu.kEvolveButtonHeight - kVeinsMargin * 2, 0))
     self.evolveButtonVeins:SetPosition(Vector(kVeinsMargin, kVeinsMargin, 0))
-    self.evolveButtonVeins:SetTexture(CPPGUICombatAlienBuyMenu.kBuyMenuTexture)
-    self.evolveButtonVeins:SetTexturePixelCoordinates(GUIUnpackCoords(CPPGUICombatAlienBuyMenu.kEvolveButtonVeinsTextureCoordinates))
+    self.evolveButtonVeins:SetTexture(AlienBuyMenu.kBuyMenuTexture)
+    self.evolveButtonVeins:SetTexturePixelCoordinates(GUIUnpackCoords(AlienBuyMenu.kEvolveButtonVeinsTextureCoordinates))
     self.evolveButtonVeins:SetColor(Color(1, 1, 1, 0))
     self.evolveButtonBackground:AddChild(self.evolveButtonVeins)
 
@@ -1052,10 +1052,10 @@ function CPPGUICombatAlienBuyMenu:_InitializeEvolveButton()
     self.evolveButtonVeins:AddChild(self.evolveButtonText)
 
     self.evolveResourceIcon = GUIManager:CreateGraphicItem()
-    self.evolveResourceIcon:SetSize(Vector(CPPGUICombatAlienBuyMenu.kResourceIconWidth, CPPGUICombatAlienBuyMenu.kResourceIconHeight, 0))
+    self.evolveResourceIcon:SetSize(Vector(AlienBuyMenu.kResourceIconWidth, AlienBuyMenu.kResourceIconHeight, 0))
     self.evolveResourceIcon:SetAnchor(GUIItem.Middle, GUIItem.Top)
-    self.evolveResourceIcon:SetPosition(Vector(0, -CPPGUICombatAlienBuyMenu.kResourceIconHeight / 2, 0))
-    self.evolveResourceIcon:SetTexture(CPPGUICombatAlienBuyMenu.kResourceIconTexture)
+    self.evolveResourceIcon:SetPosition(Vector(0, -AlienBuyMenu.kResourceIconHeight / 2, 0))
+    self.evolveResourceIcon:SetTexture(AlienBuyMenu.kResourceIconTexture)
     self.evolveResourceIcon:SetColor(Color(0, 0, 0, 1))
     self.evolveResourceIcon:SetIsVisible(false)
     self.evolveResourceIcon:SetInheritsParentScaling(false)
@@ -1075,7 +1075,7 @@ function CPPGUICombatAlienBuyMenu:_InitializeEvolveButton()
 
 end
 
-function CPPGUICombatAlienBuyMenu:_UpdateCorners(deltaTime)
+function AlienBuyMenu:_UpdateCorners(deltaTime)
 
     for _, cornerName in ipairs(self.corners) do
         self.cornerTweeners[cornerName].update(deltaTime)
@@ -1085,7 +1085,7 @@ function CPPGUICombatAlienBuyMenu:_UpdateCorners(deltaTime)
 
 end
 
-function CPPGUICombatAlienBuyMenu:_UpdateEvolvePanel()
+function AlienBuyMenu:_UpdateEvolvePanel()
 
     for i = 1, #self.evolveQueue do
         self.evolveQueue[i].Icon:SetIsVisible(false)
@@ -1094,7 +1094,7 @@ function CPPGUICombatAlienBuyMenu:_UpdateEvolvePanel()
     self.evolveQueue[1].TechId = self.kAlienTypes[self.selectedAlienType].TechId
     self.evolveQueue[1].Cost = CombatPlusPlus_GetCostByTechId(self.evolveQueue[1].TechId)
 
-    self.evolveQueue[1].Icon:SetTexture(CPPGUICombatAlienBuyMenu.kBuyHUDTexture)
+    self.evolveQueue[1].Icon:SetTexture(AlienBuyMenu.kBuyHUDTexture)
     self.evolveQueue[1].Icon:SetTexturePixelCoordinates(GUIUnpackCoords(GetTextureCoordinatesForIcon(self.kAlienTypes[self.selectedAlienType].TechId)))
     self.evolveQueue[1].Icon:SetIsVisible(true)
 
@@ -1105,7 +1105,7 @@ function CPPGUICombatAlienBuyMenu:_UpdateEvolvePanel()
         self.evolveQueue[index].TechId = upgradeTechId
         self.evolveQueue[index].Cost = CombatPlusPlus_GetCostByTechId(upgradeTechId)
 
-        self.evolveQueue[index].Icon:SetTexture(CPPGUICombatAlienBuyMenu.kBuyHUDTexture)
+        self.evolveQueue[index].Icon:SetTexture(AlienBuyMenu.kBuyHUDTexture)
         self.evolveQueue[index].Icon:SetTexturePixelCoordinates(GUIUnpackCoords(GetTextureCoordinatesForIcon(upgradeTechId)))
         self.evolveQueue[index].Icon:SetIsVisible(true)
 
@@ -1115,10 +1115,10 @@ function CPPGUICombatAlienBuyMenu:_UpdateEvolvePanel()
 
 end
 
-function CPPGUICombatAlienBuyMenu:_UpdateAlienButtons()
+function AlienBuyMenu:_UpdateAlienButtons()
 
     local numAlienTypes = 5
-    local totalAlienButtonsWidth = CPPGUICombatAlienBuyMenu.kAlienButtonSize * numAlienTypes
+    local totalAlienButtonsWidth = AlienBuyMenu.kAlienButtonSize * numAlienTypes
     local player = Client.GetLocalPlayer()
 
     for k, alienButton in ipairs(self.alienButtons) do
@@ -1133,19 +1133,19 @@ function CPPGUICombatAlienBuyMenu:_UpdateAlienButtons()
         alienButton.Button:SetIsVisible(true)
 
         if hasRequiredRank and canAfford and not isCurrentAlien then
-            alienButton.Button:SetColor(CPPGUICombatAlienBuyMenu.kEnabledColor)
+            alienButton.Button:SetColor(AlienBuyMenu.kEnabledColor)
         elseif hasRequiredRank and not canAfford then
-            alienButton.Button:SetColor(CPPGUICombatAlienBuyMenu.kCannotBuyColor)
+            alienButton.Button:SetColor(AlienBuyMenu.kCannotBuyColor)
         elseif not hasRequiredRank then
-            alienButton.Button:SetColor(CPPGUICombatAlienBuyMenu.kDisabledColor)
+            alienButton.Button:SetColor(AlienBuyMenu.kDisabledColor)
         end
 
         local mouseOver = self:_GetIsMouseOver(alienButton.Button)
 
         if mouseOver then
 
-            local classStats = AlienBuy_GetClassStats(CPPGUICombatAlienBuyMenu.kAlienTypes[alienButton.TypeData.Index].Index)
-            local mouseOverName = CPPGUICombatAlienBuyMenu.kAlienTypes[alienButton.TypeData.Index].LocaleName
+            local classStats = AlienBuy_GetClassStats(AlienBuyMenu.kAlienTypes[alienButton.TypeData.Index].Index)
+            local mouseOverName = AlienBuyMenu.kAlienTypes[alienButton.TypeData.Index].LocaleName
             local health = classStats[2]
             local armor = classStats[3]
             self:_ShowMouseOverInfo(mouseOverName, GetTooltipInfoText(IndexToAlienTechId(alienButton.TypeData.Index)), cost, health, armor)
@@ -1156,11 +1156,11 @@ function CPPGUICombatAlienBuyMenu:_UpdateAlienButtons()
         alienButton.SelectedBackground:SetColor(Color(1, 1, 1, ((mouseOver and 1) or 0)))
 
         local offset = Vector(
-            (((alienButton.TypeData.XPos - 1) / numAlienTypes) * (CPPGUICombatAlienBuyMenu.kAlienButtonSize * numAlienTypes)) - (totalAlienButtonsWidth / 2),
-            CPPGUICombatAlienBuyMenu.kAlienButtonOffsetY,
+            (((alienButton.TypeData.XPos - 1) / numAlienTypes) * (AlienBuyMenu.kAlienButtonSize * numAlienTypes)) - (totalAlienButtonsWidth / 2),
+            AlienBuyMenu.kAlienButtonOffsetY,
             0
         )
-        alienButton.SelectedBackground:SetPosition(Vector(-CPPGUICombatAlienBuyMenu.kAlienButtonSize / 2, -CPPGUICombatAlienBuyMenu.kAlienSelectedButtonSize / 2 - alienButton.ARAdjustedHeight / 2, 0) + offset)
+        alienButton.SelectedBackground:SetPosition(Vector(-AlienBuyMenu.kAlienButtonSize / 2, -AlienBuyMenu.kAlienSelectedButtonSize / 2 - alienButton.ARAdjustedHeight / 2, 0) + offset)
 
         alienButton.PlayersText:SetText("x" .. ToString(ScoreboardUI_GetNumberOfAliensByType(alienButton.TypeData.Name)))
 
@@ -1168,7 +1168,7 @@ function CPPGUICombatAlienBuyMenu:_UpdateAlienButtons()
 
 end
 
-function CPPGUICombatAlienBuyMenu:_UpdateEvolveButton()
+function AlienBuyMenu:_UpdateEvolveButton()
 
     local player = Client.GetLocalPlayer()
     local numberOfSelectedUpgrades = GetNumberOfNewlySelectedUpgrades(self)
@@ -1186,12 +1186,12 @@ function CPPGUICombatAlienBuyMenu:_UpdateEvolveButton()
         -- If the current alien is selected with no upgrades, cannot evolve.
         if self.selectedAlienType == AlienBuy_GetCurrentAlien() and numberOfSelectedUpgrades == 0 then
 
-            evolveButtonTextureCoords = CPPGUICombatAlienBuyMenu.kEvolveButtonNeedResourcesTextureCoordinates
+            evolveButtonTextureCoords = AlienBuyMenu.kEvolveButtonNeedResourcesTextureCoordinates
 
         elseif not canAfford then
 
             -- If cannot afford selected alien type and/or upgrades, cannot evolve.
-            evolveButtonTextureCoords = CPPGUICombatAlienBuyMenu.kEvolveButtonNeedResourcesTextureCoordinates
+            evolveButtonTextureCoords = AlienBuyMenu.kEvolveButtonNeedResourcesTextureCoordinates
             evolveText = "Need More Skill Points"
 
         else
@@ -1258,7 +1258,7 @@ local kNotAvailableColor = Color(0.0, 0.0, 0.0, 1)
 local kNotAllowedColor = Color(1, 0,0,1)
 local kPurchasedColor = Color(1, 0.6, 0, 1)
 
-function CPPGUICombatAlienBuyMenu:_UpdateAbilities()
+function AlienBuyMenu:_UpdateAbilities()
 
     local player = Client.GetLocalPlayer()
 
@@ -1339,7 +1339,7 @@ local function IsPurchasedOrPurchasing(self, techId)
 
 end
 
-function CPPGUICombatAlienBuyMenu:_UpdateUpgrades(deltaTime)
+function AlienBuyMenu:_UpdateUpgrades(deltaTime)
 
     local player = Client.GetLocalPlayer()
 
@@ -1403,7 +1403,7 @@ function CPPGUICombatAlienBuyMenu:_UpdateUpgrades(deltaTime)
 
 end
 
-function CPPGUICombatAlienBuyMenu:_ShowMouseOverInfo(lifeformText, infoText, costAmount, health, armor)
+function AlienBuyMenu:_ShowMouseOverInfo(lifeformText, infoText, costAmount, health, armor)
 
     -- show the panel
     self.mouseOverPanel:SetIsVisible(true)
@@ -1412,7 +1412,7 @@ function CPPGUICombatAlienBuyMenu:_ShowMouseOverInfo(lifeformText, infoText, cos
     self.mouseOverTitle:SetText(lifeformText)
 
     self.mouseOverInfo:SetText(infoText)
-    self.mouseOverInfo:SetTextClipped(true, self.mouseOverPanel:GetSize().x - CPPGUICombatAlienBuyMenu.kMouseOverInfoOffset.x, self.mouseOverPanel:GetSize().y - CPPGUICombatAlienBuyMenu.kMouseOverInfoOffset.y)
+    self.mouseOverInfo:SetTextClipped(true, self.mouseOverPanel:GetSize().x - AlienBuyMenu.kMouseOverInfoOffset.x, self.mouseOverPanel:GetSize().y - AlienBuyMenu.kMouseOverInfoOffset.y)
 
     self.mouseOverInfoResIcon:SetIsVisible(costAmount ~= nil)
 
@@ -1436,7 +1436,7 @@ function CPPGUICombatAlienBuyMenu:_ShowMouseOverInfo(lifeformText, infoText, cos
 
 end
 
-function CPPGUICombatAlienBuyMenu:_HideMouseOverInfo()
+function AlienBuyMenu:_HideMouseOverInfo()
 
     self.mouseOverPanel:SetIsVisible(false)
 
@@ -1471,7 +1471,7 @@ local function ToggleButton( self,  button )
     end
 end
 
-function CPPGUICombatAlienBuyMenu:SetPurchasedSelected()
+function AlienBuyMenu:SetPurchasedSelected()
 
     for i, button in ipairs(self.upgradeButtons) do
         if button.Purchased then
@@ -1483,7 +1483,7 @@ function CPPGUICombatAlienBuyMenu:SetPurchasedSelected()
 
 end
 
-function CPPGUICombatAlienBuyMenu:SendKeyEvent(key, down)
+function AlienBuyMenu:SendKeyEvent(key, down)
 
     local closeMenu = false
     local inputHandled = false
@@ -1547,7 +1547,7 @@ function CPPGUICombatAlienBuyMenu:SendKeyEvent(key, down)
                         -- Deselect all upgrades when a different alien type is selected.
                         if self.selectedAlienType ~= buttonItem.TypeData.Index then
 
-                            AlienBuy_OnSelectAlien(CPPGUICombatAlienBuyMenu.kAlienTypes[buttonItem.TypeData.Index].Name)
+                            AlienBuy_OnSelectAlien(AlienBuyMenu.kAlienTypes[buttonItem.TypeData.Index].Name)
 
                         end
 
@@ -1592,7 +1592,7 @@ function CPPGUICombatAlienBuyMenu:SendKeyEvent(key, down)
 
 end
 
-function CPPGUICombatAlienBuyMenu:GetCanSelect(upgradeButton, player)
+function AlienBuyMenu:GetCanSelect(upgradeButton, player)
 
     --local hasRequiredRank = CombatPlusPlus_GetRequiredRankByTechId(upgradeButton.TechId) <= player.combatRank
     local isPassive = LookupUpgradeData(upgradeButton.TechId, kUpDataPassiveIndex)
@@ -1605,7 +1605,7 @@ function CPPGUICombatAlienBuyMenu:GetCanSelect(upgradeButton, player)
 end
 
 
-function CPPGUICombatAlienBuyMenu:_HandleUpgradeClicked(mouseX, mouseY)
+function AlienBuyMenu:_HandleUpgradeClicked(mouseX, mouseY)
 
     local inputHandled = false
     local player = Client.GetLocalPlayer()

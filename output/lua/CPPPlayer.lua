@@ -1,5 +1,5 @@
 Script.Load("lua/CPPUtilities.lua")
-Script.Load("lua/CombatScoreMixin.lua")
+Script.Load("lua/Combat/CombatScoreMixin.lua")
 
 local networkVarsEx =
 {

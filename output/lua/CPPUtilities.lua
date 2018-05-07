@@ -62,6 +62,19 @@ function CombatPlusPlus_GetRankByXP(xp)
 
 end
 
+function CombatPlusPlus_GetIsScalableXPType(type)
+
+    local scalableXPTypes =
+    {
+        [kXPSourceType.Kill] = true,
+        [kXPSourceType.Assist] = true,
+        [kXPSourceType.Nearby] = true
+    }
+
+    return scalableXPTypes[type]
+
+end
+
 function CombatPlusPlus_GetCostByTechId(techId)
 
     local techIdCostTable = {}
