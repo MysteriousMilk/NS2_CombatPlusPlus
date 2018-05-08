@@ -4,13 +4,12 @@ Script.Load("lua/GUIAnimatedScript.lua")
 
 class 'MarineStatusHUD' (GUIAnimatedScript)
 
-MarineStatusHUD.kTexture = PrecacheAsset("ui/combatui_marine_status_bkg.dds")
+MarineStatusHUD.kTexture =  PrecacheAsset("ui/marine_HUD_presbg.dds")
 MarineStatusHUD.kXpBarTexture = PrecacheAsset("ui/combatui_xp_bar.dds")
 
-MarineStatusHUD.kBackgroundCoords = { 0, 0, 300, 121 }
-MarineStatusHUD.kBackgroundPos = Vector(-400, -140, 0)
-MarineStatusHUD.kBackgroundSize = Vector(MarineStatusHUD.kBackgroundCoords[3], MarineStatusHUD.kBackgroundCoords[4], 0)
-MarineStatusHUD.kStencilCoords = { 0, 140, 300, 140 + 121 }
+--MarineStatusHUD.kBackgroundCoords = { 0, 0, 300, 121 }
+MarineStatusHUD.kBackgroundPos = Vector(-400, -100, 0)
+MarineStatusHUD.kBackgroundSize = Vector(280, 58, 0)
 
 MarineStatusHUD.kXPFontName = Fonts.kArial_13
 MarineStatusHUD.kXPTextPosition = Vector(0, -61, 0)
@@ -18,20 +17,20 @@ MarineStatusHUD.kXPTextPosition = Vector(0, -61, 0)
 MarineStatusHUD.kRankFontName = Fonts.kAgencyFB_Small
 MarineStatusHUD.kRankTextPosition = Vector(0, -82, 0)
 
-MarineStatusHUD.kSkillPointTextPos = Vector(70, 64, 0)
+MarineStatusHUD.kUpgradePointTextPos = Vector(70, 30, 0)
 
-MarineStatusHUD.kXPBarSize = Vector(789, 10, 0)
-MarineStatusHUD.kXPBarSizeScaled = Vector(789, 10, 0)
+MarineStatusHUD.kXPBarSize = Vector(589, 10, 0)
+MarineStatusHUD.kXPBarSizeScaled = Vector(589, 10, 0)
 MarineStatusHUD.kXPBarPos = Vector(5, 13, 0)
 MarineStatusHUD.kXPBarColor = Color(0.26, 0.8, 0.87, 0.75)
 
 MarineStatusHUD.kXPBarGlowSize = Vector(8, 22, 0)
 MarineStatusHUD.kXPBarGlowPos = Vector(-MarineStatusHUD.kXPBarGlowSize.x, 0, 0)
 
-MarineStatusHUD.kSkillIconTexture = PrecacheAsset("ui/marine_HUD_presicon.dds")
-MarineStatusHUD.kSkillIconPixelCoords = { 6, 25, 26, 45 }
-MarineStatusHUD.kSkillIconSize = Vector(25, 25, 0)
-MarineStatusHUD.kSkillIconPos = Vector(40, 52, 0)
+MarineStatusHUD.kUpgradePointIconTexture = PrecacheAsset("ui/marine_HUD_presicon.dds")
+MarineStatusHUD.kUpgradePointIconPixelCoords = { 6, 25, 26, 45 }
+MarineStatusHUD.kUpgradePointIconSize = Vector(25, 25, 0)
+MarineStatusHUD.kUpgradePointIconPos = Vector(40, 18, 0)
 
 MarineStatusHUD.kAbilityIconBkgTexture = PrecacheAsset("ui/combatui_ability_buttonbg.dds")
 MarineStatusHUD.kAbilityIconSize = Vector(68, 68, 0)
@@ -71,6 +70,12 @@ local function GetAbilityIconPixelCoordinates(itemTechId)
 
 end
 
+local function UpdateItemsGUIScale(self)
+
+
+
+end
+
 function MarineStatusHUD:Initialize()
 
     GUIAnimatedScript.Initialize(self)
@@ -103,7 +108,6 @@ function MarineStatusHUD:Initialize()
     self.combatStatusBkg = self:CreateAnimatedGraphicItem()
     self.combatStatusBkg:SetAnchor(GUIItem.Right, GUIItem.Bottom)
     self.combatStatusBkg:SetTexture(MarineStatusHUD.kTexture)
-    self.combatStatusBkg:SetTexturePixelCoordinates(unpack(MarineStatusHUD.kBackgroundCoords))
     self.combatStatusBkg:AddAsChildTo(self.background)
 
     self.currentXPText = GetGUIManager():CreateTextItem()
@@ -126,21 +130,21 @@ function MarineStatusHUD:Initialize()
     self.currentRankText:SetColor( Color(0.62, 0.92, 1, 0.8) )
     self.background:AddChild(self.currentRankText)
 
-    self.skillPointIcon = self:CreateAnimatedGraphicItem()
-    self.skillPointIcon:SetAnchor(GUIItem.Left, GUIItem.Top)
-    self.skillPointIcon:SetTexture(MarineStatusHUD.kSkillIconTexture)
-    self.skillPointIcon:SetTexturePixelCoordinates(unpack(MarineStatusHUD.kSkillIconPixelCoords))
-    self.skillPointIcon:AddAsChildTo(self.combatStatusBkg)
+    self.upgradePointIcon = self:CreateAnimatedGraphicItem()
+    self.upgradePointIcon:SetAnchor(GUIItem.Left, GUIItem.Top)
+    self.upgradePointIcon:SetTexture(MarineStatusHUD.kUpgradePointIconTexture)
+    self.upgradePointIcon:SetTexturePixelCoordinates(unpack(MarineStatusHUD.kUpgradePointIconPixelCoords))
+    self.upgradePointIcon:AddAsChildTo(self.combatStatusBkg)
 
-    self.skillPointText = GetGUIManager():CreateTextItem()
-    self.skillPointText:SetFontName(MarineStatusHUD.kRankFontName)
-    self.skillPointText:SetAnchor(GUIItem.Left, GUIItem.Top)
-    self.skillPointText:SetTextAlignmentX(GUIItem.Align_Min)
-    self.skillPointText:SetTextAlignmentY(GUIItem.Align_Center)
-    self.skillPointText:SetText("0 Skill Points")
-    self.skillPointText:SetIsVisible(true)
-    self.skillPointText:SetColor( Color(0.62, 0.92, 1, 0.8) )
-    self.combatStatusBkg:AddChild(self.skillPointText)
+    self.upgradePointText = GetGUIManager():CreateTextItem()
+    self.upgradePointText:SetFontName(MarineStatusHUD.kRankFontName)
+    self.upgradePointText:SetAnchor(GUIItem.Left, GUIItem.Top)
+    self.upgradePointText:SetTextAlignmentX(GUIItem.Align_Min)
+    self.upgradePointText:SetTextAlignmentY(GUIItem.Align_Center)
+    self.upgradePointText:SetText("0 Upgrade Points")
+    self.upgradePointText:SetIsVisible(true)
+    self.upgradePointText:SetColor( Color(0.62, 0.92, 1, 0.8) )
+    self.combatStatusBkg:AddChild(self.upgradePointText)
 
     self.medPackIconBackground = self:CreateAnimatedGraphicItem()
     self.medPackIconBackground:SetAnchor(GUIItem.Right, GUIItem.Bottom)
@@ -228,7 +232,7 @@ function MarineStatusHUD:Reset(scale)
 
     self.background:SetSize(Vector(Client.GetScreenWidth(), Client.GetScreenHeight(),0))
 
-    local xpBarWidthBkg = GUIScaleWidth(800)
+    local xpBarWidthBkg = GUIScaleWidth(600)
     self.newXpBarBkg:SetUniformScale(self.scale)
     self.newXpBarBkg:SetSize( Vector(xpBarWidthBkg, 32, 0) )
     self.newXpBarBkg:SetPosition( Vector(-1 * xpBarWidthBkg / 2, -80, 0) )
@@ -242,9 +246,9 @@ function MarineStatusHUD:Reset(scale)
     self.combatStatusBkg:SetPosition(MarineStatusHUD.kBackgroundPos)
     self.combatStatusBkg:SetSize(MarineStatusHUD.kBackgroundSize)
 
-    self.skillPointIcon:SetUniformScale(self.scale)
-    self.skillPointIcon:SetPosition(MarineStatusHUD.kSkillIconPos)
-    self.skillPointIcon:SetSize(MarineStatusHUD.kSkillIconSize)
+    self.upgradePointIcon:SetUniformScale(self.scale)
+    self.upgradePointIcon:SetPosition(MarineStatusHUD.kUpgradePointIconPos)
+    self.upgradePointIcon:SetSize(MarineStatusHUD.kUpgradePointIconSize)
 
     self.currentXPText:SetScale(GetScaledVector())
     self.currentXPText:SetPosition(MarineStatusHUD.kXPTextPosition)
@@ -256,10 +260,10 @@ function MarineStatusHUD:Reset(scale)
     self.currentRankText:SetFontName(MarineStatusHUD.kRankFontName)
     GUIMakeFontScale(self.currentRankText)
 
-    self.skillPointText:SetScale(GetScaledVector())
-    self.skillPointText:SetPosition(MarineStatusHUD.kSkillPointTextPos)
-    self.skillPointText:SetFontName(MarineStatusHUD.kRankFontName)
-    GUIMakeFontScale(self.skillPointText)
+    self.upgradePointText:SetScale(GetScaledVector())
+    self.upgradePointText:SetPosition(MarineStatusHUD.kUpgradePointTextPos)
+    self.upgradePointText:SetFontName(MarineStatusHUD.kRankFontName)
+    GUIMakeFontScale(self.upgradePointText)
 
     self.medPackIconBackground:SetUniformScale(self.scale)
     self.medPackIconBackground:SetPosition( Vector(-142, -180, 0) )
@@ -324,8 +328,8 @@ function MarineStatusHUD:Uninitialize()
     GUI.DestroyItem(self.currentRankText)
     self.currentRankText = nil
 
-    GUI.DestroyItem(self.skillPointText)
-    self.skillPointText = nil
+    GUI.DestroyItem(self.upgradePointText)
+    self.upgradePointText = nil
 
 end
 
@@ -398,8 +402,8 @@ function MarineStatusHUD:UpdateVisibility()
     self.combatStatusBkg:SetIsVisible(self.visible)
     self.currentXPText:SetIsVisible(self.visible)
     self.currentRankText:SetIsVisible(self.visible)
-    self.skillPointIcon:SetIsVisible(self.visible)
-    self.skillPointText:SetIsVisible(self.visible)
+    self.upgradePointIcon:SetIsVisible(self.visible)
+    self.upgradePointText:SetIsVisible(self.visible)
     self.newXpBarBkg:SetIsVisible(self.visible)
 
     self.medPackIconBackground:SetIsVisible(self.visible)
@@ -454,11 +458,11 @@ function MarineStatusHUD:Update(deltaTime)
         -- update rank text
         self.currentRankText:SetText(string.format("Rank %s : %s", currentRank, title))
 
-        -- update skill point text
-        if player.combatSkillPoints == 1 then
-            self.skillPointText:SetText(string.format("%s Skill Point", player.combatSkillPoints))
+        -- update upgrade point text
+        if player.combatUpgradePoints == 1 then
+            self.upgradePointText:SetText(string.format("%s Upgrade Point", player.combatUpgradePoints))
         else
-            self.skillPointText:SetText(string.format("%s Skill Points", player.combatSkillPoints))
+            self.upgradePointText:SetText(string.format("%s Upgrade Points", player.combatUpgradePoints))
         end
 
         -- update xp text

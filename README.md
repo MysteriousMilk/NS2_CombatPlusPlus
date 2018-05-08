@@ -1,14 +1,27 @@
 # NS2 Combat++
+**Version 0.2 Alpha**
 
 ## Overview
 The intent of this mod is to bring back a gameplay type using the orignial Natural Selection 1 Combat Mod for primary insiration, use the [Natural Selection 2 Combat Mod](https://github.com/AlexHayton/NS2Combat) as a reference and possibly incorporate some ideas from the Combat Standalone (placing structures, etc).  Seeing as how the title is still 'Combat', I'd like to keep that original gametype feel as much as possible (individual xp, no commanders), an not alter the lifeform, gun, or game physics as many players use combat for practicing for the vanilla game.
 
 ## Latest Changes
+**5/18/2018** - UI Improvements
+
+    > Made the Buy Menus more transparent.
+
+    > Addressed scaling issues on other resolutions.
+
+    > Reduced the length of the xp bar by 200 pixels.
+
+    > Fixed issue with not being able choose upgrades as a skulk.
+
+    > Fixed issue with not being able to upgrade more than one upgrade at a time as Alien.
+
 **5/10/2018** - Enabled sprinting while using the builder in create mode.
 
 **5/6/2018** - Overall uplift to the structure logic.
 
-    > Fixed issue with player spawning with the builder in create mode if they died with the builder open.  This also corrected the issue where the skill points could go negative.
+    > Fixed issue with player spawning with the builder in create mode if they died with the builder open.  This also corrected the issue where the upgrade points could go negative.
     
     > Fixed issue with only being able to select a certain structure once from the buy menu.
     
@@ -16,7 +29,7 @@ The intent of this mod is to bring back a gameplay type using the orignial Natur
     
     > If a player leaves the team or disconnects, the structures they placed will now be killed.
     
-    > If a player's structure is destroyed, they are refunded the skill points they spent on that structure.
+    > If a player's structure is destroyed, they are refunded the upgrade points they spent on that structure.
     
     > There is still no good way to reselect the builder tool (create mode).  The workaround is to select the structure from the buy menu again.
 
@@ -26,7 +39,7 @@ The intent of this mod is to bring back a gameplay type using the orignial Natur
 
 **1/24/2018** - Added the xp bar and text to the Alien HUD, track healing for Aliens, and added an Auto-Cyst feature to the Hive.
 
-**1/15/2018** - Experience is now given for building structures and welding.  Added Skill Point award for the 'Damage Dealer' criteria.  Implemented an XP scale/modifier based on the distance between the player and the enemy base. Also, some improvements to the XP notification GUI.
+**1/15/2018** - Experience is now given for building structures and welding.  Added Upgrade Point award for the 'Damage Dealer' criteria.  Implemented an XP scale/modifier based on the distance between the player and the enemy base. Also, some improvements to the XP notification GUI.
 
 **1/13/2018** - Marines can now press the USE key to socket power nodes.  This is a change from the original idea of socketing them all on game start.
 

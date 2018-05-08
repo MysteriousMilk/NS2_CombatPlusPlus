@@ -47,7 +47,7 @@ kMinMarineSpawnPoints = 2
 -- Number of players needed on the the marine team to get an extra spawn point
 kMarineSpawnAdjustmentThreshold = 9
 
--- Number of skill points a player starts with
+-- Number of upgrade points a player starts with
 kStartPoints = 1
 
 -- the modifier applied to the 'BaseXpOnKill' to determine how much xp for assists
@@ -65,10 +65,10 @@ kDistanceXPModifierMaxUpperBound = 2
 -- The required damage threshold required to be awarded xp.  Every time the
 -- player reaches this threshold, xp will be reward for the amount of damage
 -- multiplied by the damage xp modifier
-kDamageRequiredXPReward = 20
+kDamageRequiredXPReward = 30
 
 -- Modifier used to determine how much xp to give per damage award
-kDamageXPModifier = 0.5
+kDamageXPModifier = 0.33
 
 -- The required welding threshold required to be awarded xp.  Every time the
 -- player reaches this threshold, xp will be reward for the amount of welding
@@ -112,12 +112,12 @@ kAssistStreakValue = 5
 -- Amount of damage needed for the "Damage Dealer" award.
 kDamageDealerValue = 2500
 
--- This table drives how many skill points are awarded for a particular action
-kSkillPointTable = {}
-kSkillPointTable[kSkillPointSourceType.LevelUp] = 1
-kSkillPointTable[kSkillPointSourceType.KillStreak] = 1
-kSkillPointTable[kSkillPointSourceType.AssistStreak] = 1
-kSkillPointTable[kSkillPointSourceType.DamageDealer] = 1
+-- This table drives how many upgrade points are awarded for a particular action
+kUpgradePointTable = {}
+kUpgradePointTable[kUpgradePointSourceType.LevelUp] = 1
+kUpgradePointTable[kUpgradePointSourceType.KillStreak] = 1
+kUpgradePointTable[kUpgradePointSourceType.AssistStreak] = 1
+kUpgradePointTable[kUpgradePointSourceType.DamageDealer] = 1
 
 -- How long the player has to wait in between using the MedPackAbility (in sec)
 kMedPackAbilityCooldown = 60

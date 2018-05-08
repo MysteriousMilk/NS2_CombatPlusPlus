@@ -12,11 +12,11 @@ AnimatedTechButton.kTechButtonTextureSize = 80
 AnimatedTechButton.kTechTexture = "ui/buildmenu.dds"
 AnimatedTechButton.AnimationTime = 1.25
 AnimatedTechButton.AnimationWaitTime = 3
-AnimatedTechButton.ButtonExpandSize = Vector(20, 20, 0)
 
 function AnimatedTechButton:Initialize(script, techId, position)
 
-    AnimatedTechButton.kTechButtonSize = GUIScale(54)
+    AnimatedTechButton.kTechButtonSize = Vector(GUIScaleWidth(54), GUIScaleHeight(64), 0)
+    AnimatedTechButton.kButtonExpandSize = Vector(GUIScaleWidth(20), GUIScaleHeight(20), 0)
 
     self.GUIScript = script
     self.TechId = techId
@@ -39,8 +39,9 @@ function AnimatedTechButton:Initialize(script, techId, position)
     iconY = iconY * AnimatedTechButton.kTechButtonTextureSize
 
     self.Icon = self.GUIScript:CreateAnimatedGraphicItem()
+    self.Icon:SetIsScaling(false)
     self.Icon:SetAnchor(GUIItem.Left, GUIItem.Top)
-    self.Icon:SetSize(Vector(AnimatedTechButton.kTechButtonSize, AnimatedTechButton.kTechButtonSize, 0))
+    self.Icon:SetSize(AnimatedTechButton.kTechButtonSize)
     self.Icon:SetPosition(position)
     self.Icon:SetTexture(AnimatedTechButton.kTechTexture)
     self.Icon:SetTexturePixelCoordinates(iconX, iconY, iconX + AnimatedTechButton.kTechButtonTextureSize, iconY + AnimatedTechButton.kTechButtonTextureSize)
@@ -80,10 +81,10 @@ function AnimatedTechButton:SetIsSelected(isSelected)
     self.elapsedSinceColorSwap = 0
 
     if isSelected then
-        self.Icon:SetSize(self.Icon:GetSize() + AnimatedTechButton.ButtonExpandSize)
-        self.Icon:SetPosition(self.unexpandedPosition - AnimatedTechButton.ButtonExpandSize / 2)
+        self.Icon:SetSize(self.Icon:GetSize() + AnimatedTechButton.kButtonExpandSize)
+        self.Icon:SetPosition(self.unexpandedPosition - AnimatedTechButton.kButtonExpandSize / 2)
     else
-        self.Icon:SetSize(Vector(AnimatedTechButton.kTechButtonSize, AnimatedTechButton.kTechButtonSize, 0))
+        self.Icon:SetSize(AnimatedTechButton.kTechButtonSize)
         self.Icon:SetPosition(self.unexpandedPosition)
     end
 

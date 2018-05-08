@@ -10,30 +10,25 @@ Script.Load("lua/GUIAnimatedScript.lua")
 
 class 'MarineBuyMenu' (GUIAnimatedScript)
 
-MarineBuyMenu.kBackgroundColor = Color(0.05, 0.05, 0.1, 0.6)
-MarineBuyMenu.kBackgroundCenterColor = Color(0.06, 0.06, 0.12, 0.8)
+MarineBuyMenu.kBackgroundColor = Color(0.05, 0.05, 0.1, 0.3)
+MarineBuyMenu.kBackgroundCenterColor = Color(0.06, 0.06, 0.12, 0.4)
 MarineBuyMenu.kBackgroundSize = Vector(1024, 1024, 0)
 
 MarineBuyMenu.kLogoTexture = PrecacheAsset("ui/logo_marine.dds")
 MarineBuyMenu.kButtonTexture = PrecacheAsset("ui/combatui_buymenu_button.dds")
 MarineBuyMenu.kButtonLargeTexture = PrecacheAsset("ui/combatui_buymenu_button_large.dds")
-MarineBuyMenu.kWeaponIconTexture = PrecacheAsset("ui/combatui_marine_weapon_icons.dds")
-MarineBuyMenu.kStructureIconTexture = PrecacheAsset("ui/combatui_marine_structure_icons_large.dds")
-MarineBuyMenu.kTechIconTexture = PrecacheAsset("ui/combatui_marine_tech_icons.dds")
-MarineBuyMenu.kConsumableIconTexture = PrecacheAsset("ui/combatui_marine_consumable_icons.dds")
-MarineBuyMenu.kUpgradeIconTexture = PrecacheAsset("ui/combatui_marine_upgrade_icons.dds")
 MarineBuyMenu.kResIconTexture = PrecacheAsset("ui/pres_icon_big.dds")
 MarineBuyMenu.kLevelUpIconTexture = PrecacheAsset("ui/levelup_icon.dds")
 MarineBuyMenu.kInfoBackgroundTexture = PrecacheAsset("ui/combatui_marine_info_bkg.dds")
-MarineBuyMenu.kBigIconTexture = "ui/marine_buy_bigicons.dds"
-MarineBuyMenu.kBigIconTextureEx = PrecacheAsset("ui/combatui_marine_consumables_big.dds")
 MarineBuyMenu.kCooldownIconTexture = PrecacheAsset("ui/cooldown_icon.dds")
 MarineBuyMenu.kInfiniteIconTexture = PrecacheAsset("ui/infinite_icon.dds")
 
 MarineBuyMenu.kIconTextureCoords = { 0, 0, 256, 256 }
-MarineBuyMenu.kSkillPointIconTexCoords = { 0, 0, 48, 48 }
+MarineBuyMenu.kUpgradePointIconTexCoords = { 0, 0, 48, 48 }
 MarineBuyMenu.kLevelUpIconTexCoords = { 0, 0, 128, 128 }
 MarineBuyMenu.kInfoBackgroundTexCoords = { 0, 0, 400, 400 }
+MarineBuyMenu.kSmallButtonTexCoords =  { 0, 0, 200, 64 }
+MarineBuyMenu.kLargeButtonTexCoords =  { 0, 0, 128, 192 }
 
 MarineBuyMenu.kTitleFont = Fonts.kAgencyFB_Large
 MarineBuyMenu.kHeaderFont = Fonts.kAgencyFB_Medium
@@ -42,232 +37,11 @@ MarineBuyMenu.kTextColor = Color(kMarineFontColor)
 MarineBuyMenu.kBtnColor = Color(1, 1, 1, 0.7)
 MarineBuyMenu.kBtnHighlightColor = Color(0.5, 0.5, 1.0, 0.7)
 
-MarineBuyMenu.kLightBlueHighlight = Color(0.4, 0.85, 1, 1)
-MarineBuyMenu.kBlueHighlight = Color(0.6, 0.6, 1, 1)
+MarineBuyMenu.kGreenHighlight = Color(0.4, 1, 0.4, 1)
 MarineBuyMenu.kRedHighlight = Color(1, 0.3, 0.3, 1)
 MarineBuyMenu.kGreyHighlight = Color(0.6, 0.6, 0.6, 1)
 
 MarineBuyMenu.kButtonsPerRow = 4
-
-local weaponIconHeight = 64
-local weaponIconWidth = 128
-local gWeaponIconIndex
-local function GetWeaponIcon(itemTechId, enabled)
-
-    local weaponIconHeight = 64
-    local weaponIconWidth = 128
-
-    if not gWeaponIconIndex then
-        gWeaponIconIndex = {}
-        gWeaponIconIndex[kTechId.Pistol] = 0
-        gWeaponIconIndex[kTechId.Rifle] = 1
-        gWeaponIconIndex[kTechId.Shotgun] = 2
-        gWeaponIconIndex[kTechId.Flamethrower] = 3
-        gWeaponIconIndex[kTechId.GrenadeLauncher] = 4
-        gWeaponIconIndex[kTechId.HeavyMachineGun] = 5
-    end
-
-    local x1 = 0
-    local x2 = weaponIconWidth
-
-    if not enabled then
-        x1 = weaponIconWidth
-        x2 = weaponIconWidth * 2
-    end
-
-    local index = gWeaponIconIndex[itemTechId]
-    if not index then
-        index = 0
-    end
-
-    local y1 = index * weaponIconHeight
-    local y2 = (index + 1) * weaponIconHeight
-
-    return { tex = MarineBuyMenu.kWeaponIconTexture, size = Vector(weaponIconWidth, weaponIconHeight, 0), coords = { x1, y1, x2, y2 } }
-
-end
-
-
-local gTechIconIndex
-local function GetTechIcon(itemTechId, enabled)
-
-    local smallIconHeight = 64
-    local smallIconWidth = 64
-
-    if not gTechIconIndex then
-        gTechIconIndex = {}
-        gTechIconIndex[kTechId.Welder] = 0
-        gTechIconIndex[kTechId.LayMines] = 1
-        gTechIconIndex[kTechId.ClusterGrenade] = 2
-        gTechIconIndex[kTechId.GasGrenade] = 3
-        gTechIconIndex[kTechId.PulseGrenade] = 4
-        gTechIconIndex[kTechId.Jetpack] = 5
-        gTechIconIndex[kTechId.DualMinigunExosuit] = 6
-        gTechIconIndex[kTechId.DualRailgunExosuit] = 7
-    end
-
-    local x1 = 0
-    local x2 = smallIconWidth
-    if not enabled then
-        x1 = smallIconWidth
-        x2 = smallIconWidth * 2
-    end
-
-    local index = gTechIconIndex[itemTechId]
-    if not index then
-        index = 0
-    end
-
-    local y1 = index * smallIconHeight
-    local y2 = (index + 1) * smallIconHeight
-
-    return { tex = MarineBuyMenu.kTechIconTexture, size = Vector(smallIconWidth, smallIconHeight, 0), coords = { x1, y1, x2, y2 } }
-
-end
-
-local gUpgradeIconIndex
-local function GetUpgradeIcon(itemTechId, enabled)
-
-    local smallIconHeight = 64
-    local smallIconWidth = 64
-
-    if not gUpgradeIconIndex then
-        gUpgradeIconIndex = {}
-        gUpgradeIconIndex[kTechId.Armor1] = 0
-        gUpgradeIconIndex[kTechId.Armor2] = 1
-        gUpgradeIconIndex[kTechId.Armor3] = 2
-        gUpgradeIconIndex[kTechId.Weapons1] = 3
-        gUpgradeIconIndex[kTechId.Weapons2] = 4
-        gUpgradeIconIndex[kTechId.Weapons3] = 5
-        gUpgradeIconIndex[kTechId.MedPack] = 6
-        gUpgradeIconIndex[kTechId.AmmoPack] = 7
-        gUpgradeIconIndex[kTechId.CatPack] = 8
-        gUpgradeIconIndex[kTechId.Scan] = 9
-    end
-
-    local x1 = 0
-    local x2 = smallIconWidth
-    if not enabled then
-        x1 = smallIconWidth
-        x2 = smallIconWidth * 2
-    end
-
-    local index = gUpgradeIconIndex[itemTechId]
-    if not index then
-        index = 0
-    end
-
-    local y1 = index * smallIconHeight
-    local y2 = (index + 1) * smallIconHeight
-
-    return { tex = MarineBuyMenu.kUpgradeIconTexture, size = Vector(smallIconWidth, smallIconHeight, 0), coords = { x1, y1, x2, y2 } }
-
-end
-
-
-
-local gStructureIconIndex
-local function GetStructureIcon(itemTechId, enabled)
-
-    local structureIconHeight = 192
-    local structureIconWidth = 128
-
-    if not gStructureIconIndex then
-        gStructureIconIndex = {}
-        gStructureIconIndex[kTechId.Armory] = 0
-        gStructureIconIndex[kTechId.PhaseGate] = 1
-        gStructureIconIndex[kTechId.Observatory] = 2
-        gStructureIconIndex[kTechId.Sentry] = 3
-        gStructureIconIndex[kTechId.RoboticsFactory] = 4
-    end
-
-    local index = gStructureIconIndex[itemTechId]
-    if not index then
-        index = 0
-    end
-
-    local x1 = index * structureIconWidth
-    local x2 = (index + 1) * structureIconWidth
-
-    local y1 = 0
-    local y2 = structureIconHeight
-
-    if not enabled then
-        y1 = structureIconHeight
-        y2 = structureIconHeight * 2
-    end
-
-    return { tex = MarineBuyMenu.kStructureIconTexture, size = Vector(structureIconWidth, structureIconHeight, 0), coords = { x1, y1, x2, y2 } }
-
-end
-
-local gBigIconIndex
-local gBigIconIndexEx
-local function GetBigIcon(techId, enabled)
-
-    local bigIconWidth = 400
-    local bigIconHeight = 300
-
-    if not gBigIconIndex then
-        gBigIconIndex = {}
-        gBigIconIndex[kTechId.Axe] = 0
-        gBigIconIndex[kTechId.Pistol] = 1
-        gBigIconIndex[kTechId.Rifle] = 2
-        gBigIconIndex[kTechId.Shotgun] = 3
-        gBigIconIndex[kTechId.GrenadeLauncher] = 4
-        gBigIconIndex[kTechId.Flamethrower] = 5
-        gBigIconIndex[kTechId.HeavyMachineGun] = 15
-        gBigIconIndex[kTechId.Jetpack] = 6
-        gBigIconIndex[kTechId.Exosuit] = 7
-        gBigIconIndex[kTechId.Welder] = 8
-        gBigIconIndex[kTechId.LayMines] = 9
-        gBigIconIndex[kTechId.DualMinigunExosuit] = 10
-        gBigIconIndex[kTechId.UpgradeToDualMinigun] = 10
-        gBigIconIndex[kTechId.ClawRailgunExosuit] = 11
-        gBigIconIndex[kTechId.DualRailgunExosuit] = 11
-        gBigIconIndex[kTechId.UpgradeToDualRailgun] = 11
-        gBigIconIndex[kTechId.ClusterGrenade] = 12
-        gBigIconIndex[kTechId.GasGrenade] = 13
-        gBigIconIndex[kTechId.PulseGrenade] = 14
-    end
-
-    if not gBigIconIndexEx then
-        gBigIconIndexEx = {}
-        gBigIconIndexEx[kTechId.MedPack] = 0
-        gBigIconIndexEx[kTechId.AmmoPack] = 1
-        gBigIconIndexEx[kTechId.CatPack] = 2
-        gBigIconIndexEx[kTechId.Scan] = 3
-    end
-
-    local index = gBigIconIndex[techId]
-    local texture = MarineBuyMenu.kBigIconTexture
-
-    if not index then
-        index = gBigIconIndexEx[techId]
-        texture = MarineBuyMenu.kBigIconTextureEx
-    end
-
-    if not index then
-        return nil -- no icon
-    end
-    
-    local x1 = 0
-    local x2 = bigIconWidth
-    
-    if not enabled then
-    
-        x1 = bigIconWidth
-        x2 = bigIconWidth * 2
-        
-    end
-    
-    local y1 = index * bigIconHeight
-    local y2 = (index + 1) * bigIconHeight
-
-    
-    return { tex = texture, size = Vector(bigIconWidth / 2, bigIconHeight / 2, 0), coords = { x1, y1, x2, y2 } }
-
-end
 
 local function GetHasPrerequisite(techId)
 
@@ -322,64 +96,74 @@ end
 local function UpdateItemsGUIScale(self)
 
     --background
-    MarineBuyMenu.kBkgCenteredWidth = GUIScale(1000)
+    MarineBuyMenu.kBkgCenteredWidth = GUIScaleWidth(1000)
 
     -- marine logo
-    MarineBuyMenu.kLogoSize = GUIScale(Vector(90, 90, 0))
-    MarineBuyMenu.kLogoPosition = GUIScale(Vector(60, 20, 0))
+    MarineBuyMenu.kLogoSize = Vector(GUIScaleWidth(90), GUIScaleHeight(90), 0)
+    MarineBuyMenu.kLogoPosition = Vector(GUIScaleWidth(60), GUIScaleHeight(20), 0)
 
     -- main header
-    MarineBuyMenu.kTitleTextOffset = GUIScale(Vector(180, 40, 0))
-    MarineBuyMenu.kSubTitleTextOffset = GUIScale(Vector(180, 80, 0))
-    MarineBuyMenu.kSkillPointTextOffset = GUIScale(Vector(-125, 55, 0))
-    MarineBuyMenu.kSkillPointIconSize = GUIScale(36)
-    MarineBuyMenu.kSkillPointPos = GUIScale(Vector(-168, 36, 0))
-    MarineBuyMenu.kHelpTextOffset = GUIScale(Vector(-100, 85, 0))
+    MarineBuyMenu.kTitleTextOffset = Vector(GUIScaleWidth(180), GUIScaleHeight(40), 0)
+    MarineBuyMenu.kSubTitleTextOffset = Vector(GUIScaleWidth(180), GUIScaleHeight(80), 0)
+    MarineBuyMenu.kUpgradePointTextOffset = Vector(GUIScaleWidth(-60), GUIScaleHeight(55), 0)
+    MarineBuyMenu.kUpgradePointIconSize = Vector(GUIScaleWidth(36), GUIScaleHeight(36), 0)
+    MarineBuyMenu.kUpgradePointIconPos = Vector(GUIScaleWidth(-100), GUIScaleHeight(36), 0)
+    MarineBuyMenu.kHelpTextOffset = Vector(GUIScaleWidth(-60), GUIScaleHeight(85), 0)
+
+    MarineBuyMenu.kCenterColumnGapWidth = GUIScaleWidth(40)
 
     -- weapons section
-    MarineBuyMenu.kWeaponHeaderTextOffset = GUIScale(Vector(60, 138, 0))
-    MarineBuyMenu.kWeaponButtonStartOffset = GUIScale(Vector(60, 163, 0))
+    MarineBuyMenu.kWeaponHeaderTextOffset = Vector(GUIScaleWidth(60), GUIScaleHeight(138), 0)
+    MarineBuyMenu.kWeaponButtonStartOffset = Vector(GUIScaleWidth(60), GUIScaleHeight(163), 0)
 
     -- upgrades section
-    MarineBuyMenu.kUpgradeHeaderTextOffset = GUIScale(Vector(520, 138, 0))
-    MarineBuyMenu.kUpgradeButtonStartOffset = GUIScale(Vector(520, 163, 0))
+    MarineBuyMenu.kUpgradeHeaderTextOffset = Vector(GUIScaleWidth(520), GUIScaleHeight(138), 0)
+    MarineBuyMenu.kUpgradeButtonStartOffset = Vector(GUIScaleWidth(520), GUIScaleHeight(163), 0)
 
     -- tech section
-    MarineBuyMenu.kTechHeaderTextOffset = GUIScale(Vector(60, 426, 0))
-    MarineBuyMenu.kTechButtonStartOffset = GUIScale(Vector(60, 451, 0))
+    MarineBuyMenu.kTechHeaderTextOffset = Vector(GUIScaleWidth(60), GUIScaleHeight(426), 0)
+    MarineBuyMenu.kTechButtonStartOffset = Vector(GUIScaleWidth(60), GUIScaleHeight(451), 0)
 
     -- structure section
-    MarineBuyMenu.kStructureHeaderTextOffset = GUIScale(Vector(60, 644, 0))
-    MarineBuyMenu.kStructureButtonStartOffset = GUIScale(Vector(60, 669, 0))
+    MarineBuyMenu.kStructureHeaderTextOffset = Vector(GUIScaleWidth(60), GUIScaleHeight(644), 0)
+    MarineBuyMenu.kStructureButtonStartOffset = Vector(GUIScaleWidth(60), GUIScaleHeight(669), 0)
 
     -- buttons
-    MarineBuyMenu.kButtonSize = GUIScale(Vector(200, 64, 0))
-    MarineBuyMenu.kButtonLargeSize = GUIScale(Vector(128, 192, 0))
-    MarineBuyMenu.kButtonPadding = GUIScale(Vector(10, 10, 0))
-    MarineBuyMenu.kButtonLargePadding = GUIScale(Vector(10, 10, 0))
-    MarineBuyMenu.kButtonTextOffset = GUIScale(Vector(-6, 14, 0))
-    MarineBuyMenu.kButtonCostIconSize = GUIScale(20)
-    MarineBuyMenu.kButtonCostIconPos = GUIScale(Vector(-36, -24, 0))
-    MarineBuyMenu.kButtonCostTextOffset = GUIScale(Vector(-8, -14, 0))
-    MarineBuyMenu.kButtonRankIconSize = GUIScale(16)
-    MarineBuyMenu.kButtonRankIconPos = GUIScale(Vector(-70, -24, 0))
-    MarineBuyMenu.kButtonRankTextOffset = GUIScale(Vector(-44, -14, 0))
+    MarineBuyMenu.kButtonSize = Vector(GUIScaleWidth(200), GUIScaleHeight(64), 0)
+    MarineBuyMenu.kButtonPadding = Vector(GUIScaleWidth(10), GUIScaleHeight(10), 0)
+    MarineBuyMenu.kButtonTextOffset = Vector(GUIScaleWidth(-6), GUIScaleHeight(14), 0)
+    MarineBuyMenu.kButtonCostIconSize = Vector(GUIScaleWidth(20), GUIScaleHeight(20), 0)
+    MarineBuyMenu.kButtonCostIconPos = Vector(GUIScaleWidth(-36), GUIScaleHeight(-24), 0)
+    MarineBuyMenu.kButtonCostTextOffset = Vector(GUIScaleWidth(-8), GUIScaleHeight(-14), 0)
+    MarineBuyMenu.kButtonRankIconSize = Vector(GUIScaleWidth(16), GUIScaleHeight(16), 0)
+    MarineBuyMenu.kButtonRankIconPos = Vector(GUIScaleWidth(-70), GUIScaleHeight(-24), 0)
+    MarineBuyMenu.kButtonRankTextOffset = Vector(GUIScaleWidth(-44), GUIScaleHeight(-14), 0)
+
+    -- large buttons
+    MarineBuyMenu.kButtonLargeSize = Vector(GUIScaleWidth(128), GUIScaleHeight(192), 0)
+    MarineBuyMenu.kButtonLargePadding = Vector(GUIScaleWidth(10), GUIScaleHeight(10), 0)
+    MarineBuyMenu.kButtonLargeTextOffset = Vector(GUIScaleWidth(6), GUIScaleHeight(-14), 0)
+    MarineBuyMenu.kButtonLargeCostIconPos = Vector(GUIScaleWidth(-32), GUIScaleHeight(-22), 0)
+    MarineBuyMenu.kButtonLargeCostTextOffset = Vector(GUIScaleWidth(-5), GUIScaleHeight(-12), 0)
+    MarineBuyMenu.kButtonLargeRankIconPos = Vector(GUIScaleWidth(-32), GUIScaleHeight(-40), 0)
+    MarineBuyMenu.kButtonLargeRankTextOffset = Vector(GUIScaleWidth(-5), GUIScaleHeight(-30), 0)
+    MarineBuyMenu.kButtonLargeHardcapTextOffset = Vector(GUIScaleWidth(-4), GUIScaleHeight(4), 0)
 
     -- mouse over info
-    MarineBuyMenu.kInfoBackgroundSize = GUIScale(394)
-    MarineBuyMenu.kInfoBackgroundPos = GUIScale(Vector(520, 669, 0))
-    MarineBuyMenu.kInfoTitleOffset = GUIScale(Vector(10, 25, 0))
-    MarineBuyMenu.kInfoTextOffset = GUIScale(Vector(10, 50, 0))
-    MarineBuyMenu.kInfoIconOffset = GUIScale(Vector(0, -20, 0))
-    MarineBuyMenu.kInfoSmallIconSize = GUIScale(28)
-    MarineBuyMenu.kInfoCostTextOffset = GUIScale(Vector(-18, 11, 0))
-    MarineBuyMenu.kInfoCostIconOffset = GUIScale(Vector(-48, 10, 0))
-    MarineBuyMenu.kInfoRankTextOffset = GUIScale(Vector(-62, 11, 0))
-    MarineBuyMenu.kInfoRankIconOffset = GUIScale(Vector(-92, 10, 0))
-    MarineBuyMenu.kInfoCooldownTextOffset = GUIScale(Vector(-120, 11, 0))
-    MarineBuyMenu.kInfoCooldownIconOffset = GUIScale(Vector(-150, 10, 0))
-    MarineBuyMenu.kInfoPersistIconOffsetMin = GUIScale(Vector(-122, 10, 0))
-    MarineBuyMenu.kInfoPersistIconOffsetMax = GUIScale(Vector(-180, 10, 0))
+    MarineBuyMenu.kInfoBackgroundSize = Vector(GUIScaleWidth(394), GUIScaleHeight(394), 0)
+    MarineBuyMenu.kInfoBackgroundPos = Vector(GUIScaleWidth(520), GUIScaleHeight(669), 0)
+    MarineBuyMenu.kInfoTitleOffset = Vector(GUIScaleWidth(10), GUIScaleHeight(25), 0)
+    MarineBuyMenu.kInfoTextOffset = Vector(GUIScaleWidth(10), GUIScaleHeight(50), 0)
+    MarineBuyMenu.kInfoIconOffset = Vector(0, GUIScaleHeight(70), 0)
+    MarineBuyMenu.kInfoSmallIconSize = Vector(GUIScaleWidth(28), GUIScaleHeight(28), 0)
+    MarineBuyMenu.kInfoCostTextOffset = Vector(GUIScaleWidth(-18), GUIScaleHeight(11), 0)
+    MarineBuyMenu.kInfoCostIconOffset = Vector(GUIScaleWidth(-48), GUIScaleHeight(10), 0)
+    MarineBuyMenu.kInfoRankTextOffset = Vector(GUIScaleWidth(-62), GUIScaleHeight(11), 0)
+    MarineBuyMenu.kInfoRankIconOffset = Vector(GUIScaleWidth(-92), GUIScaleHeight(10), 0)
+    MarineBuyMenu.kInfoCooldownTextOffset = Vector(GUIScaleWidth(-120), GUIScaleHeight(11), 0)
+    MarineBuyMenu.kInfoCooldownIconOffset = Vector(GUIScaleWidth(-150), GUIScaleHeight(10), 0)
+    MarineBuyMenu.kInfoPersistIconOffsetMin = Vector(GUIScaleWidth(-122), GUIScaleHeight(10), 0)
+    MarineBuyMenu.kInfoPersistIconOffsetMax = Vector(GUIScaleWidth(-180), GUIScaleHeight(10), 0)
 
 end
 
@@ -487,40 +271,39 @@ function MarineBuyMenu:_InitializeHeaders()
     self.subTitleText:SetIsVisible(true)
     self.backgroundCenteredArea:AddChild(self.subTitleText)
 
-    self.skillPointText = GetGUIManager():CreateTextItem()
-    self.skillPointText:SetFontName(Fonts.kAgencyFB_Small)
-    self.skillPointText:SetFontIsBold(true)
-    self.skillPointText:SetScale(GetScaledVector())
-    GUIMakeFontScale(self.skillPointText)
-    self.skillPointText:SetAnchor(GUIItem.Right, GUIItem.Top)
-    self.skillPointText:SetPosition( MarineBuyMenu.kSkillPointTextOffset )
-    self.skillPointText:SetTextAlignmentX(GUIItem.Align_Min)
-    self.skillPointText:SetTextAlignmentY(GUIItem.Align_Center)
-    self.skillPointText:SetColor(MarineBuyMenu.kTextColor)
-    self.skillPointText:SetIsVisible(true)
-    self.backgroundCenteredArea:AddChild(self.skillPointText)
+    self.upgradePointText = GetGUIManager():CreateTextItem()
+    self.upgradePointText:SetFontName(Fonts.kAgencyFB_Small)
+    self.upgradePointText:SetFontIsBold(true)
+    self.upgradePointText:SetScale(GetScaledVector())
+    GUIMakeFontScale(self.upgradePointText)
+    self.upgradePointText:SetAnchor(GUIItem.Right, GUIItem.Top)
+    self.upgradePointText:SetPosition( MarineBuyMenu.kUpgradePointTextOffset )
+    self.upgradePointText:SetTextAlignmentX(GUIItem.Align_Max)
+    self.upgradePointText:SetTextAlignmentY(GUIItem.Align_Center)
+    self.upgradePointText:SetColor(MarineBuyMenu.kTextColor)
+    self.upgradePointText:SetIsVisible(true)
+    self.backgroundCenteredArea:AddChild(self.upgradePointText)
 
-    -- update skill point text
-    if player.combatSkillPoints == 1 then
-        self.skillPointText:SetText(string.format("%s Skill Point", player.combatSkillPoints))
-    else
-        self.skillPointText:SetText(string.format("%s Skill Points", player.combatSkillPoints))
-    end
+    -- update upgrade point text
+    local points = player:GetCombatUpgradePoints()
+    local pointStr = ConditionalValue(points == 1, string.format("%s Upgrade Point", points), string.format("%s Upgrade Points", points))
+    self.upgradePointText:SetText(pointStr)
 
-    self.skillPointIcon = GetGUIManager():CreateGraphicItem()
-    self.skillPointIcon:SetSize( Vector(MarineBuyMenu.kSkillPointIconSize, MarineBuyMenu.kSkillPointIconSize, 0) )
-    self.skillPointIcon:SetAnchor(GUIItem.Right, GUIItem.Top)
-    self.skillPointIcon:SetPosition( MarineBuyMenu.kSkillPointPos )
-    self.skillPointIcon:SetTexture(MarineBuyMenu.kResIconTexture)
-    self.skillPointIcon:SetTexturePixelCoordinates(unpack(MarineBuyMenu.kSkillPointIconTexCoords))
-    self.backgroundCenteredArea:AddChild(self.skillPointIcon)
+    local textSize = Fancy_CalculateTextSize(pointStr, Fonts.kAgencyFB_Small)
+
+    self.upgradePointIcon = GetGUIManager():CreateGraphicItem()
+    self.upgradePointIcon:SetSize( MarineBuyMenu.kUpgradePointIconSize )
+    self.upgradePointIcon:SetAnchor(GUIItem.Right, GUIItem.Top)
+    self.upgradePointIcon:SetPosition( Vector(-textSize.x, 0, 0) + MarineBuyMenu.kUpgradePointIconPos )
+    self.upgradePointIcon:SetTexture(MarineBuyMenu.kResIconTexture)
+    self.upgradePointIcon:SetTexturePixelCoordinates(unpack(MarineBuyMenu.kUpgradePointIconTexCoords))
+    self.backgroundCenteredArea:AddChild(self.upgradePointIcon)
 
     self.helpText = GetGUIManager():CreateTextItem()
-    self.helpText:SetFontName(Fonts.kAgencyFB_Small)
+    self.helpText:SetFontName(Fonts.kAgencyFB_Tiny)
     self.helpText:SetScale(GetScaledVector())
     GUIMakeFontScale(self.helpText)
     self.helpText:SetAnchor(GUIItem.Right, GUIItem.Top)
-    --self.helpText:SetPosition(MarineBuyMenu.kHelpTextOffset)
     self.helpText:SetTextAlignmentX(GUIItem.Align_Min)
     self.helpText:SetTextAlignmentY(GUIItem.Align_Center)
     self.helpText:SetColor(MarineBuyMenu.kTextColor)
@@ -585,28 +368,33 @@ function MarineBuyMenu:_InitializeHeaders()
 
 end
 
-local function CreateSmallButton(x, y, iconColor, itemTechId, enabled, canAfford, hasRank, iconFunc)
+local function CreateSmallButton(x, y, iconColor, itemTechId, enabled, canAfford, hasRank)
 
     local cost = LookupUpgradeData(itemTechId, kUpDataCostIndex)
     local rank = LookupUpgradeData(itemTechId, kUpDataRankIndex)
-    local icon = iconFunc(itemTechId, enabled)
+    local iconTexture = LookupUpgradeData(itemTechId, kUpDataIconTextureIndex)
+    local iconSize = LookupUpgradeData(itemTechId, kUpDataIconSizeIndex)
     
     local buttonGraphic = GUIManager:CreateGraphicItem()
     buttonGraphic:SetSize( MarineBuyMenu.kButtonSize )
     buttonGraphic:SetAnchor(GUIItem.Left, GUIItem.Top)
     buttonGraphic:SetPosition( Vector(x, y, 0) )
     buttonGraphic:SetTexture(MarineBuyMenu.kButtonTexture)
-    buttonGraphic:SetTexturePixelCoordinates(0, 0, MarineBuyMenu.kButtonSize.x, MarineBuyMenu.kButtonSize.y)
+    buttonGraphic:SetTexturePixelCoordinates(unpack(MarineBuyMenu.kSmallButtonTexCoords))
     buttonGraphic:SetColor( MarineBuyMenu.kBtnColor )
 
-    local buttonIcon = GUIManager:CreateGraphicItem()
-    buttonIcon:SetSize( icon.size )
-    buttonIcon:SetAnchor(GUIItem.Left, GUIItem.Top)
-    buttonIcon:SetPosition( Vector(0, 0, 0) )
-    buttonIcon:SetTexture(icon.tex)
-    buttonIcon:SetTexturePixelCoordinates(unpack(icon.coords))
-    buttonIcon:SetColor(iconColor)
-    buttonGraphic:AddChild(buttonIcon)
+    if iconTexture and iconSize then
+
+        local buttonIcon = GUIManager:CreateGraphicItem()
+        buttonIcon:SetSize( Vector(GUIScaleWidth(iconSize.x), GUIScaleHeight(iconSize.y), 0) )
+        buttonIcon:SetAnchor(GUIItem.Left, GUIItem.Top)
+        buttonIcon:SetPosition( Vector(0, 0, 0) )
+        buttonIcon:SetTexture(iconTexture)
+        buttonIcon:SetTexturePixelCoordinates(unpack(CombatUI_GetMarineUpgradeTextureCoords(itemTechId, enabled)))
+        buttonIcon:SetColor(iconColor)
+        buttonGraphic:AddChild(buttonIcon)
+
+    end
 
     local buttonText = GUIManager:CreateTextItem()
     buttonText:SetFontName(Fonts.kAgencyFB_Tiny)
@@ -622,7 +410,7 @@ local function CreateSmallButton(x, y, iconColor, itemTechId, enabled, canAfford
 
     local rankColor = ConditionalValue(hasRank, MarineBuyMenu.kTextColor, MarineBuyMenu.kRedHighlight)
     local rankIcon = GUIManager:CreateGraphicItem()
-    rankIcon:SetSize( Vector(MarineBuyMenu.kButtonRankIconSize, MarineBuyMenu.kButtonRankIconSize, 0) )
+    rankIcon:SetSize(MarineBuyMenu.kButtonRankIconSize )
     rankIcon:SetAnchor(GUIItem.Right, GUIItem.Bottom)
     rankIcon:SetPosition(MarineBuyMenu.kButtonRankIconPos)
     rankIcon:SetTexture(MarineBuyMenu.kLevelUpIconTexture)
@@ -644,11 +432,11 @@ local function CreateSmallButton(x, y, iconColor, itemTechId, enabled, canAfford
 
     local costColor = ConditionalValue(canAfford, MarineBuyMenu.kTextColor, MarineBuyMenu.kRedHighlight)
     local costIcon = GUIManager:CreateGraphicItem()
-    costIcon:SetSize( Vector(MarineBuyMenu.kButtonCostIconSize, MarineBuyMenu.kButtonCostIconSize, 0) )
+    costIcon:SetSize( MarineBuyMenu.kButtonCostIconSize )
     costIcon:SetAnchor(GUIItem.Right, GUIItem.Bottom)
     costIcon:SetPosition(MarineBuyMenu.kButtonCostIconPos)
     costIcon:SetTexture(MarineBuyMenu.kResIconTexture)
-    costIcon:SetTexturePixelCoordinates(unpack(MarineBuyMenu.kSkillPointIconTexCoords))
+    costIcon:SetTexturePixelCoordinates(unpack(MarineBuyMenu.kUpgradePointIconTexCoords))
     costIcon:SetColor(costColor)
     buttonGraphic:AddChild(costIcon)
 
@@ -689,19 +477,19 @@ local function InitWeaponButtons(self, player)
         local cost = LookupUpgradeData(itemTechId, kUpDataCostIndex)
         local rankRequired = LookupUpgradeData(itemTechId, kUpDataRankIndex)
         local equipped = GetIsEquipped(itemTechId)
-        local canAfford = cost <= player.combatSkillPoints
+        local canAfford = cost <= player.combatUpgradePoints
         local hasRequiredRank = rankRequired <= player.combatRank
 
         local enabled = canAfford and hasRequiredRank and not equipped
         local iconColor = Color(1, 1, 1, 1)
 
         if equipped then
-            iconColor = MarineBuyMenu.kBlueHighlight
+            iconColor = MarineBuyMenu.kGreenHighlight
         elseif hasRequiredRank and not canAfford then
             iconColor = MarineBuyMenu.kRedHighlight
         end
 
-        local buttonGraphic = CreateSmallButton(x, y, iconColor, itemTechId, enabled, canAfford, hasRequiredRank, GetWeaponIcon)
+        local buttonGraphic = CreateSmallButton(x, y, iconColor, itemTechId, enabled, canAfford, hasRequiredRank)
         self.backgroundCenteredArea:AddChild(buttonGraphic)
 
         columnIndex = columnIndex + 1
@@ -747,25 +535,21 @@ local function InitUpgradeButtons(self, player)
         local rankRequired = LookupUpgradeData(itemTechId, kUpDataRankIndex)
         local equipped = GetIsEquipped(itemTechId)
         local hasPrereq = GetHasPrerequisite(itemTechId)
-        local canAfford = cost <= player.combatSkillPoints
+        local canAfford = cost <= player.combatUpgradePoints
         local hasRequiredRank = rankRequired <= player.combatRank
 
         local enabled = canAfford and hasRequiredRank and hasPrereq and not equipped
         local iconColor = Color(1, 1, 1, 1)
 
-        if itemTechId == armorTechId or itemTechId == wpnTechId then
-            iconColor = MarineBuyMenu.kLightBlueHighlight
-        end
-
         if equipped then
-            iconColor = MarineBuyMenu.kBlueHighlight
+            iconColor = MarineBuyMenu.kGreenHighlight
         elseif hasRequiredRank and not canAfford then
             iconColor = MarineBuyMenu.kRedHighlight
         elseif not enabled then
             iconColor = MarineBuyMenu.kGreyHighlight
         end
 
-        local buttonGraphic = CreateSmallButton(x, y, iconColor, itemTechId, enabled, canAfford, hasRequiredRank, GetUpgradeIcon)
+        local buttonGraphic = CreateSmallButton(x, y, iconColor, itemTechId, enabled, canAfford, hasRequiredRank)
         self.backgroundCenteredArea:AddChild(buttonGraphic)
 
         columnIndex = columnIndex + 1
@@ -796,25 +580,25 @@ local function InitTechButtons(self, player)
 
         -- add a gap between column 2 and 3
         if columnIndex >= 2 then
-            x = x + 40
+            x = x + MarineBuyMenu.kCenterColumnGapWidth
         end
 
         local cost = LookupUpgradeData(itemTechId, kUpDataCostIndex)
         local rankRequired = LookupUpgradeData(itemTechId, kUpDataRankIndex)
         local equipped = GetIsEquipped(itemTechId)
-        local canAfford = cost <= player.combatSkillPoints
+        local canAfford = cost <= player.combatUpgradePoints
         local hasRequiredRank = rankRequired <= player.combatRank
 
         local enabled = canAfford and hasRequiredRank and not equipped
         local iconColor = Color(1, 1, 1, 1)
 
         if equipped then
-            iconColor = MarineBuyMenu.kBlueHighlight
+            iconColor = MarineBuyMenu.kGreenHighlight
         elseif hasRequiredRank and not canAfford then
             iconColor = MarineBuyMenu.kRedHighlight
         end
 
-        local buttonGraphic = CreateSmallButton(x, y, iconColor, itemTechId, enabled, canAfford, hasRequiredRank, GetTechIcon)
+        local buttonGraphic = CreateSmallButton(x, y, iconColor, itemTechId, enabled, canAfford, hasRequiredRank)
         self.backgroundCenteredArea:AddChild(buttonGraphic)
 
         columnIndex = columnIndex + 1
@@ -848,13 +632,13 @@ local function InitStructureButtons(self, player)
         buttonGraphic:SetAnchor(GUIItem.Left, GUIItem.Top)
         buttonGraphic:SetPosition( Vector(x, y, 0) )
         buttonGraphic:SetTexture(MarineBuyMenu.kButtonLargeTexture)
-        buttonGraphic:SetTexturePixelCoordinates(0, 0, MarineBuyMenu.kButtonLargeSize.x, MarineBuyMenu.kButtonLargeSize.y)
+        buttonGraphic:SetTexturePixelCoordinates(unpack(MarineBuyMenu.kLargeButtonTexCoords))
         buttonGraphic:SetColor( MarineBuyMenu.kBtnColor )
         self.backgroundCenteredArea:AddChild(buttonGraphic)
 
         local cost = LookupUpgradeData(itemTechId, kUpDataCostIndex)
         local rankRequired = LookupUpgradeData(itemTechId, kUpDataRankIndex)
-        local canAfford = cost <= player.combatSkillPoints
+        local canAfford = cost <= player.combatUpgradePoints
         local hasRequiredRank = rankRequired <= player.combatRank
         local isHardcapped = GetIsHardCapped(itemTechId, player)
 
@@ -865,55 +649,85 @@ local function InitStructureButtons(self, player)
             iconColor = MarineBuyMenu.kRedHighlight
         end
 
-        local icon = GetStructureIcon(itemTechId, enabled)
+        local iconTexture = LookupUpgradeData(itemTechId, kUpDataIconTextureIndex)
+        local iconSize = LookupUpgradeData(itemTechId, kUpDataIconSizeIndex)
 
-        local buttonIcon = GUIManager:CreateGraphicItem()
-        buttonIcon:SetSize(icon.size)
-        buttonIcon:SetAnchor(GUIItem.Left, GUIItem.Top)
-        buttonIcon:SetPosition( Vector(x, y, 0) )
-        buttonIcon:SetTexture(icon.tex)
-        buttonIcon:SetTexturePixelCoordinates(unpack(icon.coords))
-        buttonIcon:SetColor(iconColor)
-        self.backgroundCenteredArea:AddChild(buttonIcon)
+        if iconTexture and iconSize then
+
+            local buttonIcon = GUIManager:CreateGraphicItem()
+            buttonIcon:SetSize(Vector(GUIScaleWidth(iconSize.x), GUIScaleHeight(iconSize.y), 0))
+            buttonIcon:SetAnchor(GUIItem.Left, GUIItem.Top)
+            buttonIcon:SetPosition( Vector(0, 0, 0) )
+            buttonIcon:SetTexture(iconTexture)
+            buttonIcon:SetTexturePixelCoordinates(unpack(CombatUI_GetMarineUpgradeTextureCoords(itemTechId, enabled)))
+            buttonIcon:SetColor(iconColor)
+            buttonGraphic:AddChild(buttonIcon)
+
+        end
 
         local buttonText = GUIManager:CreateTextItem()
         buttonText:SetFontName(Fonts.kAgencyFB_Tiny)
         buttonText:SetScale(GetScaledVector())
         GUIMakeFontScale(buttonText)
         buttonText:SetAnchor(GUIItem.Left, GUIItem.Bottom)
-        buttonText:SetPosition( Vector(6, -14, 0) )
+        buttonText:SetPosition(MarineBuyMenu.kButtonLargeTextOffset)
         buttonText:SetTextAlignmentX(GUIItem.Align_Min)
         buttonText:SetTextAlignmentY(GUIItem.Align_Center)
         buttonText:SetColor(MarineBuyMenu.kTextColor)
         buttonText:SetText(GetDisplayNameForTechId(itemTechId))
         buttonGraphic:AddChild(buttonText)
 
-        local resColor = MarineBuyMenu.kTextColor
+        local costColor = MarineBuyMenu.kTextColor
         if not canAfford or not hasRequiredRank then
-            resColor = MarineBuyMenu.kRedHighlight
+            costColor = MarineBuyMenu.kRedHighlight
         end
 
-        local resIcon = GUIManager:CreateGraphicItem()
-        resIcon:SetSize( Vector(48, 48, 0) )
-        resIcon:SetScale( Vector(0.4, 0.4, 0) )
-        resIcon:SetAnchor(GUIItem.Right, GUIItem.Bottom)
-        resIcon:SetPosition( Vector(-50, -38, 0))
-        resIcon:SetTexture(MarineBuyMenu.kResIconTexture)
-        resIcon:SetTexturePixelCoordinates( 0, 0, 48, 48 )
-        resIcon:SetColor( resColor )
-        buttonGraphic:AddChild(resIcon)
+        local costIcon = GUIManager:CreateGraphicItem()
+        costIcon:SetSize(MarineBuyMenu.kButtonCostIconSize)
+        costIcon:SetAnchor(GUIItem.Right, GUIItem.Bottom)
+        costIcon:SetPosition(MarineBuyMenu.kButtonLargeCostIconPos)
+        costIcon:SetTexture(MarineBuyMenu.kResIconTexture)
+        costIcon:SetTexturePixelCoordinates(unpack(MarineBuyMenu.kUpgradePointIconTexCoords))
+        costIcon:SetColor(costColor)
+        buttonGraphic:AddChild(costIcon)
 
-        local resText = GUIManager:CreateTextItem()
-        resText:SetFontName(Fonts.kAgencyFB_Tiny)
-        resText:SetScale(GetScaledVector())
-        GUIMakeFontScale(resText)
-        resText:SetAnchor(GUIItem.Right, GUIItem.Bottom)
-        resText:SetPosition( GUIScale(Vector(-8, -14, 0)) )
-        resText:SetTextAlignmentX(GUIItem.Align_Max)
-        resText:SetTextAlignmentY(GUIItem.Align_Center)
-        resText:SetColor(resColor)
-        resText:SetText(string.format("%s", cost))
-        buttonGraphic:AddChild(resText)
+        local costText = GUIManager:CreateTextItem()
+        costText:SetFontName(Fonts.kAgencyFB_Tiny)
+        costText:SetScale(GetScaledVector())
+        GUIMakeFontScale(costText)
+        costText:SetAnchor(GUIItem.Right, GUIItem.Bottom)
+        costText:SetPosition(MarineBuyMenu.kButtonLargeCostTextOffset)
+        costText:SetTextAlignmentX(GUIItem.Align_Max)
+        costText:SetTextAlignmentY(GUIItem.Align_Center)
+        costText:SetColor(costColor)
+        costText:SetText(string.format("%s", cost))
+        buttonGraphic:AddChild(costText)
+
+        local rankColor = MarineBuyMenu.kTextColor
+        if not canAfford or not hasRequiredRank then
+            rankColor = MarineBuyMenu.kRedHighlight
+        end
+
+        local rankIcon = GUIManager:CreateGraphicItem()
+        rankIcon:SetSize(MarineBuyMenu.kButtonRankIconSize)
+        rankIcon:SetAnchor(GUIItem.Right, GUIItem.Bottom)
+        rankIcon:SetPosition(MarineBuyMenu.kButtonLargeRankIconPos)
+        rankIcon:SetTexture(MarineBuyMenu.kLevelUpIconTexture)
+        rankIcon:SetTexturePixelCoordinates(unpack(MarineBuyMenu.kLevelUpIconTexCoords))
+        rankIcon:SetColor(rankColor)
+        buttonGraphic:AddChild(rankIcon)
+
+        local rankText = GUIManager:CreateTextItem()
+        rankText:SetFontName(Fonts.kAgencyFB_Tiny)
+        rankText:SetScale(GetScaledVector())
+        GUIMakeFontScale(rankText)
+        rankText:SetAnchor(GUIItem.Right, GUIItem.Bottom)
+        rankText:SetPosition(MarineBuyMenu.kButtonLargeRankTextOffset)
+        rankText:SetTextAlignmentX(GUIItem.Align_Max)
+        rankText:SetTextAlignmentY(GUIItem.Align_Center)
+        rankText:SetColor(rankColor)
+        rankText:SetText(string.format("%s", rankRequired))
+        buttonGraphic:AddChild(rankText)
 
         local hardCapColor = MarineBuyMenu.kTextColor
         if isHardcapped then
@@ -925,8 +739,8 @@ local function InitStructureButtons(self, player)
         hardCapText:SetScale(GetScaledVector())
         GUIMakeFontScale(hardCapText)
         hardCapText:SetAnchor(GUIItem.Right, GUIItem.Top)
-        hardCapText:SetPosition( GUIScale(Vector(-26, 4, 0)) )
-        hardCapText:SetTextAlignmentX(GUIItem.Align_Min)
+        hardCapText:SetPosition(MarineBuyMenu.kButtonLargeHardcapTextOffset)
+        hardCapText:SetTextAlignmentX(GUIItem.Align_Max)
         hardCapText:SetTextAlignmentY(GUIItem.Align_Min)
         hardCapText:SetColor(hardCapColor)
         hardCapText:SetText(string.format("%s/%s", CombatPlusPlus_GetStructureCountForTeam(itemTechId, player:GetTeamNumber()), LookupUpgradeData(itemTechId, kUpDataHardCapIndex)))
@@ -949,7 +763,6 @@ function MarineBuyMenu:_InitializeButtons()
     InitWeaponButtons(self, player)
     InitUpgradeButtons(self, player)
     InitTechButtons(self, player)
-    --InitConsumableButtons(self, player)
     InitStructureButtons(self, player)
 
     -- to prevent wrong display before the first update
@@ -961,7 +774,7 @@ function MarineBuyMenu:_InitializeMouseOverInfo()
 
     self.infoBorder = GUIManager:CreateGraphicItem()
     self.infoBorder:SetAnchor(GUIItem.Left, GUIItem.Top)
-    self.infoBorder:SetSize(Vector(MarineBuyMenu.kInfoBackgroundSize, MarineBuyMenu.kInfoBackgroundSize, 0))
+    self.infoBorder:SetSize(MarineBuyMenu.kInfoBackgroundSize)
     self.infoBorder:SetPosition(MarineBuyMenu.kInfoBackgroundPos)
     self.infoBorder:SetTexture(MarineBuyMenu.kInfoBackgroundTexture)
     self.infoBorder:SetTexturePixelCoordinates(unpack(MarineBuyMenu.kInfoBackgroundTexCoords))
@@ -992,7 +805,7 @@ function MarineBuyMenu:_InitializeMouseOverInfo()
     self.mouseOverTitleShadow:AddChild(self.mouseOverTitleText)
 
     self.mouseOverInfoText = GUIManager:CreateTextItem()
-    self.mouseOverInfoText:SetFontName(Fonts.kAgencyFB_Small)
+    self.mouseOverInfoText:SetFontName(Fonts.kAgencyFB_Tiny)
     self.mouseOverInfoText:SetScale(GetScaledVector())
     GUIMakeFontScale(self.mouseOverInfoText)
     self.mouseOverInfoText:SetAnchor(GUIItem.Left, GUIItem.Top)
@@ -1003,7 +816,7 @@ function MarineBuyMenu:_InitializeMouseOverInfo()
     self.infoBorder:AddChild(self.mouseOverInfoText)
 
     self.mouseOverInfoIcon = GUIManager:CreateGraphicItem()
-    self.mouseOverInfoIcon:SetAnchor(GUIItem.Middle, GUIItem.Center)
+    self.mouseOverInfoIcon:SetAnchor(GUIItem.Left, GUIItem.Top)
     self.mouseOverInfoIcon:SetPosition(MarineBuyMenu.kInfoIconOffset)
     self.infoBorder:AddChild(self.mouseOverInfoIcon)
 
@@ -1019,11 +832,11 @@ function MarineBuyMenu:_InitializeMouseOverInfo()
     self.infoBorder:AddChild(self.mouseOverInfoCostText)
 
     local costIcon = GUIManager:CreateGraphicItem()
-    costIcon:SetSize(Vector(MarineBuyMenu.kInfoSmallIconSize, MarineBuyMenu.kInfoSmallIconSize, 0))
+    costIcon:SetSize(MarineBuyMenu.kInfoSmallIconSize)
     costIcon:SetAnchor(GUIItem.Right, GUIItem.Top)
     costIcon:SetPosition(MarineBuyMenu.kInfoCostIconOffset)
     costIcon:SetTexture(MarineBuyMenu.kResIconTexture)
-    costIcon:SetTexturePixelCoordinates(unpack(MarineBuyMenu.kSkillPointIconTexCoords))
+    costIcon:SetTexturePixelCoordinates(unpack(MarineBuyMenu.kUpgradePointIconTexCoords))
     costIcon:SetColor(MarineBuyMenu.kTextColor)
     self.infoBorder:AddChild(costIcon)
 
@@ -1039,7 +852,7 @@ function MarineBuyMenu:_InitializeMouseOverInfo()
     self.infoBorder:AddChild(self.mouseOverInfoRankText)
 
     local rankIcon = GUIManager:CreateGraphicItem()
-    rankIcon:SetSize(Vector(MarineBuyMenu.kInfoSmallIconSize-4, MarineBuyMenu.kInfoSmallIconSize-4, 0))
+    rankIcon:SetSize(Vector(MarineBuyMenu.kInfoSmallIconSize.x - GUIScaleWidth(4), MarineBuyMenu.kInfoSmallIconSize.y - GUIScaleHeight(4), 0))
     rankIcon:SetAnchor(GUIItem.Right, GUIItem.Top)
     rankIcon:SetPosition(MarineBuyMenu.kInfoRankIconOffset)
     rankIcon:SetTexture(MarineBuyMenu.kLevelUpIconTexture)
@@ -1059,21 +872,13 @@ function MarineBuyMenu:_InitializeMouseOverInfo()
     self.infoBorder:AddChild(self.mouseOverInfoCooldownText)
 
     self.mouseOverInfoCooldownIcon = GUIManager:CreateGraphicItem()
-    self.mouseOverInfoCooldownIcon:SetSize(Vector(MarineBuyMenu.kInfoSmallIconSize, MarineBuyMenu.kInfoSmallIconSize, 0))
+    self.mouseOverInfoCooldownIcon:SetSize(MarineBuyMenu.kInfoSmallIconSize)
     self.mouseOverInfoCooldownIcon:SetAnchor(GUIItem.Right, GUIItem.Top)
     self.mouseOverInfoCooldownIcon:SetPosition(MarineBuyMenu.kInfoCooldownIconOffset)
     self.mouseOverInfoCooldownIcon:SetTexture(MarineBuyMenu.kCooldownIconTexture)
-    self.mouseOverInfoCooldownIcon:SetTexturePixelCoordinates(unpack(MarineBuyMenu.kSkillPointIconTexCoords))
+    self.mouseOverInfoCooldownIcon:SetTexturePixelCoordinates(unpack(MarineBuyMenu.kUpgradePointIconTexCoords))
     self.mouseOverInfoCooldownIcon:SetColor(MarineBuyMenu.kTextColor)
     self.infoBorder:AddChild(self.mouseOverInfoCooldownIcon)
-
-    self.mouseOverInfoPersistIcon = GUIManager:CreateGraphicItem()
-    self.mouseOverInfoPersistIcon:SetSize(Vector(MarineBuyMenu.kInfoSmallIconSize, MarineBuyMenu.kInfoSmallIconSize, 0))
-    self.mouseOverInfoPersistIcon:SetAnchor(GUIItem.Right, GUIItem.Top)
-    self.mouseOverInfoPersistIcon:SetTexture(MarineBuyMenu.kInfiniteIconTexture)
-    self.mouseOverInfoPersistIcon:SetTexturePixelCoordinates(unpack(MarineBuyMenu.kSkillPointIconTexCoords))
-    self.mouseOverInfoPersistIcon:SetColor(MarineBuyMenu.kTextColor)
-    self.infoBorder:AddChild(self.mouseOverInfoPersistIcon)
 
 end
 
@@ -1098,13 +903,13 @@ function MarineBuyMenu:ShowMouseOverInfo(techId)
     end
 
     self.mouseOverInfoText:SetText(infoString)
-    self.mouseOverInfoText:SetTextClipped(true, MarineBuyMenu.kInfoBackgroundSize - MarineBuyMenu.kInfoTextOffset.x, MarineBuyMenu.kInfoBackgroundSize - MarineBuyMenu.kInfoTextOffset.y)
+    self.mouseOverInfoText:SetTextClipped(true, MarineBuyMenu.kInfoBackgroundSize.x - MarineBuyMenu.kInfoTextOffset.x, MarineBuyMenu.kInfoBackgroundSize.y - MarineBuyMenu.kInfoTextOffset.y)
 
     local player = Client.GetLocalPlayer()
     local cost = LookupUpgradeData(techId, kUpDataCostIndex)
     local rankRequired = LookupUpgradeData(techId, kUpDataRankIndex)
     local hasPrereq = GetHasPrerequisite(techId)
-    local canAfford = cost <= player.combatSkillPoints
+    local canAfford = cost <= player.combatUpgradePoints
     local hasRequiredRank = rankRequired <= player.combatRank
     local enabled = hasPrereq and canAfford and hasRequiredRank
 
@@ -1137,26 +942,16 @@ function MarineBuyMenu:ShowMouseOverInfo(techId)
         hasCooldown = false
     end
 
-    if LookupUpgradeData(techId, kUpDataPersistIndex) then
-        self.mouseOverInfoPersistIcon:SetIsVisible(true)
-        self.mouseOverInfoPersistIcon:SetPosition(ConditionalValue(hasCooldown, MarineBuyMenu.kInfoPersistIconOffsetMax, MarineBuyMenu.kInfoPersistIconOffsetMin))
-    else
-        self.mouseOverInfoPersistIcon:SetIsVisible(false)
-    end
+    local iconTexture = LookupUpgradeData(techId, kUpDataLargeIconTextureIndex)
+    local iconSize = LookupUpgradeData(techId, kUpDataLargeIconSizeIndex)
 
-    local icon = GetBigIcon(techId, enabled)
-    local scaleVec = Vector(1, 1, 1)
-
-    if not icon then
-        icon = GetStructureIcon(techId, enabled)
-        scaleVec = Vector(1.2, 1.2, 1)
-    end
-
-    if icon then
-        self.mouseOverInfoIcon:SetSize(icon.size * scaleVec)
-        self.mouseOverInfoIcon:SetTexture(icon.tex)
-        self.mouseOverInfoIcon:SetTexturePixelCoordinates(unpack(icon.coords))
-        self.mouseOverInfoIcon:SetPosition(MarineBuyMenu.kInfoIconOffset - Vector(self.mouseOverInfoIcon:GetSize().x / 2, 0, 0))
+    if iconTexture and iconSize then
+        local iconSizeScaled = Vector(GUIScaleWidth(iconSize.x / 2), GUIScaleHeight(iconSize.y / 2), 0)
+        local pos = ((MarineBuyMenu.kInfoBackgroundSize / 2) - (iconSizeScaled / 2)) + MarineBuyMenu.kInfoIconOffset
+        self.mouseOverInfoIcon:SetSize(iconSizeScaled)
+        self.mouseOverInfoIcon:SetTexture(iconTexture)
+        self.mouseOverInfoIcon:SetTexturePixelCoordinates(unpack(CombatUI_GetMarineUpgradeLargeTextureCoords(techId, enabled)))
+        self.mouseOverInfoIcon:SetPosition(pos)
         self.mouseOverInfoIcon:SetIsVisible(true)
     else
         self.mouseOverInfoIcon:SetIsVisible(false)
@@ -1184,7 +979,7 @@ function MarineBuyMenu:_UpdateItemButtons(deltaTime)
                 local rankRequired = LookupUpgradeData(item.TechId, kUpDataRankIndex)
                 local equipped = GetIsEquipped(item.TechId) and not CombatPlusPlus_GetIsStructureTechId(item.TechId)
                 local hasPrereq = GetHasPrerequisite(item.TechId)
-                local canAfford = cost <= player.combatSkillPoints
+                local canAfford = cost <= player.combatUpgradePoints
                 local hasRequiredRank = rankRequired <= player.combatRank
                 local isHardcapped = GetIsHardCapped(item.TechId, player)
                 local helpString = ""
@@ -1208,7 +1003,7 @@ function MarineBuyMenu:_UpdateItemButtons(deltaTime)
 
                 elseif not canAfford then
 
-                    helpString = "Cannot purchase. Not enough skill points."
+                    helpString = "Cannot purchase. Not enough upgrade points."
                     self.helpText:SetColor(MarineBuyMenu.kRedHighlight)
                     item.Button:SetColor(MarineBuyMenu.kRedHighlight)
 
@@ -1225,16 +1020,16 @@ function MarineBuyMenu:_UpdateItemButtons(deltaTime)
 
                 else
                     if cost == 1 then
-                        helpString = string.format("Purchase %s for %s skill point.", GetDisplayNameForTechId(item.TechId), cost)
+                        helpString = string.format("Purchase %s for %s upgrade point.", GetDisplayNameForTechId(item.TechId), cost)
                     else
-                        helpString = string.format("Purchase %s for %s skill points.", GetDisplayNameForTechId(item.TechId), cost)
+                        helpString = string.format("Purchase %s for %s upgrade points.", GetDisplayNameForTechId(item.TechId), cost)
                     end
 
                     self.helpText:SetColor(MarineBuyMenu.kTextColor)
                 end
 
-                textSize = Fancy_CalculateTextSize(helpString, Fonts.kAgencyFB_Small)
-                self.helpText:SetPosition( Vector((textSize.x * -1) - GUIScale(40), GUIScale(85), 0) )
+                textSize = Fancy_CalculateTextSize(helpString, Fonts.kAgencyFB_Tiny)
+                self.helpText:SetPosition( Vector(-textSize.x, 0, 0) + MarineBuyMenu.kHelpTextOffset )
                 self.helpText:SetText(helpString)
                 self.helpText:SetIsVisible(true)
 
@@ -1266,7 +1061,7 @@ local function HandleItemClicked(self, mouseX, mouseY)
                 local rankRequired = LookupUpgradeData(item.TechId, kUpDataRankIndex)
                 local equipped = GetIsEquipped(item.TechId) and not CombatPlusPlus_GetIsStructureTechId(item.TechId)
                 local hasPrereq = GetHasPrerequisite(item.TechId)
-                local canAfford = cost <= player.combatSkillPoints
+                local canAfford = cost <= player.combatUpgradePoints
                 local hasRequiredRank = rankRequired <= player.combatRank
                 local isHardcapped = GetIsHardCapped(item.TechId, player)
 

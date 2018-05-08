@@ -60,7 +60,7 @@ function Player:OnStructureCreated(structure)
         if self.UpgradeManager then
 
             local cost = LookupUpgradeData(self.currentCreateStructureTechId, kUpDataCostIndex)
-            self:SpendSkillPoints(cost)
+            self:SpendUpgradePoints(cost)
 
         end
 

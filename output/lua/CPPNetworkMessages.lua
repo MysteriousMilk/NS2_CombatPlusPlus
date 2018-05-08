@@ -16,14 +16,14 @@ local kCombatScoreUpdate =
 
 Shared.RegisterNetworkMessage("CombatScoreUpdate", kCombatScoreUpdate)
 
-local kCombatSkillPointUpdate =
+local kCombatUpgradePointUpdate =
 {
-    source = "enum kSkillPointSourceType",
+    source = "enum kUpgradePointSourceType",
     kills = "integer",
     assists = "integer"
 }
 
-Shared.RegisterNetworkMessage("CombatSkillPointUpdate", kCombatSkillPointUpdate)
+Shared.RegisterNetworkMessage("CombatUpgradePointUpdate", kCombatUpgradePointUpdate)
 
 local kPowerPointEntity =
 {

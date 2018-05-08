@@ -69,7 +69,7 @@ end
 
 --[[
     Called before giving an upgraded.  Checks to see if the
-    player has enough skill points for the purchase and that
+    player has enough upgrade points for the purchase and that
     they have the required rank.  Also checks to see if the 
     upgrade node has all prereqs met.
 
@@ -80,7 +80,7 @@ function UpgradeManager:PreGiveUpgrade(node, player)
     local techId = node:GetTechId()
     local cost = LookupUpgradeData(techId, kUpDataCostIndex)
 
-    local canAfford = (cost <= player:GetCombatSkillPoints())
+    local canAfford = (cost <= player:GetCombatUpgradePoints())
 
     if not canAfford then
         Server.PlayPrivateSound(player, player:GetNotEnoughResourcesSound(), player, 1.0, Vector(0, 0, 0))
@@ -129,7 +129,7 @@ function UpgradeManager:GiveUpgrades(techIdList, player, overrideCost)
     if success then
 
         -- cost check
-        if (totalCost <= player:GetCombatSkillPoints()) or overrideCost then
+        if (totalCost <= player:GetCombatUpgradePoints()) or overrideCost then
 
             local newPlayerClass = nil
 
@@ -171,7 +171,7 @@ end
     team specific logic.
 
     Returning FALSE will still abort the upgrade and prevent
-    the player from spending the skill points.
+    the player from spending the upgrade points.
 ]]
 function UpgradeManager:UpgradeLogic(techIdList, currNode, player, overrideCost)
 
@@ -206,7 +206,7 @@ function UpgradeManager:PostGiveUpgrades(techIds, player, cost, overrideCost)
 
         if not overrideCost then
             local cost = LookupUpgradeData(node:GetTechId(), kUpDataCostIndex)
-            player:SpendSkillPoints(cost)
+            player:SpendUpgradePoints(cost)
         end
 
     end

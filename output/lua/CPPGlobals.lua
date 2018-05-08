@@ -6,8 +6,8 @@
  * Global variables and types for Combat++.
 ]]
 
--- the max skill points a player can have at 1 time
-kMaxCombatSkillPoints = 100
+-- the max upgrade points a player can have at 1 time
+kMaxCombatUpgradePoints = 100
 
 -- Enumeration used to indicate the source of the xp award
 kXPSourceType = enum(
@@ -23,8 +23,8 @@ kXPSourceType = enum(
     "Heal"
 })
 
--- Enumeration used to indicate the source of the skill point award
-kSkillPointSourceType = enum(
+-- Enumeration used to indicate the source of the upgrade point award
+kUpgradePointSourceType = enum(
 {
     "LevelUp",
     "KillStreak",

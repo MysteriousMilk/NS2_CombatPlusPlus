@@ -45,7 +45,7 @@ if Server then
             if owner and owner:isa("Player") then
 
                 local cost = LookupUpgradeData(techId, kUpDataCostIndex)
-                owner:GiveCombatSkillPoints(cost, kXPSourceType.Refund)
+                owner:GiveCombatUpgradePoints(cost, kXPSourceType.Refund)
 
             end
 
