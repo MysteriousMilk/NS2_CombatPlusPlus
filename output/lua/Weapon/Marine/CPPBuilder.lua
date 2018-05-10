@@ -31,6 +31,18 @@ function Builder:OnInitialized()
 
 end
 
+function Builder:GetSprintAllowed()
+
+    local canSprint = false
+    
+    if self.buildMode == kBuilderMode.Create then
+        canSprint = true
+    end
+    
+    return canSprint
+    
+end
+
 local ns2_Builder_OnHolster = Builder.OnHolster
 function Builder:OnHolster(player)
 
