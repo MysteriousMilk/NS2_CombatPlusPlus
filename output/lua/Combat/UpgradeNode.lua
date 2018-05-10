@@ -1,4 +1,10 @@
-Script.Load("lua/CPPGlobals.lua")
+--[[
+ * Natural Selection 2 - Combat++ Mod
+ * Authors:
+ *          WhiteWizard
+ *
+ * This class represents a single node in the upgrade tree.
+]]
 
 class 'UpgradeNode'
 

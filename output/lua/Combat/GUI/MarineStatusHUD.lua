@@ -7,17 +7,11 @@ class 'MarineStatusHUD' (GUIAnimatedScript)
 MarineStatusHUD.kTexture =  PrecacheAsset("ui/marine_HUD_presbg.dds")
 MarineStatusHUD.kXpBarTexture = PrecacheAsset("ui/combatui_xp_bar.dds")
 
---MarineStatusHUD.kBackgroundCoords = { 0, 0, 300, 121 }
-MarineStatusHUD.kBackgroundPos = Vector(-400, -100, 0)
-MarineStatusHUD.kBackgroundSize = Vector(280, 58, 0)
-
 MarineStatusHUD.kXPFontName = Fonts.kArial_13
 MarineStatusHUD.kXPTextPosition = Vector(0, -61, 0)
 
 MarineStatusHUD.kRankFontName = Fonts.kAgencyFB_Small
 MarineStatusHUD.kRankTextPosition = Vector(0, -82, 0)
-
-MarineStatusHUD.kUpgradePointTextPos = Vector(70, 30, 0)
 
 MarineStatusHUD.kXPBarSize = Vector(589, 10, 0)
 MarineStatusHUD.kXPBarSizeScaled = Vector(589, 10, 0)
@@ -26,11 +20,6 @@ MarineStatusHUD.kXPBarColor = Color(0.26, 0.8, 0.87, 0.75)
 
 MarineStatusHUD.kXPBarGlowSize = Vector(8, 22, 0)
 MarineStatusHUD.kXPBarGlowPos = Vector(-MarineStatusHUD.kXPBarGlowSize.x, 0, 0)
-
-MarineStatusHUD.kUpgradePointIconTexture = PrecacheAsset("ui/marine_HUD_presicon.dds")
-MarineStatusHUD.kUpgradePointIconPixelCoords = { 6, 25, 26, 45 }
-MarineStatusHUD.kUpgradePointIconSize = Vector(25, 25, 0)
-MarineStatusHUD.kUpgradePointIconPos = Vector(40, 18, 0)
 
 MarineStatusHUD.kAbilityIconBkgTexture = PrecacheAsset("ui/combatui_ability_buttonbg.dds")
 MarineStatusHUD.kAbilityIconSize = Vector(68, 68, 0)
@@ -105,11 +94,6 @@ function MarineStatusHUD:Initialize()
     self.newXpBar:SetColor( MarineStatusHUD.kXPBarColor )
     self.newXpBarBkg:AddChild(self.newXpBar)
 
-    self.combatStatusBkg = self:CreateAnimatedGraphicItem()
-    self.combatStatusBkg:SetAnchor(GUIItem.Right, GUIItem.Bottom)
-    self.combatStatusBkg:SetTexture(MarineStatusHUD.kTexture)
-    self.combatStatusBkg:AddAsChildTo(self.background)
-
     self.currentXPText = GetGUIManager():CreateTextItem()
     self.currentXPText:SetFontName(MarineStatusHUD.kXPFontName)
     self.currentXPText:SetAnchor(GUIItem.Middle, GUIItem.Bottom)
@@ -129,22 +113,6 @@ function MarineStatusHUD:Initialize()
     self.currentRankText:SetIsVisible(true)
     self.currentRankText:SetColor( Color(0.62, 0.92, 1, 0.8) )
     self.background:AddChild(self.currentRankText)
-
-    self.upgradePointIcon = self:CreateAnimatedGraphicItem()
-    self.upgradePointIcon:SetAnchor(GUIItem.Left, GUIItem.Top)
-    self.upgradePointIcon:SetTexture(MarineStatusHUD.kUpgradePointIconTexture)
-    self.upgradePointIcon:SetTexturePixelCoordinates(unpack(MarineStatusHUD.kUpgradePointIconPixelCoords))
-    self.upgradePointIcon:AddAsChildTo(self.combatStatusBkg)
-
-    self.upgradePointText = GetGUIManager():CreateTextItem()
-    self.upgradePointText:SetFontName(MarineStatusHUD.kRankFontName)
-    self.upgradePointText:SetAnchor(GUIItem.Left, GUIItem.Top)
-    self.upgradePointText:SetTextAlignmentX(GUIItem.Align_Min)
-    self.upgradePointText:SetTextAlignmentY(GUIItem.Align_Center)
-    self.upgradePointText:SetText("0 Upgrade Points")
-    self.upgradePointText:SetIsVisible(true)
-    self.upgradePointText:SetColor( Color(0.62, 0.92, 1, 0.8) )
-    self.combatStatusBkg:AddChild(self.upgradePointText)
 
     self.medPackIconBackground = self:CreateAnimatedGraphicItem()
     self.medPackIconBackground:SetAnchor(GUIItem.Right, GUIItem.Bottom)
@@ -242,14 +210,6 @@ function MarineStatusHUD:Reset(scale)
     self.newXpBar:SetSize( Vector(0, MarineStatusHUD.kXPBarSizeScaled.y, 0) )
     self.newXpBar:SetPosition(MarineStatusHUD.kXPBarPos)
 
-    self.combatStatusBkg:SetUniformScale(self.scale)
-    self.combatStatusBkg:SetPosition(MarineStatusHUD.kBackgroundPos)
-    self.combatStatusBkg:SetSize(MarineStatusHUD.kBackgroundSize)
-
-    self.upgradePointIcon:SetUniformScale(self.scale)
-    self.upgradePointIcon:SetPosition(MarineStatusHUD.kUpgradePointIconPos)
-    self.upgradePointIcon:SetSize(MarineStatusHUD.kUpgradePointIconSize)
-
     self.currentXPText:SetScale(GetScaledVector())
     self.currentXPText:SetPosition(MarineStatusHUD.kXPTextPosition)
     self.currentXPText:SetFontName(MarineStatusHUD.kXPFontName)
@@ -259,11 +219,6 @@ function MarineStatusHUD:Reset(scale)
     self.currentRankText:SetPosition(MarineStatusHUD.kRankTextPosition)
     self.currentRankText:SetFontName(MarineStatusHUD.kRankFontName)
     GUIMakeFontScale(self.currentRankText)
-
-    self.upgradePointText:SetScale(GetScaledVector())
-    self.upgradePointText:SetPosition(MarineStatusHUD.kUpgradePointTextPos)
-    self.upgradePointText:SetFontName(MarineStatusHUD.kRankFontName)
-    GUIMakeFontScale(self.upgradePointText)
 
     self.medPackIconBackground:SetUniformScale(self.scale)
     self.medPackIconBackground:SetPosition( Vector(-142, -180, 0) )
@@ -327,9 +282,6 @@ function MarineStatusHUD:Uninitialize()
 
     GUI.DestroyItem(self.currentRankText)
     self.currentRankText = nil
-
-    GUI.DestroyItem(self.upgradePointText)
-    self.upgradePointText = nil
 
 end
 
@@ -399,11 +351,8 @@ end
 
 function MarineStatusHUD:UpdateVisibility()
 
-    self.combatStatusBkg:SetIsVisible(self.visible)
     self.currentXPText:SetIsVisible(self.visible)
     self.currentRankText:SetIsVisible(self.visible)
-    self.upgradePointIcon:SetIsVisible(self.visible)
-    self.upgradePointText:SetIsVisible(self.visible)
     self.newXpBarBkg:SetIsVisible(self.visible)
 
     self.medPackIconBackground:SetIsVisible(self.visible)
@@ -457,13 +406,6 @@ function MarineStatusHUD:Update(deltaTime)
 
         -- update rank text
         self.currentRankText:SetText(string.format("Rank %s : %s", currentRank, title))
-
-        -- update upgrade point text
-        if player.combatUpgradePoints == 1 then
-            self.upgradePointText:SetText(string.format("%s Upgrade Point", player.combatUpgradePoints))
-        else
-            self.upgradePointText:SetText(string.format("%s Upgrade Points", player.combatUpgradePoints))
-        end
 
         -- update xp text
         if newXPThreshold == 0 then

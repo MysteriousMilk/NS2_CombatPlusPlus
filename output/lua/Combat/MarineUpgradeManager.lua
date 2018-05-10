@@ -6,10 +6,6 @@
  * Marine Upgrade Manager for Combat++.
 ]]
 
-Script.Load("lua/Combat/UpgradeManager.lua")
-Script.Load("lua/Combat/UpgradeData.lua")
-Script.Load("lua/CPPUtilities.lua")
-
 class 'MarineUpgradeManager' (UpgradeManager)
 
 local function BuyMedPackAbility(techId, player)
@@ -269,6 +265,8 @@ function MarineUpgradeManager:CreateUpgradeTree()
     self.Upgrades:SetIsPurchased(kTechId.Marine, true)
     self.Upgrades:SetIsUnlocked(kTechId.Rifle, true)
     self.Upgrades:SetIsPurchased(kTechId.Rifle, true)
+    self.Upgrades:SetIsUnlocked(kTechId.Pistol, true)
+    self.Upgrades:SetIsPurchased(kTechId.Pistol, true)
 
 end
 

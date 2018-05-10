@@ -9,7 +9,7 @@
  * certain criteria is met.
 ]]
 
-Script.Load("lua/CPPUtilities.lua")
+Script.Load("lua/Combat/Globals.lua")
 
 CombatScoreMixin = CreateMixin(CombatScoreMixin)
 CombatScoreMixin.type = "CombatScore"
@@ -72,6 +72,16 @@ function CombatScoreMixin:AddXP(xp, source, targetId)
     end
 
 end
+
+function CombatScoreMixin:BalanceXp(averageXp)
+    
+    local xpDiff = averageXp - self:GetCombatXP()
+    
+    if xpDiff > 0 then
+        self:AddXP(xpDiff, kXPSourceType.Balance, Entity.invalidId)
+    end
+    
+end    
 
 function CombatScoreMixin:GetCombatRank()
     return self.combatRank
@@ -299,7 +309,7 @@ function CombatScoreMixin:ResetCombatScores()
 
     self.combatXP = 0
     self.combatRank = 1
-    self.combatUpgradePoints = kStartPoints
+    self.combatUpgradePoints = CombatSettings["UpgradePointsAtStart"]
     self.combatXPGainedCurrentLife = 0
     self.killsGainedCurrentLife = 0
     self.assistsGainedCurrentLife = 0
