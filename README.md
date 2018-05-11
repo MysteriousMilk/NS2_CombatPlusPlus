@@ -4,6 +4,8 @@
 The intent of this mod is to bring back a gameplay type using the orignial Natural Selection 1 Combat Mod for primary insiration, use the [Natural Selection 2 Combat Mod](https://github.com/AlexHayton/NS2Combat) as a reference and possibly incorporate some ideas from the Combat Standalone (placing structures, etc).  Seeing as how the title is still 'Combat', I'd like to keep that original gametype feel as much as possible (individual xp, no commanders), an not alter the lifeform, gun, or game physics as many players use combat for practicing for the vanilla game.
 
 ## Latest Changes
+**5/10/2018** - Enabled sprinting while using the builder in create mode.
+
 **5/6/2018** - Overall uplift to the structure logic.
 
     > Fixed issue with player spawning with the builder in create mode if they died with the builder open.  This also corrected the issue where the skill points could go negative.
