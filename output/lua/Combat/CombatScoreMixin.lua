@@ -5,7 +5,7 @@
  *
  * New mixin to track Combat++ specific values for players.
  *
- * Provides a progression system (xp->rank) and awards skill points when
+ * Provides a progression system (xp->rank) and awards upgrade points when
  * certain criteria is met.
 ]]
 
@@ -18,7 +18,7 @@ CombatScoreMixin.networkVars =
 {
     combatXP = "integer",
     combatRank = "integer",
-    combatSkillPoints = "integer"
+    combatUpgradePoints = "integer"
 }
 
 function CombatScoreMixin:__initmixin()
@@ -51,8 +51,8 @@ function CombatScoreMixin:AddXP(xp, source, targetId)
 
         if numberOfRanksEarned > 0 then
 
-            --give skill points for number of ranks earned
-            self:GiveCombatSkillPoints(kSkillPointSourceType.LevelUp, numberOfRanksEarned)
+            --give upgrade points for number of ranks earned
+            self:GiveCombatUpgradePoints(kUpgradePointSourceType.LevelUp, numberOfRanksEarned)
 
             if self.UpgradeManager then
                 self.UpgradeManager:UpdateUnlocks(true)
@@ -86,15 +86,15 @@ function CombatScoreMixin:GiveCombatRank(rank)
 
 end
 
-function CombatScoreMixin:GetCombatSkillPoints()
-    return self.combatSkillPoints
+function CombatScoreMixin:GetCombatUpgradePoints()
+    return self.combatUpgradePoints
 end
 
-function CombatScoreMixin:SetCombatSkillPoints(skillPoints)
-    self.combatSkillPoints = Clamp(skillPoints, 0, kMaxCombatSkillPoints)
+function CombatScoreMixin:SetCombatUpgradePoints(upgradePoints)
+    self.combatUpgradePoints = Clamp(upgradePoints, 0, kMaxCombatUpgradePoints)
 end
 
-function CombatScoreMixin:GiveCombatSkillPoints(source, points)
+function CombatScoreMixin:GiveCombatUpgradePoints(source, points)
 
     if Server and not GetGameInfoEntity():GetWarmUpActive() then
 
@@ -102,26 +102,26 @@ function CombatScoreMixin:GiveCombatSkillPoints(source, points)
             points = 1
         end
 
-        self.combatSkillPoints = Clamp(self.combatSkillPoints + points, 0, kMaxCombatSkillPoints)
+        self.combatUpgradePoints = Clamp(self.combatUpgradePoints + points, 0, kMaxCombatUpgradePoints)
 
         if source ~= kXPSourceType.Refund then
-            -- notify the client about the new skill points
-            Server.SendNetworkMessage(Server.GetOwner(self), "CombatSkillPointUpdate", { source = source, kills = self.killsGainedCurrentLife, assists = self.assistsGainedCurrentLife }, true)
+            -- notify the client about the new upgrade points
+            Server.SendNetworkMessage(Server.GetOwner(self), "CombatUpgradePointUpdate", { source = source, kills = self.killsGainedCurrentLife, assists = self.assistsGainedCurrentLife }, true)
         end
 
     end
 
 end
 
-function CombatScoreMixin:SpendSkillPoints(pointsToSpend)
+function CombatScoreMixin:SpendUpgradePoints(pointsToSpend)
 
     if Server and not GetGameInfoEntity():GetWarmUpActive() then
 
-        if (self.combatSkillPoints - pointsToSpend) < 0 then
-            Shared.Message("Warning: Skill points spent that were not available.")
+        if (self.combatUpgradePoints - pointsToSpend) < 0 then
+            Shared.Message("Warning: Upgrade points spent that were not available.")
         end
 
-        self.combatSkillPoints = Clamp(self.combatSkillPoints - pointsToSpend, 0, kMaxCombatSkillPoints)
+        self.combatUpgradePoints = Clamp(self.combatUpgradePoints - pointsToSpend, 0, kMaxCombatUpgradePoints)
 
     end
 
@@ -133,7 +133,7 @@ if Server then
 
         self.combatXP = player.combatXP
         self.combatRank = player.combatRank
-        self.combatSkillPoints = player.combatSkillPoints
+        self.combatUpgradePoints = player.combatUpgradePoints
 
     end
 
@@ -167,7 +167,7 @@ function CombatScoreMixin:AddCombatKill(victimRank)
     self.killsGainedCurrentLife = self.killsGainedCurrentLife + 1
 
     if self.killsGainedCurrentLife == kKillsForRampageReward then
-        self:GiveCombatSkillPoints(kSkillPointSourceType.KillStreak)
+        self:GiveCombatUpgradePoints(kUpgradePointSourceType.KillStreak)
     end
 
     self:AddXP(CombatPlusPlus_GetBaseKillXP(victimRank), kXPSourceType.Kill, Entity.invalidId)
@@ -189,7 +189,7 @@ function CombatScoreMixin:AddCombatAssistKill(victimRank)
     self.assistsGainedCurrentLife = self.assistsGainedCurrentLife + 1
 
     if self.assistsGainedCurrentLife == kAssistsForAssistReward then
-        self:GiveCombatSkillPoints(kSkillPointSourceType.AssistStreak)
+        self:GiveCombatUpgradePoints(kUpgradePointSourceType.AssistStreak)
     end
 
     local xp = CombatPlusPlus_GetBaseKillXP(victimRank) * kXPAssistModifier
@@ -223,7 +223,7 @@ function CombatScoreMixin:AddCombatDamage(damage)
     self.damageDealtCurrentLife = self.damageDealtCurrentLife + damage
 
     if not self.damageDealerAwardReceived and self.damageDealtCurrentLife >= kDamageForDamageDealerAward then
-        self:GiveCombatSkillPoints(kSkillPointSourceType.DamageDealer)
+        self:GiveCombatUpgradePoints(kUpgradePointSourceType.DamageDealer)
         self.damageDealerAwardReceived = true
     end
 
@@ -300,7 +300,7 @@ function CombatScoreMixin:ResetCombatScores()
 
     self.combatXP = 0
     self.combatRank = 1
-    self.combatSkillPoints = kStartPoints
+    self.combatUpgradePoints = kStartPoints
     self.combatXPGainedCurrentLife = 0
     self.killsGainedCurrentLife = 0
     self.assistsGainedCurrentLife = 0

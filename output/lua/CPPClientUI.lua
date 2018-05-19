@@ -9,3 +9,6 @@
 AddClientUIScriptForClass("Marine", "Combat/GUI/MarineStatusHUD")
 AddClientUIScriptForClass("Exo", "Combat/GUI/MarineStatusHUD")
 AddClientUIScriptForClass("Alien", "Combat/GUI/AlienStatusHUD")
+AddClientUIScriptForClass("Marine", "Combat/GUI/CombatMessageUI")
+AddClientUIScriptForClass("Exo", "Combat/GUI/CombatMessageUI")
+AddClientUIScriptForClass("Alien", "Combat/GUI/CombatMessageUI")

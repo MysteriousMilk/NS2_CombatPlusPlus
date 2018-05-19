@@ -6,14 +6,14 @@
 ]]
 
 local function OnCombatScoreUpdate(message)
-    CombatScoreDisplayUI_SetNewXPAward(message.xp, message.source, message.targetId)
+    CombatXpMsgUI_AddMessage(message)
 end
 Client.HookNetworkMessage("CombatScoreUpdate", OnCombatScoreUpdate)
 
-local function OnCombatSkillPointUpdate(message)
-    CombatScoreDisplayUI_SkillPointEarned(message.source, message.kill, message.assists)
+local function OnCombatUpgradePointUpdate(message)
+    CombatScoreDisplayUI_UpgradePointEarned(message.source, message.kill, message.assists)
 end
-Client.HookNetworkMessage("CombatSkillPointUpdate", OnCombatSkillPointUpdate)
+Client.HookNetworkMessage("CombatUpgradePointUpdate", OnCombatUpgradePointUpdate)
 
 local function OnCommandClearUpgradeTree()
     ClearUpgradeTree()

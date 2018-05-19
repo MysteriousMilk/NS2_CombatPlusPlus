@@ -75,134 +75,27 @@ function CombatPlusPlus_GetIsScalableXPType(type)
 
 end
 
-function CombatPlusPlus_GetCostByTechId(techId)
+function CombatPlusPlus_GetDisplayNameForXpSourceType(source)
 
-    local techIdCostTable = {}
+    local displayStr = ""
 
-    -- Marine
-    techIdCostTable[kTechId.Pistol] = 1
-    techIdCostTable[kTechId.Rifle] = 1
-    techIdCostTable[kTechId.Shotgun] = 1
-    techIdCostTable[kTechId.Flamethrower] = 1
-    techIdCostTable[kTechId.GrenadeLauncher] = 2
-    techIdCostTable[kTechId.HeavyMachineGun] = 2
-    techIdCostTable[kTechId.Welder] = 1
-    techIdCostTable[kTechId.LayMines] = 1
-    techIdCostTable[kTechId.ClusterGrenade] = 1
-    techIdCostTable[kTechId.GasGrenade] = 1
-    techIdCostTable[kTechId.PulseGrenade] = 1
-    techIdCostTable[kTechId.Jetpack] = 2
-    techIdCostTable[kTechId.DualMinigunExosuit] = 2
-    techIdCostTable[kTechId.Armor1] = 1
-    techIdCostTable[kTechId.Armor2] = 1
-    techIdCostTable[kTechId.Armor3] = 1
-    techIdCostTable[kTechId.Weapons1] = 1
-    techIdCostTable[kTechId.Weapons2] = 1
-    techIdCostTable[kTechId.Weapons3] = 1
-    techIdCostTable[kTechId.MedPack] = 1
-    techIdCostTable[kTechId.AmmoPack] = 1
-    techIdCostTable[kTechId.CatPack] = 1
-    techIdCostTable[kTechId.Scan] = 1
-    techIdCostTable[kTechId.Armory] = 1
-    techIdCostTable[kTechId.PhaseGate] = 1
-    techIdCostTable[kTechId.Observatory] = 2
-    techIdCostTable[kTechId.Sentry] = 1
-    techIdCostTable[kTechId.RoboticsFactory] = 2
-
-    -- Alien
-    techIdCostTable[kTechId.Skulk] = 0
-    techIdCostTable[kTechId.Gorge] = 0
-    techIdCostTable[kTechId.Lerk] = 1
-    techIdCostTable[kTechId.Fade] = 2
-    techIdCostTable[kTechId.Onos] = 2
-    techIdCostTable[kTechId.Celerity] = 1
-    techIdCostTable[kTechId.Vampirism] = 1
-    techIdCostTable[kTechId.Carapace] = 1
-    techIdCostTable[kTechId.Adrenaline] = 1
-    techIdCostTable[kTechId.Aura] = 1
-    techIdCostTable[kTechId.Regeneration] = 1
-    techIdCostTable[kTechId.Silence] = 1
-    techIdCostTable[kTechId.Focus] = 1
-    techIdCostTable[kTechId.Crush] = 1
-    techIdCostTable[kTechId.BileBomb] = 1
-    techIdCostTable[kTechId.Leap] = 1
-    techIdCostTable[kTechId.Xenocide] = 1
-    techIdCostTable[kTechId.Spores] = 1
-    techIdCostTable[kTechId.Umbra] = 1
-    techIdCostTable[kTechId.MetabolizeEnergy] = 1
-    techIdCostTable[kTechId.MetabolizeHealth] = 1
-    techIdCostTable[kTechId.Stab] = 1
-    techIdCostTable[kTechId.Charge] = 1
-    techIdCostTable[kTechId.BoneShield] = 1
-    techIdCostTable[kTechId.Stomp] = 1
-
-    local cost = techIdCostTable[techId]
-
-    if not cost then
-        cost = 0
+    if source == kXPSourceType.Damage then
+        displayStr = "Damaged Target"
+    elseif source == kXPSourceType.Weld then
+        displayStr = "Welded Target"
+    elseif source == kXPSourceType.Heal then
+        displayStr = "Healed Target"
+    elseif source == kXPSourceType.Build then
+        displayStr = "Built Structure"
+    elseif source == kXPSourceType.Kill then
+        displayStr = "Kill"
+    elseif source == kXPSourceType.Assist then
+        displayStr = "Assist"
+    elseif source == kXPSourceType.Nearby then
+        displayStr = "Nearby Kill"
     end
 
-    return cost
-
-end
-
-function CombatPlusPlus_GetRequiredRankByTechId(techId)
-
-    local techIdRankTable = {}
-
-    -- Marine
-    techIdRankTable[kTechId.Pistol] = 1
-    techIdRankTable[kTechId.Rifle] = 1
-    techIdRankTable[kTechId.Shotgun] = 3
-    techIdRankTable[kTechId.Flamethrower] = 6
-    techIdRankTable[kTechId.GrenadeLauncher] = 7
-    techIdRankTable[kTechId.HeavyMachineGun] = 8
-    techIdRankTable[kTechId.Welder] = 1
-    techIdRankTable[kTechId.LayMines] = 5
-    techIdRankTable[kTechId.ClusterGrenade] = 6
-    techIdRankTable[kTechId.GasGrenade] = 6
-    techIdRankTable[kTechId.PulseGrenade] = 6
-    techIdRankTable[kTechId.Jetpack] = 9
-    techIdRankTable[kTechId.DualMinigunExosuit] = 10
-    techIdRankTable[kTechId.Armor1] = 1
-    techIdRankTable[kTechId.Armor2] = 2
-    techIdRankTable[kTechId.Armor3] = 3
-    techIdRankTable[kTechId.Weapons1] = 1
-    techIdRankTable[kTechId.Weapons2] = 2
-    techIdRankTable[kTechId.Weapons3] = 3
-    techIdRankTable[kTechId.MedPack] = 2
-    techIdRankTable[kTechId.AmmoPack] = 2
-    techIdRankTable[kTechId.CatPack] = 7
-    techIdRankTable[kTechId.Scan] = 5
-    techIdRankTable[kTechId.Armory] = 3
-    techIdRankTable[kTechId.PhaseGate] = 4
-    techIdRankTable[kTechId.Observatory] = 5
-    techIdRankTable[kTechId.Sentry] = 6
-    techIdRankTable[kTechId.RoboticsFactory] = 8
-
-    -- Alien
-    techIdRankTable[kTechId.Skulk] = 1
-    techIdRankTable[kTechId.Gorge] = 2
-    techIdRankTable[kTechId.Lerk] = 3
-    techIdRankTable[kTechId.Fade] = 6
-    techIdRankTable[kTechId.Onos] = 9
-    techIdRankTable[kTechId.Celerity] = 2
-    techIdRankTable[kTechId.Vampirism] = 3
-    techIdRankTable[kTechId.Carapace] = 3
-    techIdRankTable[kTechId.Adrenaline] = 4
-    techIdRankTable[kTechId.Aura] = 4
-    techIdRankTable[kTechId.Regeneration] = 4
-    techIdRankTable[kTechId.Silence] = 5
-    techIdRankTable[kTechId.Focus] = 5
-    techIdRankTable[kTechId.Crush] = 5
-
-    local rank = techIdRankTable[techId]
-
-    if not rank then
-        rank = 1
-    end
-
-    return rank
+    return displayStr
 
 end
 

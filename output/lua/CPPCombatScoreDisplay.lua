@@ -36,7 +36,7 @@ function CombatScoreDisplayUI_SetNewXPAward(xp, source, targetId)
 
 end
 
-function CombatScoreDisplayUI_SkillPointEarned(source, kills, assists)
+function CombatScoreDisplayUI_UpgradePointEarned(source, kills, assists)
 
     player = Client.GetLocalPlayer()
 
@@ -44,14 +44,14 @@ function CombatScoreDisplayUI_SkillPointEarned(source, kills, assists)
 
         local msg
 
-        if source == kSkillPointSourceType.LevelUp then
-            msg = string.format("Leveled Up! : %s Skill Point Earned", kSkillPointTable[source])
-        elseif source == kSkillPointSourceType.KillStreak then
-            msg = string.format("Rampage! : %s Skill Point Earned", kSkillPointTable[source])
-        elseif source == kSkillPointSourceType.AssistStreak then
-            msg = string.format("Got Your Back! : %s Skill Point Earned", kSkillPointTable[source])
-        elseif source == kSkillPointSourceType.DamageDealer then
-            msg = string.format("Damage Dealer! : %s Skill Point Earned", kSkillPointTable[source])
+        if source == kUpgradePointSourceType.LevelUp then
+            msg = string.format("Leveled Up! : %s Upgrade Point Earned", kUpgradePointTable[source])
+        elseif source == kUpgradePointSourceType.KillStreak then
+            msg = string.format("Rampage! : %s Upgrade Point Earned", kUpgradePointTable[source])
+        elseif source == kUpgradePointSourceType.AssistStreak then
+            msg = string.format("Got Your Back! : %s Upgrade Point Earned", kUpgradePointTable[source])
+        elseif source == kUpgradePointSourceType.DamageDealer then
+            msg = string.format("Damage Dealer! : %s Upgrade Point Earned", kUpgradePointTable[source])
         end
 
         player:SetTeamMessage(string.UTF8Upper(msg))

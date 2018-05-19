@@ -38,6 +38,24 @@ kUpDataMutuallyExclusiveIndex = "mutuallyExclusive"
 -- Index used to retrieve a flag that indicates if the upgrade requires the alien player to gestate
 kUpDataRequiresGestation = "gestation"
 
+-- Index used to retrieve the texture used to represent the tech/upgrade on the buy menu
+kUpDataIconTextureIndex = "texture"
+
+-- Index used to retrieve the indexed offset within the texture used to represent the tech/upgrade on the buy menu
+kUpDataIconTextureOffsetIndex = "texOffset"
+
+-- Index used to retrieve a table that specifies the size of the upgrade icon displayed on the buy menu
+kUpDataIconSizeIndex = "iconSize"
+
+-- Index used to retrieve the texture used to represent the tech/upgrade on the buy menu information window
+kUpDataLargeIconTextureIndex = "largeTexture"
+
+-- Index used to retrieve the indexed offset within the texture used to represent the tech/upgrade on the buy menu information window
+kUpDataLargeIconTextureOffsetIndex = "largeTexOffset"
+
+-- Index used to retrieve a table that specifies the size of the upgrade icon displayed on the buy menu information window
+kUpDataLargeIconSizeIndex = "largeIconSize"
+
 kCombatUpgradeData =
 {
 	[kTechId.Marine] =
@@ -63,7 +81,13 @@ kCombatUpgradeData =
 		[kUpDataCategoryIndex] = "Tech",
 		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { }
+		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataIconTextureIndex] = "ui/combatui_marine_tech_icons.dds",
+		[kUpDataIconTextureOffsetIndex] = 5,
+		[kUpDataIconSizeIndex] = Vector(64, 64, 0),
+		[kUpDataLargeIconTextureIndex] = "ui/marine_buy_bigicons.dds",
+		[kUpDataLargeIconTextureOffsetIndex] = 6,
+		[kUpDataLargeIconSizeIndex] = Vector(400, 300, 0)
 	},
 
 	[kTechId.DualMinigunExosuit] =
@@ -77,7 +101,13 @@ kCombatUpgradeData =
 		[kUpDataDescIndex] = "An armored exosuit with a minigun equipped to each arm.",
 		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { kTechId.DualRailgunExosuit }
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.DualRailgunExosuit },
+		[kUpDataIconTextureIndex] = "ui/combatui_marine_tech_icons.dds",
+		[kUpDataIconTextureOffsetIndex] = 6,
+		[kUpDataIconSizeIndex] = Vector(64, 64, 0),
+		[kUpDataLargeIconTextureIndex] = "ui/marine_buy_bigicons.dds",
+		[kUpDataLargeIconTextureOffsetIndex] = 10,
+		[kUpDataLargeIconSizeIndex] = Vector(400, 300, 0)
 	},
 
 	[kTechId.DualRailgunExosuit] =
@@ -91,7 +121,13 @@ kCombatUpgradeData =
 		[kUpDataDescIndex] = "An armored exosuit with a railgun equipped to each arm.",
 		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { kTechId.DualMinigunExosuit }
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.DualMinigunExosuit },
+		[kUpDataIconTextureIndex] = "ui/combatui_marine_tech_icons.dds",
+		[kUpDataIconTextureOffsetIndex] = 7,
+		[kUpDataIconSizeIndex] = Vector(64, 64, 0),
+		[kUpDataLargeIconTextureIndex] = "ui/marine_buy_bigicons.dds",
+		[kUpDataLargeIconTextureOffsetIndex] = 11,
+		[kUpDataLargeIconSizeIndex] = Vector(400, 300, 0)
 	},
 
 	[kTechId.Pistol] =
@@ -104,7 +140,13 @@ kCombatUpgradeData =
 		[kUpDataCategoryIndex] = "Weapon",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { }
+		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataIconTextureIndex] = "ui/combatui_marine_weapon_icons.dds",
+		[kUpDataIconTextureOffsetIndex] = 0,
+		[kUpDataIconSizeIndex] = Vector(128, 64, 0),
+		[kUpDataLargeIconTextureIndex] = "ui/marine_buy_bigicons.dds",
+		[kUpDataLargeIconTextureOffsetIndex] = 1,
+		[kUpDataLargeIconSizeIndex] = Vector(400, 300, 0)
 	},
 
 	[kTechId.Rifle] =
@@ -117,7 +159,13 @@ kCombatUpgradeData =
 		[kUpDataCategoryIndex] = "Weapon",
 		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { kTechId.Shotgun, kTechId.Flamethrower, kTechId.GrenadeLauncher, kTechId.HeavyMachineGun }
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.Shotgun, kTechId.Flamethrower, kTechId.GrenadeLauncher, kTechId.HeavyMachineGun },
+		[kUpDataIconTextureIndex] = "ui/combatui_marine_weapon_icons.dds",
+		[kUpDataIconTextureOffsetIndex] = 1,
+		[kUpDataIconSizeIndex] = Vector(128, 64, 0),
+		[kUpDataLargeIconTextureIndex] = "ui/marine_buy_bigicons.dds",
+		[kUpDataLargeIconTextureOffsetIndex] = 2,
+		[kUpDataLargeIconSizeIndex] = Vector(400, 300, 0)
 	},
 
 	[kTechId.Shotgun] =
@@ -130,7 +178,13 @@ kCombatUpgradeData =
 		[kUpDataCategoryIndex] = "Weapon",
 		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { kTechId.Rifle, kTechId.Flamethrower, kTechId.GrenadeLauncher, kTechId.HeavyMachineGun }
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.Rifle, kTechId.Flamethrower, kTechId.GrenadeLauncher, kTechId.HeavyMachineGun },
+		[kUpDataIconTextureIndex] = "ui/combatui_marine_weapon_icons.dds",
+		[kUpDataIconTextureOffsetIndex] = 2,
+		[kUpDataIconSizeIndex] = Vector(128, 64, 0),
+		[kUpDataLargeIconTextureIndex] = "ui/marine_buy_bigicons.dds",
+		[kUpDataLargeIconTextureOffsetIndex] = 3,
+		[kUpDataLargeIconSizeIndex] = Vector(400, 300, 0)
 	},
 
 	[kTechId.Flamethrower] =
@@ -143,7 +197,13 @@ kCombatUpgradeData =
 		[kUpDataCategoryIndex] = "Weapon",
 		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { kTechId.Rifle, kTechId.Shotgun, kTechId.GrenadeLauncher, kTechId.HeavyMachineGun }
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.Rifle, kTechId.Shotgun, kTechId.GrenadeLauncher, kTechId.HeavyMachineGun },
+		[kUpDataIconTextureIndex] = "ui/combatui_marine_weapon_icons.dds",
+		[kUpDataIconTextureOffsetIndex] = 3,
+		[kUpDataIconSizeIndex] = Vector(128, 64, 0),
+		[kUpDataLargeIconTextureIndex] = "ui/marine_buy_bigicons.dds",
+		[kUpDataLargeIconTextureOffsetIndex] = 5,
+		[kUpDataLargeIconSizeIndex] = Vector(400, 300, 0)
 	},
 
 	[kTechId.GrenadeLauncher] =
@@ -156,7 +216,13 @@ kCombatUpgradeData =
 		[kUpDataCategoryIndex] = "Weapon",
 		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { kTechId.Rifle, kTechId.Shotgun, kTechId.Flamethrower, kTechId.HeavyMachineGun }
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.Rifle, kTechId.Shotgun, kTechId.Flamethrower, kTechId.HeavyMachineGun },
+		[kUpDataIconTextureIndex] = "ui/combatui_marine_weapon_icons.dds",
+		[kUpDataIconTextureOffsetIndex] = 4,
+		[kUpDataIconSizeIndex] = Vector(128, 64, 0),
+		[kUpDataLargeIconTextureIndex] = "ui/marine_buy_bigicons.dds",
+		[kUpDataLargeIconTextureOffsetIndex] = 4,
+		[kUpDataLargeIconSizeIndex] = Vector(400, 300, 0)
 	},
 
 	[kTechId.HeavyMachineGun] =
@@ -169,7 +235,13 @@ kCombatUpgradeData =
 		[kUpDataCategoryIndex] = "Weapon",
 		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { kTechId.Rifle, kTechId.Shotgun, kTechId.Flamethrower, kTechId.GrenadeLauncher }
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.Rifle, kTechId.Shotgun, kTechId.Flamethrower, kTechId.GrenadeLauncher },
+		[kUpDataIconTextureIndex] = "ui/combatui_marine_weapon_icons.dds",
+		[kUpDataIconTextureOffsetIndex] = 5,
+		[kUpDataIconSizeIndex] = Vector(128, 64, 0),
+		[kUpDataLargeIconTextureIndex] = "ui/marine_buy_bigicons.dds",
+		[kUpDataLargeIconTextureOffsetIndex] = 15,
+		[kUpDataLargeIconSizeIndex] = Vector(400, 300, 0)
 	},
 
 	[kTechId.Welder] =
@@ -182,7 +254,13 @@ kCombatUpgradeData =
 		[kUpDataCategoryIndex] = "Tech",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { }
+		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataIconTextureIndex] = "ui/combatui_marine_tech_icons.dds",
+		[kUpDataIconTextureOffsetIndex] = 0,
+		[kUpDataIconSizeIndex] = Vector(64, 64, 0),
+		[kUpDataLargeIconTextureIndex] = "ui/marine_buy_bigicons.dds",
+		[kUpDataLargeIconTextureOffsetIndex] = 8,
+		[kUpDataLargeIconSizeIndex] = Vector(400, 300, 0)
 	},
 
 	[kTechId.LayMines] =
@@ -195,7 +273,13 @@ kCombatUpgradeData =
 		[kUpDataCategoryIndex] = "Tech",
 		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { }
+		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataIconTextureIndex] = "ui/combatui_marine_tech_icons.dds",
+		[kUpDataIconTextureOffsetIndex] = 1,
+		[kUpDataIconSizeIndex] = Vector(64, 64, 0),
+		[kUpDataLargeIconTextureIndex] = "ui/marine_buy_bigicons.dds",
+		[kUpDataLargeIconTextureOffsetIndex] = 9,
+		[kUpDataLargeIconSizeIndex] = Vector(400, 300, 0)
 	},
 
 	[kTechId.ClusterGrenade] =
@@ -208,7 +292,13 @@ kCombatUpgradeData =
 		[kUpDataCategoryIndex] = "Tech",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { kTechId.GasGrenade, kTechId.PulseGrenade }
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.GasGrenade, kTechId.PulseGrenade },
+		[kUpDataIconTextureIndex] = "ui/combatui_marine_tech_icons.dds",
+		[kUpDataIconTextureOffsetIndex] = 2,
+		[kUpDataIconSizeIndex] = Vector(64, 64, 0),
+		[kUpDataLargeIconTextureIndex] = "ui/marine_buy_bigicons.dds",
+		[kUpDataLargeIconTextureOffsetIndex] = 12,
+		[kUpDataLargeIconSizeIndex] = Vector(400, 300, 0)
 	},
 
 	[kTechId.GasGrenade] =
@@ -221,7 +311,13 @@ kCombatUpgradeData =
 		[kUpDataCategoryIndex] = "Tech",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { kTechId.ClusterGrenade, kTechId.PulseGrenade }
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.ClusterGrenade, kTechId.PulseGrenade },
+		[kUpDataIconTextureIndex] = "ui/combatui_marine_tech_icons.dds",
+		[kUpDataIconTextureOffsetIndex] = 3,
+		[kUpDataIconSizeIndex] = Vector(64, 64, 0),
+		[kUpDataLargeIconTextureIndex] = "ui/marine_buy_bigicons.dds",
+		[kUpDataLargeIconTextureOffsetIndex] = 13,
+		[kUpDataLargeIconSizeIndex] = Vector(400, 300, 0)
 	},
 
 	[kTechId.PulseGrenade] =
@@ -234,7 +330,13 @@ kCombatUpgradeData =
 		[kUpDataCategoryIndex] = "Tech",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { kTechId.ClusterGrenade, kTechId.GasGrenade }
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.ClusterGrenade, kTechId.GasGrenade },
+		[kUpDataIconTextureIndex] = "ui/combatui_marine_tech_icons.dds",
+		[kUpDataIconTextureOffsetIndex] = 4,
+		[kUpDataIconSizeIndex] = Vector(64, 64, 0),
+		[kUpDataLargeIconTextureIndex] = "ui/marine_buy_bigicons.dds",
+		[kUpDataLargeIconTextureOffsetIndex] = 14,
+		[kUpDataLargeIconSizeIndex] = Vector(400, 300, 0)
 	},
 
 	[kTechId.Armor1] =
@@ -247,7 +349,13 @@ kCombatUpgradeData =
 		[kUpDataCategoryIndex] = "Upgrades",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { }
+		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataIconTextureIndex] = "ui/combatui_marine_upgrade_icons.dds",
+		[kUpDataIconTextureOffsetIndex] = 0,
+		[kUpDataIconSizeIndex] = Vector(64, 64, 0),
+		[kUpDataLargeIconTextureIndex] = "ui/combatui_marine_icons_big.dds",
+		[kUpDataLargeIconTextureOffsetIndex] = 4,
+		[kUpDataLargeIconSizeIndex] = Vector(400, 300, 0)
 	},
 
 	[kTechId.Armor2] =
@@ -260,7 +368,13 @@ kCombatUpgradeData =
 		[kUpDataCategoryIndex] = "Upgrades",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { }
+		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataIconTextureIndex] = "ui/combatui_marine_upgrade_icons.dds",
+		[kUpDataIconTextureOffsetIndex] = 1,
+		[kUpDataIconSizeIndex] = Vector(64, 64, 0),
+		[kUpDataLargeIconTextureIndex] = "ui/combatui_marine_icons_big.dds",
+		[kUpDataLargeIconTextureOffsetIndex] = 4,
+		[kUpDataLargeIconSizeIndex] = Vector(400, 300, 0)
 	},
 
 	[kTechId.Armor3] =
@@ -273,7 +387,13 @@ kCombatUpgradeData =
 		[kUpDataCategoryIndex] = "Upgrades",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { }
+		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataIconTextureIndex] = "ui/combatui_marine_upgrade_icons.dds",
+		[kUpDataIconTextureOffsetIndex] = 2,
+		[kUpDataIconSizeIndex] = Vector(64, 64, 0),
+		[kUpDataLargeIconTextureIndex] = "ui/combatui_marine_icons_big.dds",
+		[kUpDataLargeIconTextureOffsetIndex] = 4,
+		[kUpDataLargeIconSizeIndex] = Vector(400, 300, 0)
 	},
 
 	[kTechId.Weapons1] =
@@ -286,7 +406,13 @@ kCombatUpgradeData =
 		[kUpDataCategoryIndex] = "Upgrades",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { }
+		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataIconTextureIndex] = "ui/combatui_marine_upgrade_icons.dds",
+		[kUpDataIconTextureOffsetIndex] = 3,
+		[kUpDataIconSizeIndex] = Vector(64, 64, 0),
+		[kUpDataLargeIconTextureIndex] = "ui/combatui_marine_icons_big.dds",
+		[kUpDataLargeIconTextureOffsetIndex] = 5,
+		[kUpDataLargeIconSizeIndex] = Vector(400, 300, 0)
 	},
 
 	[kTechId.Weapons2] =
@@ -299,7 +425,13 @@ kCombatUpgradeData =
 		[kUpDataCategoryIndex] = "Upgrades",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { }
+		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataIconTextureIndex] = "ui/combatui_marine_upgrade_icons.dds",
+		[kUpDataIconTextureOffsetIndex] = 4,
+		[kUpDataIconSizeIndex] = Vector(64, 64, 0),
+		[kUpDataLargeIconTextureIndex] = "ui/combatui_marine_icons_big.dds",
+		[kUpDataLargeIconTextureOffsetIndex] = 5,
+		[kUpDataLargeIconSizeIndex] = Vector(400, 300, 0)
 	},
 
 	[kTechId.Weapons3] =
@@ -312,7 +444,10 @@ kCombatUpgradeData =
 		[kUpDataCategoryIndex] = "Upgrades",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { }
+		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataIconTextureIndex] = "ui/combatui_marine_upgrade_icons.dds",
+		[kUpDataIconTextureOffsetIndex] = 5,
+		[kUpDataIconSizeIndex] = Vector(64, 64, 0)
 	},
 
 	[kTechId.MedPack] =
@@ -326,7 +461,13 @@ kCombatUpgradeData =
 		[kUpDataDescIndex] = "A pack that restores 50 player health each use.  Can be reused every time the cooldown expires.",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { }
+		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataIconTextureIndex] = "ui/combatui_marine_upgrade_icons.dds",
+		[kUpDataIconTextureOffsetIndex] = 6,
+		[kUpDataIconSizeIndex] = Vector(64, 64, 0),
+		[kUpDataLargeIconTextureIndex] = "ui/combatui_marine_icons_big.dds",
+		[kUpDataLargeIconTextureOffsetIndex] = 0,
+		[kUpDataLargeIconSizeIndex] = Vector(400, 300, 0)
 	},
 
 	[kTechId.AmmoPack] =
@@ -340,7 +481,13 @@ kCombatUpgradeData =
 		[kUpDataDescIndex] = "A pack that restores ammo for any type of weapon.  Can be reused every time the cooldown expires.",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { }
+		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataIconTextureIndex] = "ui/combatui_marine_upgrade_icons.dds",
+		[kUpDataIconTextureOffsetIndex] = 7,
+		[kUpDataIconSizeIndex] = Vector(64, 64, 0),
+		[kUpDataLargeIconTextureIndex] = "ui/combatui_marine_icons_big.dds",
+		[kUpDataLargeIconTextureOffsetIndex] = 1,
+		[kUpDataLargeIconSizeIndex] = Vector(400, 300, 0)
 	},
 
 	[kTechId.CatPack] =
@@ -354,7 +501,13 @@ kCombatUpgradeData =
 		[kUpDataDescIndex] = "A pack that increases Marine movement and speed for a limited time.  Can be reused every time the cooldown expires.",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { }
+		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataIconTextureIndex] = "ui/combatui_marine_upgrade_icons.dds",
+		[kUpDataIconTextureOffsetIndex] = 8,
+		[kUpDataIconSizeIndex] = Vector(64, 64, 0),
+		[kUpDataLargeIconTextureIndex] = "ui/combatui_marine_icons_big.dds",
+		[kUpDataLargeIconTextureOffsetIndex] = 2,
+		[kUpDataLargeIconSizeIndex] = Vector(400, 300, 0)
 	},
 
 	[kTechId.Scan] =
@@ -368,7 +521,13 @@ kCombatUpgradeData =
 		[kUpDataDescIndex] = "Reveals cloaked units and gives line of sight to the area where triggered.  Can be reused every time the cooldown expires.",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { }
+		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataIconTextureIndex] = "ui/combatui_marine_upgrade_icons.dds",
+		[kUpDataIconTextureOffsetIndex] = 9,
+		[kUpDataIconSizeIndex] = Vector(64, 64, 0),
+		[kUpDataLargeIconTextureIndex] = "ui/combatui_marine_icons_big.dds",
+		[kUpDataLargeIconTextureOffsetIndex] = 3,
+		[kUpDataLargeIconSizeIndex] = Vector(400, 300, 0)
 	},
 
 	[kTechId.Armory] =
@@ -382,7 +541,13 @@ kCombatUpgradeData =
 		[kUpDataCategoryIndex] = "Structures",
 		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { }
+		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataIconTextureIndex] = "ui/combatui_marine_structure_icons.dds",
+		[kUpDataIconTextureOffsetIndex] = 0,
+		[kUpDataIconSizeIndex] = Vector(128, 192, 0),
+		[kUpDataLargeIconTextureIndex] = "ui/combatui_marine_structure_icons_big.dds",
+		[kUpDataLargeIconTextureOffsetIndex] = 0,
+		[kUpDataLargeIconSizeIndex] = Vector(400, 300, 0)
 	},
 
 	[kTechId.PhaseGate] =
@@ -396,7 +561,13 @@ kCombatUpgradeData =
 		[kUpDataCategoryIndex] = "Structures",
 		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { }
+		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataIconTextureIndex] = "ui/combatui_marine_structure_icons.dds",
+		[kUpDataIconTextureOffsetIndex] = 1,
+		[kUpDataIconSizeIndex] = Vector(128, 192, 0),
+		[kUpDataLargeIconTextureIndex] = "ui/combatui_marine_structure_icons_big.dds",
+		[kUpDataLargeIconTextureOffsetIndex] = 1,
+		[kUpDataLargeIconSizeIndex] = Vector(400, 300, 0)
 	},
 
 	[kTechId.Observatory] =
@@ -410,7 +581,13 @@ kCombatUpgradeData =
 		[kUpDataCategoryIndex] = "Structures",
 		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { }
+		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataIconTextureIndex] = "ui/combatui_marine_structure_icons.dds",
+		[kUpDataIconTextureOffsetIndex] = 2,
+		[kUpDataIconSizeIndex] = Vector(128, 192, 0),
+		[kUpDataLargeIconTextureIndex] = "ui/combatui_marine_structure_icons_big.dds",
+		[kUpDataLargeIconTextureOffsetIndex] = 2,
+		[kUpDataLargeIconSizeIndex] = Vector(400, 300, 0)
 	},
 
 	[kTechId.Sentry] =
@@ -425,7 +602,13 @@ kCombatUpgradeData =
 		[kUpDataDescIndex] = "An AI torrent that fires on enemy units.  Requires an active power node for the area it is located.",
 		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { }
+		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataIconTextureIndex] = "ui/combatui_marine_structure_icons.dds",
+		[kUpDataIconTextureOffsetIndex] = 3,
+		[kUpDataIconSizeIndex] = Vector(128, 192, 0),
+		[kUpDataLargeIconTextureIndex] = "ui/combatui_marine_structure_icons_big.dds",
+		[kUpDataLargeIconTextureOffsetIndex] = 3,
+		[kUpDataLargeIconSizeIndex] = Vector(400, 300, 0)
 	},
 
 	[kTechId.Skulk] =
@@ -846,5 +1029,21 @@ function GetUpgradeTechIdByConsoleName(consoleName)
 	end
 
 	return upgradeTechId
+
+end
+
+if Client then
+
+	function PrecacheUpgradeTextures()
+
+		for techId, values in ipairs(kCombatUpgradeData) do
+
+			if values[kUpDataIconTextureIndex] then
+				PrecacheAsset(values[kUpDataIconTextureIndex])
+			end
+
+		end
+
+	end
 
 end

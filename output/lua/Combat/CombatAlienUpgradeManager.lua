@@ -308,7 +308,7 @@ function CombatAlienUpgradeManager:PostGiveUpgrades(techIds, player, cost, overr
     local gestateUpgrades = {}
     local success = true
 
-    local oldSkillPointAmount = player:GetCombatSkillPoints()
+    local oldUpgradePointAmount = player:GetCombatUpgradePoints()
 
     UpgradeManager.PostGiveUpgrades(self, techIds, player, cost, overrideCost)
 
@@ -327,9 +327,9 @@ function CombatAlienUpgradeManager:PostGiveUpgrades(techIds, player, cost, overr
         success = Gestate(gestateUpgrades, player)
     end
 
-    -- if we could not gestate, refund the skill points
+    -- if we could not gestate, refund the upgrade points
     if not success then
-        player:SetCombatSkillPoints(oldSkillPointAmount)
+        player:SetCombatUpgradePoints(oldUpgradePointAmount)
     end
 
 end

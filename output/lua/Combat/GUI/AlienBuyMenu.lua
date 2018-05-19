@@ -11,8 +11,7 @@ Script.Load("lua/Combat/GUI/AnimatedTechButton.lua")
 
 class 'AlienBuyMenu' (GUIAnimatedScript)
 
-AlienBuyMenu.kBackgroundColor = Color(0.28, 0.17, 0.04, 0.6)
-AlienBuyMenu.kBackgroundCenterColor = Color(0.4, 0.1, 0.06, 0.8)
+AlienBuyMenu.kBackgroundColor = Color(0.28, 0.17, 0.04, 0.3)
 AlienBuyMenu.kBackgroundSize = Vector(1024, 1024, 0)
 AlienBuyMenu.kBackgroundTexture = PrecacheAsset("ui/combatui_alienbuy_bkg.dds")
 
@@ -56,8 +55,6 @@ AlienBuyMenu.kUpgradeButtonTextureSize = 80
 AlienBuyMenu.kUpgradeButtonBackgroundTextureCoordinates = { 15, 434, 85, 505 }
 AlienBuyMenu.kUpgradeButtonMoveTime = 0.5
 
-local kTooltipTextWidth = GUIScale(300)
-
 AlienBuyMenu.kHealthIconTextureCoordinates = { 854, 318, 887, 351 }
 AlienBuyMenu.kArmorIconTextureCoordinates = { 887, 318, 920, 351 }
 
@@ -69,7 +66,6 @@ AlienBuyMenu.kEnabledColor = Color(1, 1, 1, 1)
 local kLargeFont = Fonts.kAgencyFB_Large
 local kFont = Fonts.kAgencyFB_Small
 local kFontSmall = Fonts.kAgencyFB_Tiny
-local kOffsetToCircleCenter = Vector(-70, 0, 0)
 
 local function CreateLine(startPoint, endPoint, color)
 
@@ -112,12 +108,6 @@ local function GetTotalCost(self)
 
         local upgradeCost = LookupUpgradeData(currentButton.TechId, kUpDataCostIndex)
 
-        -- Skulks have free upgrades even in Combat++ :)
-        if self.kAlienTypes[self.selectedAlienType].TechId == kTechId.Skulk then
-            upgradeCost = 0
-        end
-
-        local player = Client.GetLocalPlayer()
         if currentButton.IsSelected then
             totalCost = totalCost + upgradeCost
         end
@@ -135,9 +125,9 @@ local function GetNumberOfNewlySelectedUpgrades(self)
 
     if player then
 
-        for i, currentButton in ipairs(self.upgradeButtons) do
+        for i, currentButton in ipairs(self.upgradeList) do
 
-            if currentButton.Selected and not player:GetHasUpgrade(currentButton.TechId) then
+            if not GetUpgradeTree():GetIsPurchased(currentButton) then
                 numSelected = numSelected + 1
             end
 
@@ -165,86 +155,83 @@ end
 
 local function UpdateItemsGUIScale(self)
 
-    AlienBuyMenu.kAlienTypes = { { LocaleName = Locale.ResolveString("FADE"), Name = "Fade", Width = GUIScale(188), Height = GUIScale(220), XPos = 2, Index = 1, TechId = kTechId.Fade },
-        { LocaleName = Locale.ResolveString("GORGE"), Name = "Gorge", Width = GUIScale(200), Height = GUIScale(167), XPos = 4, Index = 2, TechId = kTechId.Gorge },
-        { LocaleName = Locale.ResolveString("LERK"), Name = "Lerk", Width = GUIScale(284), Height = GUIScale(253), XPos = 3, Index = 3, TechId = kTechId.Lerk },
-        { LocaleName = Locale.ResolveString("ONOS"), Name = "Onos", Width = GUIScale(304), Height = GUIScale(326), XPos = 1, Index = 4, TechId = kTechId.Onos },
-        { LocaleName = Locale.ResolveString("SKULK"), Name = "Skulk", Width = GUIScale(240), Height = GUIScale(170), XPos = 5, Index = 5, TechId = kTechId.Skulk } }
+    AlienBuyMenu.kAlienTypes =
+    {
+        { LocaleName = Locale.ResolveString("FADE"), Name = "Fade", Width = GUIScaleWidth(188), Height = GUIScaleHeight(220), XPos = 2, Index = 1, TechId = kTechId.Fade },
+        { LocaleName = Locale.ResolveString("GORGE"), Name = "Gorge", Width = GUIScaleWidth(200), Height = GUIScaleHeight(167), XPos = 4, Index = 2, TechId = kTechId.Gorge },
+        { LocaleName = Locale.ResolveString("LERK"), Name = "Lerk", Width = GUIScaleWidth(284), Height = GUIScaleHeight(253), XPos = 3, Index = 3, TechId = kTechId.Lerk },
+        { LocaleName = Locale.ResolveString("ONOS"), Name = "Onos", Width = GUIScaleWidth(304), Height = GUIScaleHeight(326), XPos = 1, Index = 4, TechId = kTechId.Onos },
+        { LocaleName = Locale.ResolveString("SKULK"), Name = "Skulk", Width = GUIScaleWidth(240), Height = GUIScaleHeight(170), XPos = 5, Index = 5, TechId = kTechId.Skulk }
+    }
 
 
-    AlienBuyMenu.kLogoSize = GUIScale(128)
-    AlienBuyMenu.kBackgroundTextureSize = GUIScale(Vector(1000, 1080, 0))
+    AlienBuyMenu.kLogoSize = Vector(GUIScaleWidth(128), GUIScaleHeight(128), 0)
+    AlienBuyMenu.kLogoPos = Vector(GUIScaleWidth(20), GUIScaleHeight(20), 0)
+    AlienBuyMenu.kBkgCenteredWidth = GUIScaleWidth(1000)
 
     -- title offsets
-    AlienBuyMenu.kTitleOffset = GUIScale(Vector(158, 40, 0))
-    AlienBuyMenu.kCurrentEvoTitleOffset = GUIScale(Vector(16, 6, 0))
-    AlienBuyMenu.kLifeformsTitleOffset = GUIScale(Vector(60, 248, 0))
-    AlienBuyMenu.kUpgradesTitleOffest = GUIScale(Vector(60, 620, 0))
+    AlienBuyMenu.kTitleOffset = Vector(GUIScaleWidth(140), GUIScaleHeight(40), 0)
+    AlienBuyMenu.kCurrentEvoTitleOffset = Vector(GUIScaleWidth(16), GUIScaleHeight(6), 0)
+    AlienBuyMenu.kLifeformsTitleOffset = Vector(GUIScaleWidth(60), GUIScaleHeight(30), 0)
+    AlienBuyMenu.kUpgradesTitleOffest = Vector(GUIScaleWidth(60), GUIScaleHeight(580), 0)
 
     -- header and mouse over info offsets
-    AlienBuyMenu.kResIconOffset = GUIScale(Vector(158, 75, 0))
+    AlienBuyMenu.kResIconOffset = Vector(GUIScaleWidth(144), GUIScaleHeight(75), 0)
 
-    AlienBuyMenu.kMouseOverPanelOffset = GUIScale(Vector(60, 140, 0))
-    AlienBuyMenu.kMouseOverTitleOffset = GUIScale(Vector(16, 6, 0))
-    AlienBuyMenu.kMouseOverInfoOffset = GUIScale(Vector(16, 50, 0))
-    AlienBuyMenu.kMouseOverCostOffset = GUIScale(Vector(-20, 6, 0))
-    AlienBuyMenu.kMouseOverInfoResIconOffset = GUIScale(Vector(-40, 8, 0))
-    AlienBuyMenu.kStatsPadding = GUIScale(Vector(5, 0, 0))
-    AlienBuyMenu.kStatsPaddingY = GUIScale(Vector(0, 2,0))
+    AlienBuyMenu.kMouseOverPanelSize = Vector(GUIScaleWidth(262), GUIScaleHeight(222), 0)
+    AlienBuyMenu.kMouseOverPanelPos = Vector(GUIScaleWidth(-600), GUIScaleHeight(20), 0)
+    AlienBuyMenu.kMouseOverPanelOffset = Vector(GUIScaleWidth(60), GUIScaleHeight(140), 0)
+    AlienBuyMenu.kMouseOverTitleOffset = Vector(GUIScaleWidth(16), GUIScaleHeight(6), 0)
+    AlienBuyMenu.kMouseOverInfoOffset = Vector(GUIScaleWidth(16), GUIScaleHeight(50), 0)
+    AlienBuyMenu.kMouseOverCostOffset = Vector(GUIScaleWidth(-20), GUIScaleHeight(6), 0)
+    AlienBuyMenu.kMouseOverInfoResIconOffset = Vector(GUIScaleWidth(-40), GUIScaleHeight(8), 0)
+    AlienBuyMenu.kStatsPadding = Vector(GUIScaleWidth(5), GUIScaleHeight(0), 0)
+    AlienBuyMenu.kStatsPaddingY = Vector(GUIScaleWidth(0), GUIScaleHeight(2), 0)
 
     -- current evolution section
-    AlienBuyMenu.kCurrentEvoBorderOffset = GUIScale(Vector(-320, 20, 0))
-    AlienBuyMenu.kCurrentEvoBorderSize = GUIScale(Vector(262, 222, 0))
-    AlienBuyMenu.kCurrentEvoAlienIconOffset = GUIScale(Vector(0, 5, 0))
-    AlienBuyMenu.kBiomassIconSize = GUIScale(Vector(72, 72, 0))
-    AlienBuyMenu.kBiomassIconOffset = GUIScale(Vector(-AlienBuyMenu.kBiomassIconSize.x - 20, 45, 0))
-    AlienBuyMenu.kCurrentEvoUpgradeOffset = GUIScale(Vector(16, 130, 0))
+    AlienBuyMenu.kCurrentEvoBorderOffset = Vector(GUIScaleWidth(-320), GUIScaleHeight(20), 0)
+    AlienBuyMenu.kCurrentEvoBorderSize = Vector(GUIScaleWidth(262), GUIScaleHeight(222), 0)
+    AlienBuyMenu.kCurrentEvoAlienIconOffset = Vector(GUIScaleWidth(0), GUIScaleHeight(5), 0)
+    AlienBuyMenu.kBiomassIconSize = Vector(GUIScaleWidth(72), GUIScaleHeight(72), 0)
+    AlienBuyMenu.kBiomassIconOffset = Vector(-AlienBuyMenu.kBiomassIconSize.x - GUIScaleWidth(20), GUIScaleHeight(45), 0)
+    AlienBuyMenu.kCurrentEvoUpgradeOffset = Vector(GUIScaleWidth(16), GUIScaleHeight(130), 0)
 
     -- alien buttons
-    AlienBuyMenu.kAlienButtonOffsetY = GUIScale(-60)
-    AlienBuyMenu.kAlienIconSize = GUIScale(94)
+    AlienBuyMenu.kAlienButtonOffsetY = GUIScaleHeight(460)
+    AlienBuyMenu.kAlienIconSize = Vector(GUIScaleWidth(94), GUIScaleHeight(94), 0)
 
     -- evolve panel
-    AlienBuyMenu.kEvolvePanelSize = GUIScale(Vector(600, 100, 0))
-    AlienBuyMenu.kEvolvePanelOffset = GUIScale(Vector(60, -140, 0))
-    AlienBuyMenu.kEvolveTitleOffset = GUIScale(Vector(16, 6, 0))
-    AlienBuyMenu.kEvolveIconSize = GUIScale(58)
-    AlienBuyMenu.kEvolveLifeformIconOffset = GUIScale(Vector(10, 40, 0))
-    AlienBuyMenu.kCloseIconSize = GUIScale(16)
-    AlienBuyMenu.kEvolveUpgradePadding = GUIScale(12)
-    
+    AlienBuyMenu.kEvolvePanelSize = Vector(GUIScaleWidth(600), GUIScaleHeight(100), 0)
+    AlienBuyMenu.kEvolvePanelOffset = Vector(GUIScaleWidth(60), GUIScaleHeight(-140), 0)
+    AlienBuyMenu.kEvolveTitleOffset = Vector(GUIScaleWidth(16), GUIScaleHeight(6), 0)
+    AlienBuyMenu.kEvolveIconSize = Vector(GUIScaleWidth(58), GUIScaleHeight(58), 0)
+    AlienBuyMenu.kEvolveLifeformIconOffset = Vector(GUIScaleWidth(10), GUIScaleHeight(40), 0)
+    AlienBuyMenu.kCloseIconSize = Vector(GUIScaleWidth(16), GUIScaleHeight(16), 0)
+    AlienBuyMenu.kEvolveUpgradePadding = GUIScaleWidth(12)
 
-    AlienBuyMenu.kOffsetToCircleCenter = Vector(GUIScale(-70), 0, 0)
-
-    AlienBuyMenu.kAlienButtonSize = GUIScale(180)
-    AlienBuyMenu.kPlayersTextSize = GUIScale(24)
+    AlienBuyMenu.kAlienButtonSize = Vector(GUIScaleWidth(180), GUIScaleHeight(180), 0)
+    AlienBuyMenu.kPlayersTextSize = GUIScaleHeight(24)
     AlienBuyMenu.kAlienSelectedButtonSize = AlienBuyMenu.kAlienButtonSize * 2
 
-    AlienBuyMenu.kResourceIconWidth = GUIScale(33)
-    AlienBuyMenu.kResourceIconHeight = GUIScale(33)
+    AlienBuyMenu.kResourceIconWidth = GUIScaleWidth(33)
+    AlienBuyMenu.kResourceIconHeight = GUIScaleHeight(33)
 
-    AlienBuyMenu.kResourceIconWidthSm = GUIScale(20)
-    AlienBuyMenu.kResourceIconHeightSm = GUIScale(20)
+    AlienBuyMenu.kResourceIconWidthSm = GUIScaleWidth(20)
+    AlienBuyMenu.kResourceIconHeightSm = GUIScaleHeight(20)
 
-    AlienBuyMenu.kEvolveButtonWidth = GUIScale(250)
-    AlienBuyMenu.kEvolveButtonHeight = GUIScale(80)
-    AlienBuyMenu.kEvolveButtonOffset = GUIScale(Vector(-60, -40, 0))
-    AlienBuyMenu.kEvolveButtonTextSize = GUIScale(22)
+    AlienBuyMenu.kEvolveButtonWidth = GUIScaleWidth(250)
+    AlienBuyMenu.kEvolveButtonHeight = GUIScaleHeight(80)
+    AlienBuyMenu.kEvolveButtonOffset = Vector(GUIScaleWidth(-60), GUIScaleHeight(-40), 0)
 
-    AlienBuyMenu.kHealthIconWidth = GUIScale(AlienBuyMenu.kHealthIconTextureCoordinates[3] - AlienBuyMenu.kHealthIconTextureCoordinates[1])
-    AlienBuyMenu.kHealthIconHeight = GUIScale(AlienBuyMenu.kHealthIconTextureCoordinates[4] - AlienBuyMenu.kHealthIconTextureCoordinates[2])
+    AlienBuyMenu.kHealthIconWidth = GUIScaleWidth(AlienBuyMenu.kHealthIconTextureCoordinates[3] - AlienBuyMenu.kHealthIconTextureCoordinates[1])
+    AlienBuyMenu.kHealthIconHeight = GUIScaleHeight(AlienBuyMenu.kHealthIconTextureCoordinates[4] - AlienBuyMenu.kHealthIconTextureCoordinates[2])
 
-    AlienBuyMenu.kArmorIconWidth = GUIScale(AlienBuyMenu.kArmorIconTextureCoordinates[3] - AlienBuyMenu.kArmorIconTextureCoordinates[1])
-    AlienBuyMenu.kArmorIconHeight = GUIScale(AlienBuyMenu.kArmorIconTextureCoordinates[4] - AlienBuyMenu.kArmorIconTextureCoordinates[2])
-    
-    AlienBuyMenu.kMouseOverInfoTextSize = GUIScale(20)
+    AlienBuyMenu.kArmorIconWidth = GUIScaleWidth(AlienBuyMenu.kArmorIconTextureCoordinates[3] - AlienBuyMenu.kArmorIconTextureCoordinates[1])
+    AlienBuyMenu.kArmorIconHeight = GUIScaleHeight(AlienBuyMenu.kArmorIconTextureCoordinates[4] - AlienBuyMenu.kArmorIconTextureCoordinates[2])
 
-    kTooltipTextWidth = GUIScale(300)
-
-    AlienBuyMenu.kUpgradeButtonSize = GUIScale(54)
-    AlienBuyMenu.kUpgradeButtonDistance = GUIScale(198)
-    -- The distance in pixels to move the button inside the embryo when selected.
-    AlienBuyMenu.kUpgradeButtonDistanceInside = GUIScale(74)
+    AlienBuyMenu.kUpgradeButtonSize = Vector(GUIScaleWidth(54), GUIScaleHeight(54), 0)
+    AlienBuyMenu.kUpgradeParentIconOfffsetY = GUIScaleHeight(600)
+    AlienBuyMenu.kUpgradeIconOffsetY = GUIScaleHeight(670)
 
     for location, texCoords in pairs(AlienBuyMenu.kCornerTextureCoordinates) do
         AlienBuyMenu.kCornerWidths[location] = GUIScale(texCoords[3] - texCoords[1])
@@ -323,18 +310,19 @@ end
 function AlienBuyMenu:_InitializeBackground()
 
     self.background = self:CreateAnimatedGraphicItem()
+    self.background:SetIsScaling(false)
     self.background:SetSize( Vector(Client.GetScreenWidth(), Client.GetScreenHeight(), 0) )
     self.background:SetAnchor(GUIItem.Left, GUIItem.Top)
     self.background:SetColor(AlienBuyMenu.kBackgroundColor)
     self.background:SetLayer(kGUILayerPlayerHUDForeground4)
 
     self.backgroundCenteredArea = self:CreateAnimatedGraphicItem()
-    self.backgroundCenteredArea:SetSize( Vector(1000, Client.GetScreenHeight(), 0) )
+    self.backgroundCenteredArea:SetIsScaling(false)
+    self.backgroundCenteredArea:SetSize(Vector(AlienBuyMenu.kBkgCenteredWidth, Client.GetScreenHeight(), 0))
     self.backgroundCenteredArea:SetAnchor(GUIItem.Middle, GUIItem.Top)
-    self.backgroundCenteredArea:SetPosition( Vector(-500, 0, 0) )
+    self.backgroundCenteredArea:SetPosition( Vector(-AlienBuyMenu.kBkgCenteredWidth / 2, 0, 0) )
     self.backgroundCenteredArea:SetTexture(AlienBuyMenu.kBackgroundTexture)
-    self.backgroundCenteredArea:SetColor(Color(1.0, 1.0, 1.0, 0.6))
-    --self.backgroundCenteredArea:SetColor(AlienBuyMenu.kBackgroundCenterColor)
+    self.backgroundCenteredArea:SetColor(Color(1.0, 1.0, 1.0, 0.4))
     self.background:AddChild(self.backgroundCenteredArea)
 
 end
@@ -395,12 +383,12 @@ function AlienBuyMenu:_InitializeHeader()
 
     local player = Client.GetLocalPlayer()
 
-    local logo = GUIManager:CreateGraphicItem()
-    logo:SetSize(Vector(AlienBuyMenu.kLogoSize, AlienBuyMenu.kLogoSize, 0))
-    logo:SetAnchor(GUIItem.Left, GUIItem.Top)
-    logo:SetPosition(Vector(20, 20, 0))
-    logo:SetTexture(AlienBuyMenu.kAlienLogoTexture)
-    self.backgroundCenteredArea:AddChild(logo)
+    self.logo = GUIManager:CreateGraphicItem()
+    self.logo:SetSize(AlienBuyMenu.kLogoSize)
+    self.logo:SetAnchor(GUIItem.Left, GUIItem.Top)
+    self.logo:SetPosition(AlienBuyMenu.kLogoPos)
+    self.logo:SetTexture(AlienBuyMenu.kAlienLogoTexture)
+    self.backgroundCenteredArea:AddChild(self.logo)
 
     local titleShadow = GUIManager:CreateTextItem()
     titleShadow:SetAnchor(GUIItem.Left, GUIItem.Top)
@@ -434,24 +422,24 @@ function AlienBuyMenu:_InitializeHeader()
     resIcon:SetColor(ColorIntToColor(kAlienTeamColor))
     self.backgroundCenteredArea:AddChild(resIcon)
 
-    local skillPointText = GUIManager:CreateTextItem()
-    skillPointText:SetAnchor(GUIItem.Right, GUIItem.Center)
-    skillPointText:SetPosition(Vector(6, 0, 0))
-    skillPointText:SetFontName(AlienBuyMenu.kHeaderAltFont)
-    skillPointText:SetScale(GetScaledVector())
-    GUIMakeFontScale(skillPointText)
-    skillPointText:SetTextAlignmentX(GUIItem.Align_Min)
-    skillPointText:SetTextAlignmentY(GUIItem.Align_Center)
-    skillPointText:SetColor(ColorIntToColor(kAlienTeamColor))
+    local upgradePointText = GUIManager:CreateTextItem()
+    upgradePointText:SetAnchor(GUIItem.Right, GUIItem.Center)
+    upgradePointText:SetPosition(Vector(GUIScaleWidth(6), 0, 0))
+    upgradePointText:SetFontName(AlienBuyMenu.kHeaderAltFont)
+    upgradePointText:SetScale(GetScaledVector())
+    GUIMakeFontScale(upgradePointText)
+    upgradePointText:SetTextAlignmentX(GUIItem.Align_Min)
+    upgradePointText:SetTextAlignmentY(GUIItem.Align_Center)
+    upgradePointText:SetColor(ColorIntToColor(kAlienTeamColor))
 
-    -- update skill point text
-    if player.combatSkillPoints == 1 then
-        skillPointText:SetText(string.format("%s Skill Point", player.combatSkillPoints))
+    -- update upgrade point text
+    if player.combatUpgradePoints == 1 then
+        upgradePointText:SetText(string.format("%s Upgrade Point", player.combatUpgradePoints))
     else
-        skillPointText:SetText(string.format("%s Skill Points", player.combatSkillPoints))
+        upgradePointText:SetText(string.format("%s Upgrade Points", player.combatUpgradePoints))
     end
 
-    resIcon:AddChild(skillPointText)
+    resIcon:AddChild(upgradePointText)
 
 end
 
@@ -459,8 +447,8 @@ function AlienBuyMenu:_InitializeMouseOverInfo()
 
     self.mouseOverPanel = GUIManager:CreateGraphicItem()
     self.mouseOverPanel:SetAnchor(GUIItem.Right, GUIItem.Top)
-    self.mouseOverPanel:SetSize(Vector(262, 222, 0))
-    self.mouseOverPanel:SetPosition(Vector(-620, 20, 0))
+    self.mouseOverPanel:SetSize(AlienBuyMenu.kMouseOverPanelSize)
+    self.mouseOverPanel:SetPosition(AlienBuyMenu.kMouseOverPanelPos)
     self.mouseOverPanel:SetTexture(AlienBuyMenu.KCurrentEvoBorderTexture)
     self.mouseOverPanel:SetTexturePixelCoordinates(474, 348, 736, 570)
     self.mouseOverPanel:SetColor(Color(1.0, 1.0, 1.0, 0.6))
@@ -605,8 +593,8 @@ function AlienBuyMenu:_InitializeCurrentEvolutionDisplay()
     -- The alien icon
     local alienType = AlienBuyMenu.kAlienTypes[self.selectedAlienType]
     local alienGraphicItem = GUIManager:CreateGraphicItem()
-    local ARAdjustedHeight = (alienType.Height / alienType.Width) * AlienBuyMenu.kAlienIconSize
-    alienGraphicItem:SetSize(Vector(AlienBuyMenu.kAlienIconSize, ARAdjustedHeight, 0))
+    local ARAdjustedHeight = (alienType.Height / alienType.Width) * AlienBuyMenu.kAlienIconSize.y
+    alienGraphicItem:SetSize(Vector(AlienBuyMenu.kAlienIconSize.x, ARAdjustedHeight, 0))
     alienGraphicItem:SetAnchor(GUIItem.Left, GUIItem.Bottom)
     alienGraphicItem:SetPosition(AlienBuyMenu.kCurrentEvoAlienIconOffset)
     alienGraphicItem:SetTexture("ui/" .. alienType.Name .. ".dds")
@@ -671,10 +659,10 @@ function AlienBuyMenu:_InitializeCurrentEvolutionDisplay()
                 iconX = iconX * AlienBuyMenu.kUpgradeButtonTextureSize
                 iconY = iconY * AlienBuyMenu.kUpgradeButtonTextureSize
 
-                local offset = Vector((AlienBuyMenu.kUpgradeButtonSize + GUIScale(4)) * offsetFactor, 0, 0)
+                local offset = Vector((AlienBuyMenu.kUpgradeButtonSize.x + GUIScale(4)) * offsetFactor, 0, 0)
 
                 upgradeIcon:SetAnchor(GUIItem.Left, GUIItem.Top)
-                upgradeIcon:SetSize(Vector(AlienBuyMenu.kUpgradeButtonSize, AlienBuyMenu.kUpgradeButtonSize, 0))
+                upgradeIcon:SetSize(AlienBuyMenu.kUpgradeButtonSize)
                 upgradeIcon:SetPosition(AlienBuyMenu.kCurrentEvoUpgradeOffset + offset)
                 upgradeIcon:SetTexture(AlienBuyMenu.kBuyHUDTexture)
                 upgradeIcon:SetTexturePixelCoordinates(iconX, iconY, iconX + AlienBuyMenu.kUpgradeButtonTextureSize, iconY + AlienBuyMenu.kUpgradeButtonTextureSize)
@@ -694,18 +682,18 @@ end
 
 function AlienBuyMenu:_InitializeLifeforms()
 
-    local headerTextShadow = GUIManager:CreateTextItem()
-    headerTextShadow:SetAnchor(GUIItem.Left, GUIItem.Top)
-    headerTextShadow:SetPosition(AlienBuyMenu.kLifeformsTitleOffset)
-    headerTextShadow:SetFontName(AlienBuyMenu.kHeaderFont)
-    headerTextShadow:SetFontIsBold(true)
-    headerTextShadow:SetScale(GetScaledVector())
-    GUIMakeFontScale(headerTextShadow)
-    headerTextShadow:SetTextAlignmentX(GUIItem.Align_Min)
-    headerTextShadow:SetTextAlignmentY(GUIItem.Align_Center)
-    headerTextShadow:SetColor(Color(0, 0, 0, 1))
-    headerTextShadow:SetText("Lifeforms")
-    self.backgroundCenteredArea:AddChild(headerTextShadow)
+    self.lifeformHeaderText = GUIManager:CreateTextItem()
+    self.lifeformHeaderText:SetAnchor(GUIItem.Left, GUIItem.Top)
+    self.lifeformHeaderText:SetPosition(AlienBuyMenu.kLifeformsTitleOffset)
+    self.lifeformHeaderText:SetFontName(AlienBuyMenu.kHeaderFont)
+    self.lifeformHeaderText:SetFontIsBold(true)
+    self.lifeformHeaderText:SetScale(GetScaledVector())
+    GUIMakeFontScale(self.lifeformHeaderText)
+    self.lifeformHeaderText:SetTextAlignmentX(GUIItem.Align_Min)
+    self.lifeformHeaderText:SetTextAlignmentY(GUIItem.Align_Center)
+    self.lifeformHeaderText:SetColor(Color(0, 0, 0, 1))
+    self.lifeformHeaderText:SetText("Lifeforms")
+    self.backgroundCenteredArea:AddChild(self.lifeformHeaderText)
 
     local headerText = GUIManager:CreateTextItem()
     headerText:SetAnchor(GUIItem.Left, GUIItem.Top)
@@ -718,7 +706,7 @@ function AlienBuyMenu:_InitializeLifeforms()
     headerText:SetTextAlignmentY(GUIItem.Align_Center)
     headerText:SetColor(AlienBuyMenu.kTextColor)
     headerText:SetText("Lifeforms")
-    headerTextShadow:AddChild(headerText)
+    self.lifeformHeaderText:AddChild(headerText)
 
 end
 
@@ -726,13 +714,13 @@ local function CreateAbilityIcon(self, alienGraphicItem, techId)
 
     local graphicItem = GetGUIManager():CreateGraphicItem()
     graphicItem:SetTexture(AlienBuyMenu.kAbilityIcons)
-    graphicItem:SetSize(Vector(AlienBuyMenu.kUpgradeButtonSize, AlienBuyMenu.kUpgradeButtonSize, 0))
+    graphicItem:SetSize(AlienBuyMenu.kUpgradeButtonSize)
     graphicItem:SetAnchor(GUIItem.Middle, GUIItem.Bottom)
     graphicItem:SetTexturePixelCoordinates(GUIUnpackCoords(GetTextureCoordinatesForIcon(techId, false)))
     graphicItem:SetColor(kIconColors[kAlienTeamType])
 
     local highLight = GetGUIManager():CreateGraphicItem()
-    highLight:SetSize(Vector(AlienBuyMenu.kUpgradeButtonSize, AlienBuyMenu.kUpgradeButtonSize, 0))
+    highLight:SetSize(AlienBuyMenu.kUpgradeButtonSize)
     highLight:SetIsVisible(false)
     highLight:SetTexture(AlienBuyMenu.kBuyMenuTexture)
     highLight:SetTexturePixelCoordinates(GUIUnpackCoords(AlienBuyMenu.kUpgradeButtonBackgroundTextureCoordinates))
@@ -747,31 +735,16 @@ end
 local function CreateAbilityIcons(self, alienGraphicItem, alienType)
 
     local lifeFormTechId = IndexToAlienTechId(alienType.Index)
-    local availableAbilities = {}
+    local abilities = GetUpgradeTree():GetUpgradesByCategoryAndPrereq("Ability", lifeFormTechId)
 
-    local excludeTechIds =
-    {
-        [kTechId.Web] = true,
-        [kTechId.Babbler] = true,
-        [kTechId.GorgeTunnel] = true
-    }
-
-    for k, abilityTechId in ipairs(GetTechForCategory(lifeFormTechId)) do
-
-        if not excludeTechIds[abilityTechId] then
-            table.insert(availableAbilities, abilityTechId)
-        end
-
-    end
-
-    local numAbilities = #availableAbilities
-    local totalWidth = numAbilities * (AlienBuyMenu.kUpgradeButtonSize + 10)
+    local numAbilities = #abilities
+    local totalWidth = numAbilities * (AlienBuyMenu.kUpgradeButtonSize.x + 10)
 
     for i = 1, numAbilities do
 
-        local techId = availableAbilities[#availableAbilities - i + 1]
+        local techId = abilities[numAbilities - i + 1]
         local ability = CreateAbilityIcon(self, alienGraphicItem, techId)
-        local xPos = ( ( (i - 1) * AlienBuyMenu.kUpgradeButtonSize ) + 10 ) - (totalWidth / 2)
+        local xPos = ( ( (i - 1) * AlienBuyMenu.kUpgradeButtonSize.x ) + 10 ) - (totalWidth / 2)
         local yPos = 10
 
         ability.Icon:SetPosition(Vector(xPos, yPos, 0))
@@ -789,10 +762,10 @@ function AlienBuyMenu:_InitializeAlienButtons()
 
         -- The alien image.
         local alienGraphicItem = GUIManager:CreateGraphicItem()
-        local ARAdjustedHeight = (alienType.Height / alienType.Width) * AlienBuyMenu.kAlienButtonSize
-        alienGraphicItem:SetSize(Vector(AlienBuyMenu.kAlienButtonSize, ARAdjustedHeight, 0))
+        local ARAdjustedHeight = (alienType.Height / alienType.Width) * AlienBuyMenu.kAlienButtonSize.y
+        alienGraphicItem:SetSize(Vector(AlienBuyMenu.kAlienButtonSize.x, ARAdjustedHeight, 0))
         alienGraphicItem:SetAnchor(GUIItem.Middle, GUIItem.Center)
-        alienGraphicItem:SetPosition(Vector(-AlienBuyMenu.kAlienButtonSize / 2, -ARAdjustedHeight / 2, 0))
+        alienGraphicItem:SetPosition(Vector(-AlienBuyMenu.kAlienButtonSize.x / 2, -ARAdjustedHeight / 2, 0))
         alienGraphicItem:SetTexture("ui/" .. alienType.Name .. ".dds")
 
         -- Create the text that indicates how many players are playing as a specific alien type.
@@ -810,8 +783,8 @@ function AlienBuyMenu:_InitializeAlienButtons()
 
         -- Create the selected background item for this alien item.
         local selectedBackground = GUIManager:CreateGraphicItem()
-        selectedBackground:SetAnchor(GUIItem.Middle, GUIItem.Center)
-        selectedBackground:SetSize(Vector(AlienBuyMenu.kAlienSelectedButtonSize, AlienBuyMenu.kAlienSelectedButtonSize, 0))
+        selectedBackground:SetAnchor(GUIItem.Middle, GUIItem.Top)
+        selectedBackground:SetSize(AlienBuyMenu.kAlienSelectedButtonSize)
         selectedBackground:SetTexture(AlienBuyMenu.kAlienSelectedBackground)
         -- Hide the selected background for now.
         selectedBackground:SetColor(Color(1, 1, 1, 0))
@@ -877,18 +850,18 @@ function AlienBuyMenu:_InitializeUpgrades()
     for i = 1, #categories do
 
         local bin = i - 1
-        local posInBin = (binSize / 2) - (AlienBuyMenu.kUpgradeButtonSize / 2)
+        local posInBin = (binSize / 2) - (AlienBuyMenu.kUpgradeButtonSize.x / 2)
         local parentIconOffsetX = AlienBuyMenu.kUpgradesTitleOffest.x + (bin * binSize) + posInBin
-        local parentIconPos = Vector(parentIconOffsetX, GUIScale(650), 0)
+        local parentIconPos = Vector(parentIconOffsetX, AlienBuyMenu.kUpgradeParentIconOfffsetY, 0)
 
         local upsByCategory = GetUpgradeTree():GetUpgradesByPrereq(categories[i])
 
         for j = 1, #upsByCategory do
 
             local smallBinSize = binSize / #upsByCategory
-            local iconOffsetX = (bin * binSize) + AlienBuyMenu.kUpgradesTitleOffest.x + ((j - 1) * smallBinSize) + ((smallBinSize / 2) - (AlienBuyMenu.kUpgradeButtonSize / 2))
-            local iconPos = Vector(iconOffsetX, GUIScale(720), 0)
-            local lineOffset = Vector(AlienBuyMenu.kUpgradeButtonSize / 2, AlienBuyMenu.kUpgradeButtonSize / 2, 0)
+            local iconOffsetX = (bin * binSize) + AlienBuyMenu.kUpgradesTitleOffest.x + ((j - 1) * smallBinSize) + ((smallBinSize / 2) - (AlienBuyMenu.kUpgradeButtonSize.x / 2))
+            local iconPos = Vector(iconOffsetX, AlienBuyMenu.kUpgradeIconOffsetY, 0)
+            local lineOffset = AlienBuyMenu.kUpgradeButtonSize / 2
 
             local line = CreateLine(parentIconPos + lineOffset, iconPos + lineOffset, AlienBuyMenu.kTextColor)
             line:SetAnchor(GUIItem.Left, GUIItem.Top)
@@ -907,56 +880,6 @@ function AlienBuyMenu:_InitializeUpgrades()
         table.insert(self.techButtons, parentTechButton)
 
     end
-
-    -- for i = 1, #categories do
-
-    --     local upgrades = AlienUI_GetUpgradesForCategory(categories[i])
-    --     local xOffsetText = (i - 1) * binSize
-
-    --     local categoryText = GUIManager:CreateTextItem()
-    --     categoryText:SetAnchor(GUIItem.Left, GUIItem.Top)
-    --     categoryText:SetPosition(Vector(xOffsetText + (binSize / 2), 100, 0))
-    --     categoryText:SetFontName(AlienBuyMenu.kSubHeaderFont)
-    --     categoryText:SetFontIsBold(true)
-    --     categoryText:SetScale(GetScaledVector())
-    --     GUIMakeFontScale(categoryText)
-    --     categoryText:SetTextAlignmentX(GUIItem.Align_Center)
-    --     categoryText:SetTextAlignmentY(GUIItem.Align_Center)
-    --     categoryText:SetColor(AlienBuyMenu.kTextColor)
-    --     categoryText:SetText(GetDisplayNameForTechId(categories[i]))
-    --     headerTextShadow:AddChild(categoryText)
-
-    --     local totalWidth = #upgrades * (AlienBuyMenu.kUpgradeButtonSize + 20)
-
-    --     for upgradeIndex = 1, #upgrades do
-
-    --         local techId = upgrades[upgradeIndex]
-            
-    --         -- Every upgrade has an icon.
-    --         local buttonIcon = GUIManager:CreateGraphicItem()
-
-    --         local iconX, iconY = GetMaterialXYOffset(techId, false)
-    --         iconX = iconX * AlienBuyMenu.kUpgradeButtonTextureSize
-    --         iconY = iconY * AlienBuyMenu.kUpgradeButtonTextureSize
-
-    --         local xPos = ((upgradeIndex - 1) * (AlienBuyMenu.kUpgradeButtonSize + 20 )) - (totalWidth / 2) - 20
-    --         local yPos = -80
-
-    --         buttonIcon:SetAnchor(GUIItem.Middle, GUIItem.Center)
-    --         buttonIcon:SetSize(Vector(AlienBuyMenu.kUpgradeButtonSize, AlienBuyMenu.kUpgradeButtonSize, 0))
-    --         buttonIcon:SetPosition(Vector(xPos, yPos, 0))
-    --         buttonIcon:SetTexture(AlienBuyMenu.kBuyHUDTexture)
-    --         buttonIcon:SetTexturePixelCoordinates(iconX, iconY, iconX + AlienBuyMenu.kUpgradeButtonTextureSize, iconY + AlienBuyMenu.kUpgradeButtonTextureSize)
-    --         categoryText:AddChild(buttonIcon)
-
-    --         local purchased = AlienBuy_GetUpgradePurchased(techId)
-
-    --         table.insert(self.upgradeButtons, { Background = nil, Icon = buttonIcon, TechId = techId, Selected = purchased,
-    --                      Cost = 0, Purchased = purchased, Index = nil })
-
-    --     end
-
-    -- end
 
 end
 
@@ -1003,15 +926,15 @@ function AlienBuyMenu:_InitializeEvolvePanel()
 
         local upgradeIcon = GUIManager:CreateGraphicItem()
         upgradeIcon:SetAnchor(GUIItem.Left, GUIItem.Top)
-        upgradeIcon:SetSize(Vector(AlienBuyMenu.kEvolveIconSize, AlienBuyMenu.kEvolveIconSize, 0))
-        upgradeIcon:SetPosition(Vector((AlienBuyMenu.kEvolveUpgradePadding + AlienBuyMenu.kEvolveIconSize) * (i - 1), 0, 0) + AlienBuyMenu.kEvolveLifeformIconOffset)
+        upgradeIcon:SetSize(AlienBuyMenu.kEvolveIconSize)
+        upgradeIcon:SetPosition(Vector((AlienBuyMenu.kEvolveUpgradePadding + AlienBuyMenu.kEvolveIconSize.x) * (i - 1), 0, 0) + AlienBuyMenu.kEvolveLifeformIconOffset)
         upgradeIcon:SetColor(Color(kIconColors[kAlienTeamType]))
         panel:AddChild(upgradeIcon)
 
         local closeBtn = GUIManager:CreateGraphicItem()
         closeBtn:SetAnchor(GUIItem.Right, GUIItem.Top)
-        closeBtn:SetSize(Vector(AlienBuyMenu.kCloseIconSize, AlienBuyMenu.kCloseIconSize, 0))
-        closeBtn:SetPosition(Vector(-AlienBuyMenu.kCloseIconSize, 0, 0))
+        closeBtn:SetSize(AlienBuyMenu.kCloseIconSize)
+        closeBtn:SetPosition(Vector(-AlienBuyMenu.kCloseIconSize.x, 0, 0))
         closeBtn:SetTexture(AlienBuyMenu.kCloseIconTexture)
         upgradeIcon:AddChild(closeBtn)
 
@@ -1092,7 +1015,7 @@ function AlienBuyMenu:_UpdateEvolvePanel()
     end
 
     self.evolveQueue[1].TechId = self.kAlienTypes[self.selectedAlienType].TechId
-    self.evolveQueue[1].Cost = CombatPlusPlus_GetCostByTechId(self.evolveQueue[1].TechId)
+    self.evolveQueue[1].Cost = LookupUpgradeData(self.evolveQueue[1].TechId, kUpDataCostIndex)
 
     self.evolveQueue[1].Icon:SetTexture(AlienBuyMenu.kBuyHUDTexture)
     self.evolveQueue[1].Icon:SetTexturePixelCoordinates(GUIUnpackCoords(GetTextureCoordinatesForIcon(self.kAlienTypes[self.selectedAlienType].TechId)))
@@ -1103,7 +1026,7 @@ function AlienBuyMenu:_UpdateEvolvePanel()
     for k, upgradeTechId in ipairs(self.upgradeList) do
 
         self.evolveQueue[index].TechId = upgradeTechId
-        self.evolveQueue[index].Cost = CombatPlusPlus_GetCostByTechId(upgradeTechId)
+        self.evolveQueue[index].Cost = LookupUpgradeData(self.evolveQueue[index].TechId, kUpDataCostIndex)
 
         self.evolveQueue[index].Icon:SetTexture(AlienBuyMenu.kBuyHUDTexture)
         self.evolveQueue[index].Icon:SetTexturePixelCoordinates(GUIUnpackCoords(GetTextureCoordinatesForIcon(upgradeTechId)))
@@ -1118,17 +1041,18 @@ end
 function AlienBuyMenu:_UpdateAlienButtons()
 
     local numAlienTypes = 5
-    local totalAlienButtonsWidth = AlienBuyMenu.kAlienButtonSize * numAlienTypes
+    local totalAlienButtonsWidth = AlienBuyMenu.kAlienButtonSize.x * numAlienTypes
     local player = Client.GetLocalPlayer()
+    local minY = self.backgroundCenteredArea:GetSize().y
 
     for k, alienButton in ipairs(self.alienButtons) do
 
         -- Info needed for the rest of this code.
         local itemTechId = alienButton.TypeData.TechId
-        local cost = CombatPlusPlus_GetCostByTechId(itemTechId)
+        local cost = LookupUpgradeData(itemTechId, kUpDataCostIndex)
         local isCurrentAlien = AlienBuy_GetCurrentAlien() == alienButton.TypeData.Index
-        local canAfford = cost <= player.combatSkillPoints
-        local hasRequiredRank = CombatPlusPlus_GetRequiredRankByTechId(itemTechId) <= player.combatRank
+        local canAfford = cost <= player.combatUpgradePoints
+        local hasRequiredRank = LookupUpgradeData(itemTechId, kUpDataRankIndex) <= player.combatRank
 
         alienButton.Button:SetIsVisible(true)
 
@@ -1156,15 +1080,19 @@ function AlienBuyMenu:_UpdateAlienButtons()
         alienButton.SelectedBackground:SetColor(Color(1, 1, 1, ((mouseOver and 1) or 0)))
 
         local offset = Vector(
-            (((alienButton.TypeData.XPos - 1) / numAlienTypes) * (AlienBuyMenu.kAlienButtonSize * numAlienTypes)) - (totalAlienButtonsWidth / 2),
+            (((alienButton.TypeData.XPos - 1) / numAlienTypes) * (AlienBuyMenu.kAlienButtonSize.x * numAlienTypes)) - (totalAlienButtonsWidth / 2),
             AlienBuyMenu.kAlienButtonOffsetY,
             0
         )
-        alienButton.SelectedBackground:SetPosition(Vector(-AlienBuyMenu.kAlienButtonSize / 2, -AlienBuyMenu.kAlienSelectedButtonSize / 2 - alienButton.ARAdjustedHeight / 2, 0) + offset)
+        alienButton.SelectedBackground:SetPosition(Vector(-AlienBuyMenu.kAlienButtonSize.x / 2, -AlienBuyMenu.kAlienSelectedButtonSize.y / 2 - alienButton.ARAdjustedHeight / 2, 0) + offset)
 
         alienButton.PlayersText:SetText("x" .. ToString(ScoreboardUI_GetNumberOfAliensByType(alienButton.TypeData.Name)))
 
+        minY = math.min(minY, alienButton.SelectedBackground:GetPosition().y)
+
     end
+
+    self.lifeformHeaderText:SetPosition(Vector(0, minY, 0) + AlienBuyMenu.kLifeformsTitleOffset)
 
 end
 
@@ -1174,7 +1102,7 @@ function AlienBuyMenu:_UpdateEvolveButton()
     local numberOfSelectedUpgrades = GetNumberOfNewlySelectedUpgrades(self)
     local evolveButtonTextureCoords = GUIAlienBuyMenu.kEvolveButtonTextureCoordinates
     local evolveCost = GetTotalCost(self)
-    local canAfford = evolveCost <= player.combatSkillPoints
+    local canAfford = evolveCost <= player.combatUpgradePoints
     local allowedToEvolve = false
     local hasGameStarted = PlayerUI_GetHasGameStarted()
     local evolveText = Locale.ResolveString("ABM_GAME_NOT_STARTED")
@@ -1192,7 +1120,7 @@ function AlienBuyMenu:_UpdateEvolveButton()
 
             -- If cannot afford selected alien type and/or upgrades, cannot evolve.
             evolveButtonTextureCoords = AlienBuyMenu.kEvolveButtonNeedResourcesTextureCoordinates
-            evolveText = "Need More Skill Points"
+            evolveText = "Need More Upgrade Points"
 
         else
 
@@ -1238,21 +1166,6 @@ function AlienBuyMenu:_UpdateEvolveButton()
 
 end
 
-local function GetHasAnyCategoryUpgrade(category, player)
-
-    local upgrades = AlienUI_GetUpgradesForCategory(category)
-
-    for i = 1, #upgrades do
-
-        if CombatPlusPlus_GetRequiredRankByTechId(upgrades[i]) <= player.combatRank then
-            return true
-        end
-    end
-
-    return false
-
-end
-
 local kDefaultColor = Color(kIconColors[kAlienTeamType])
 local kNotAvailableColor = Color(0.0, 0.0, 0.0, 1)
 local kNotAllowedColor = Color(1, 0,0,1)
@@ -1264,9 +1177,9 @@ function AlienBuyMenu:_UpdateAbilities()
 
     for index, abilityItem in ipairs(self.abilityIcons) do
 
-        local cost = CombatPlusPlus_GetCostByTechId(abilityItem.TechId)
-        local canAfford = cost <= player.combatSkillPoints
-        local hasRequiredRank = CombatPlusPlus_GetRequiredRankByTechId(abilityItem.TechId) <= player.combatRank
+        local cost = LookupUpgradeData(abilityItem.TechId, kUpDataCostIndex)
+        local canAfford = cost <= player.combatUpgradePoints
+        local hasRequiredRank = LookupUpgradeData(abilityItem.TechId, kUpDataRankIndex) <= player.combatRank
 
         if not hasRequiredRank then
             abilityItem.Icon:SetColor(kNotAvailableColor)
@@ -1343,49 +1256,12 @@ function AlienBuyMenu:_UpdateUpgrades(deltaTime)
 
     local player = Client.GetLocalPlayer()
 
-    -- for i, currentButton in ipairs(self.upgradeButtons) do
-
-    --     local cost = CombatPlusPlus_GetCostByTechId(currentButton.TechId)
-    --     local canAfford = cost <= player.combatSkillPoints
-    --     local hasRequiredRank = CombatPlusPlus_GetRequiredRankByTechId(currentButton.TechId) <= player.combatRank
-
-    --     local useColor = kDefaultColor
-
-    --     if currentButton.Purchased then
-
-    --         useColor = kPurchasedColor
-
-    --     elseif not hasRequiredRank then
-
-    --         useColor = kNotAvailableColor
-
-    --         -- unselect button if tech becomes unavailable
-    --         if currentButton.Selected then
-    --             currentButton.Selected = false
-    --         end
-
-    --     end
-
-    --     currentButton.Icon:SetColor(useColor)
-
-    --     if self:_GetIsMouseOver(currentButton.Icon) then
-        
-    --         local currentUpgradeInfoText = GetDisplayNameForTechId(currentButton.TechId)
-    --         local tooltipText = GetTooltipInfoText(currentButton.TechId)
-    --         local cost = CombatPlusPlus_GetCostByTechId(currentButton.TechId)
-        
-    --         self:_ShowMouseOverInfo(currentUpgradeInfoText, tooltipText, cost)
-        
-    --     end
-
-    -- end
-
     for _, button in ipairs(self.techButtons) do
 
         button:SetIsUnlocked(GetUpgradeTree():GetIsUnlocked(button.TechId))
         button:SetIsPurchased(GetUpgradeTree():GetNode(button.TechId):GetIsPurchased())
 
-        local canAfford = (player:GetCombatSkillPoints() - GetTotalCost(self)) > 0
+        local canAfford = (player:GetCombatUpgradePoints() - GetTotalCost(self)) > 0
         button:SetIsEnabled(IsPurchasedOrPurchasing(self, button.TechId) or (canAfford and not HasMutualExclusivity(self, button.TechId)))
 
         button:Update(deltaTime)
@@ -1499,7 +1375,7 @@ function AlienBuyMenu:SendKeyEvent(key, down)
 
             local numberOfSelectedUpgrades = GetNumberOfNewlySelectedUpgrades(self)
             local evolveCost = GetTotalCost(self)
-            local canAfford = evolveCost <= player.combatSkillPoints
+            local canAfford = evolveCost <= player.combatUpgradePoints
 
             local allowedToEvolve = canAfford and (self.selectedAlienType ~= AlienBuy_GetCurrentAlien() or  numberOfSelectedUpgrades > 0)
             if allowedToEvolve and self:_GetIsMouseOver(self.evolveButtonBackground) then
@@ -1538,9 +1414,9 @@ function AlienBuyMenu:SendKeyEvent(key, down)
                 for k, buttonItem in ipairs(self.alienButtons) do
 
                     local itemTechId = buttonItem.TypeData.TechId
-                    local cost = CombatPlusPlus_GetCostByTechId(itemTechId)
-                    local canAfford = cost <= player.combatSkillPoints
-                    local hasRequiredRank = CombatPlusPlus_GetRequiredRankByTechId(itemTechId) <= player.combatRank
+                    local cost = LookupUpgradeData(itemTechId, kUpDataCostIndex)
+                    local canAfford = cost <= player.combatUpgradePoints
+                    local hasRequiredRank = LookupUpgradeData(itemTechId, kUpDataRankIndex) <= player.combatRank
 
                     if canAfford and hasRequiredRank and self:_GetIsMouseOver(buttonItem.Button) then
 
@@ -1594,7 +1470,6 @@ end
 
 function AlienBuyMenu:GetCanSelect(upgradeButton, player)
 
-    --local hasRequiredRank = CombatPlusPlus_GetRequiredRankByTechId(upgradeButton.TechId) <= player.combatRank
     local isPassive = LookupUpgradeData(upgradeButton.TechId, kUpDataPassiveIndex)
     local unlocked = GetUpgradeTree():GetIsUnlocked(upgradeButton.TechId)
     local purchased = GetUpgradeTree():GetIsPurchased(upgradeButton.TechId)

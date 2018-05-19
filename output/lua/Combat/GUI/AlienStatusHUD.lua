@@ -8,25 +8,26 @@ class 'AlienStatusHUD' (GUIAnimatedScript)
 AlienStatusHUD.kXpBarBkgTexture = PrecacheAsset("ui/combatui_alien_xpbar_bkg.dds")
 AlienStatusHUD.kXpBarOverlayTexture = PrecacheAsset("ui/combatui_alien_xpbar_overlay.dds")
 
-AlienStatusHUD.kXPBarSize = Vector(800, 32, 0)
-AlienStatusHUD.kXPBarSizeScaled = Vector(800, 32, 0)
+AlienStatusHUD.kXPBarSize = Vector(600, 24, 0)
+AlienStatusHUD.kXPBarSizeScaled = Vector(600, 24, 0)
+AlienStatusHUD.kXpBarColor = Color(1, 1, 1, 0.6)
 
 AlienStatusHUD.kAnimSpeedDown = 0.2
 AlienStatusHUD.kAnimSpeedUp = 0.5
 
 AlienStatusHUD.kXPFontName = Fonts.kArial_13
-AlienStatusHUD.kXPTextPosition = Vector(0, -123, 0)
+AlienStatusHUD.kXPTextPosition = Vector(0, -128, 0)
 
 AlienStatusHUD.kRankFontName = Fonts.kStamp_Medium
 AlienStatusHUD.kRankTextPosition = Vector(0, -154, 0)
 
-AlienStatusHUD.kSkillIconTexture = PrecacheAsset("ui/alien_HUD_presicon.dds")
-AlienStatusHUD.kSkillIconPixelCoords = { 6, 25, 26, 45 }
-AlienStatusHUD.kSkillIconSize = Vector(25, 25, 0)
-AlienStatusHUD.kSkillIconPos = Vector(-160, -28, 0)
+AlienStatusHUD.kUpgradePointIconTexture = PrecacheAsset("ui/alien_HUD_presicon.dds")
+AlienStatusHUD.kUpgradePointIconPixelCoords = { 6, 25, 26, 45 }
+AlienStatusHUD.kUpgradePointIconSize = Vector(25, 25, 0)
+AlienStatusHUD.kUpgradePointIconPos = Vector(-160, -28, 0)
 
-AlienStatusHUD.kSkillPointFontName = Fonts.kAgencyFB_Small
-AlienStatusHUD.kSkillPointTextPos = Vector(-130, -17, 0)
+AlienStatusHUD.kUpgradePointFontName = Fonts.kAgencyFB_Small
+AlienStatusHUD.kUpgradePointTextPos = Vector(-130, -17, 0)
 
 function AlienStatusHUD:Initialize()
 
@@ -48,6 +49,8 @@ function AlienStatusHUD:Initialize()
     self.xpBarBackground = self:CreateAnimatedGraphicItem()
     self.xpBarBackground:SetAnchor(GUIItem.Middle, GUIItem.Bottom)
     self.xpBarBackground:SetTexture(AlienStatusHUD.kXpBarBkgTexture)
+    self.xpBarBackground:SetTexturePixelCoordinates(0, 0, 600, 32)
+    self.xpBarBackground:SetColor(AlienStatusHUD.kXpBarColor)
     self.xpBarBackground:SetIsVisible(true)
     self.background:AddChild(self.xpBarBackground)
 
@@ -55,6 +58,7 @@ function AlienStatusHUD:Initialize()
     self.xpBar:SetAnchor(GUIItem.Middle, GUIItem.Bottom)
     self.xpBar:SetTexture(AlienStatusHUD.kXpBarOverlayTexture)
     self.xpBar:SetTexturePixelCoordinates(0, 0, 0, 32)
+    self.xpBar:SetColor(AlienStatusHUD.kXpBarColor)
     self.xpBar:SetIsVisible(true)
     self.background:AddChild(self.xpBar)
 
@@ -78,21 +82,21 @@ function AlienStatusHUD:Initialize()
     self.currentRankText:SetColor( kAlienFontColor )
     self.background:AddChild(self.currentRankText)
 
-    self.skillPointIcon = self:CreateAnimatedGraphicItem()
-    self.skillPointIcon:SetAnchor(GUIItem.Right, GUIItem.Top)
-    self.skillPointIcon:SetTexture(AlienStatusHUD.kSkillIconTexture)
-    self.skillPointIcon:SetTexturePixelCoordinates(unpack(AlienStatusHUD.kSkillIconPixelCoords))
-    self.xpBarBackground:AddChild(self.skillPointIcon)
+    self.upgradePointIcon = self:CreateAnimatedGraphicItem()
+    self.upgradePointIcon:SetAnchor(GUIItem.Right, GUIItem.Top)
+    self.upgradePointIcon:SetTexture(AlienStatusHUD.kUpgradePointIconTexture)
+    self.upgradePointIcon:SetTexturePixelCoordinates(unpack(AlienStatusHUD.kUpgradePointIconPixelCoords))
+    self.xpBarBackground:AddChild(self.upgradePointIcon)
 
-    self.skillPointText = GetGUIManager():CreateTextItem()
-    self.skillPointText:SetFontName(AlienStatusHUD.kSkillPointFontName)
-    self.skillPointText:SetAnchor(GUIItem.Right, GUIItem.Top)
-    self.skillPointText:SetTextAlignmentX(GUIItem.Align_Min)
-    self.skillPointText:SetTextAlignmentY(GUIItem.Align_Center)
-    self.skillPointText:SetText("0 Skill Points")
-    self.skillPointText:SetIsVisible(true)
-    self.skillPointText:SetColor( kAlienFontColor )
-    self.xpBarBackground:AddChild(self.skillPointText)
+    self.upgradePointText = GetGUIManager():CreateTextItem()
+    self.upgradePointText:SetFontName(AlienStatusHUD.kUpgradePointFontName)
+    self.upgradePointText:SetAnchor(GUIItem.Right, GUIItem.Top)
+    self.upgradePointText:SetTextAlignmentX(GUIItem.Align_Min)
+    self.upgradePointText:SetTextAlignmentY(GUIItem.Align_Center)
+    self.upgradePointText:SetText("0 Upgrade Points")
+    self.upgradePointText:SetIsVisible(true)
+    self.upgradePointText:SetColor( kAlienFontColor )
+    self.xpBarBackground:AddChild(self.upgradePointText)
 
     self.visible = true
     self:UpdateVisibility()
@@ -108,15 +112,14 @@ function AlienStatusHUD:Reset(scale)
 
     self.background:SetSize(Vector(Client.GetScreenWidth(), Client.GetScreenHeight(),0))
 
-    local xpBarWidthBkg = GUIScaleWidth(AlienStatusHUD.kXPBarSize.x)
+    local xpBarScaledVec = Vector(GUIScaleWidth(AlienStatusHUD.kXPBarSize.x), AlienStatusHUD.kXPBarSize.y, 0)
     self.xpBarBackground:SetUniformScale(self.scale)
-    self.xpBarBackground:SetSize( Vector(xpBarWidthBkg, 32, 0) )
-    self.xpBarBackground:SetPosition( Vector(-1 * xpBarWidthBkg / 2, -140, 0) )
+    self.xpBarBackground:SetSize(xpBarScaledVec)
+    self.xpBarBackground:SetPosition( Vector(-xpBarScaledVec.x / 2, -140, 0) )
 
-    AlienStatusHUD.kXPBarSizeScaled = Vector(GUIScaleWidth(AlienStatusHUD.kXPBarSizeScaled.x), AlienStatusHUD.kXPBarSizeScaled.y, 0)
     self.xpBar:SetUniformScale(self.scale)
-    self.xpBar:SetSize( Vector(0, AlienStatusHUD.kXPBarSizeScaled.y, 0) )
-    self.xpBar:SetPosition( Vector(-1 * xpBarWidthBkg / 2, -140, 0) )
+    self.xpBar:SetSize( xpBarScaledVec )
+    self.xpBar:SetPosition( Vector(-xpBarScaledVec.x / 2, -140, 0) )
 
     self.currentXPText:SetScale(GetScaledVector())
     self.currentXPText:SetPosition(AlienStatusHUD.kXPTextPosition)
@@ -128,14 +131,14 @@ function AlienStatusHUD:Reset(scale)
     self.currentRankText:SetFontName(AlienStatusHUD.kRankFontName)
     GUIMakeFontScale(self.currentRankText)
 
-    self.skillPointIcon:SetUniformScale(self.scale)
-    self.skillPointIcon:SetPosition(AlienStatusHUD.kSkillIconPos)
-    self.skillPointIcon:SetSize(AlienStatusHUD.kSkillIconSize)
+    self.upgradePointIcon:SetUniformScale(self.scale)
+    self.upgradePointIcon:SetPosition(AlienStatusHUD.kUpgradePointIconPos)
+    self.upgradePointIcon:SetSize(AlienStatusHUD.kUpgradePointIconSize)
 
-    self.skillPointText:SetScale(GetScaledVector())
-    self.skillPointText:SetPosition(AlienStatusHUD.kSkillPointTextPos)
-    self.skillPointText:SetFontName(AlienStatusHUD.kSkillPointFontName)
-    GUIMakeFontScale(self.skillPointText)
+    self.upgradePointText:SetScale(GetScaledVector())
+    self.upgradePointText:SetPosition(AlienStatusHUD.kUpgradePointTextPos)
+    self.upgradePointText:SetFontName(AlienStatusHUD.kUpgradePointFontName)
+    GUIMakeFontScale(self.upgradePointText)
 
 end
 
@@ -149,8 +152,8 @@ function AlienStatusHUD:Uninitialize()
     GUI.DestroyItem(self.currentRankText)
     self.currentRankText = nil
 
-    GUI.DestroyItem(self.skillPointText)
-    self.skillPointText = nil
+    GUI.DestroyItem(self.upgradePointText)
+    self.upgradePointText = nil
 
 end
 
@@ -160,8 +163,8 @@ function AlienStatusHUD:UpdateVisibility()
     self.xpBar:SetIsVisible(self.visible)
     self.currentXPText:SetIsVisible(self.visible)
     self.currentRankText:SetIsVisible(self.visible)
-    self.skillPointIcon:SetIsVisible(self.visible)
-    self.skillPointText:SetIsVisible(self.visible)
+    self.upgradePointIcon:SetIsVisible(self.visible)
+    self.upgradePointText:SetIsVisible(self.visible)
 
 end
 
@@ -208,11 +211,11 @@ function AlienStatusHUD:Update(deltaTime)
         -- update rank text
         self.currentRankText:SetText(string.format("Rank %s : %s", currentRank, title))
 
-        -- update skill point text
-        if player.combatSkillPoints == 1 then
-            self.skillPointText:SetText(string.format("%s Skill Point", player.combatSkillPoints))
+        -- update upgrade point text
+        if player.combatUpgradePoints == 1 then
+            self.upgradePointText:SetText(string.format("%s Upgrade Point", player.combatUpgradePoints))
         else
-            self.skillPointText:SetText(string.format("%s Skill Points", player.combatSkillPoints))
+            self.upgradePointText:SetText(string.format("%s Upgrade Points", player.combatUpgradePoints))
         end
 
         -- update xp text
@@ -249,7 +252,6 @@ function AlienStatusHUD:Update(deltaTime)
             self.xpBar:SetSize(xpBarSize, animSpeed)
             self.xpBar:SetTexturePixelCoordinates(0, 0, xpBarSize.x, xpBarSize.y, animSpeed)
             self.xpBar:SetColor( Color(1, 1, 1, 1) )
-            --self.xpBar:SetColor( GUICombatMarineStatus.kXPBarColor, 1 )
 
             self.lastXP = currentXP
 
