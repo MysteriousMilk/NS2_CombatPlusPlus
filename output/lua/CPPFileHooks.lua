@@ -31,6 +31,7 @@ ModLoader.SetupFileHook( "lua/Alien_Server.lua", "lua/CPPAlien_Server.lua", "pos
 ModLoader.SetupFileHook( "lua/MarineActionFinderMixin.lua", "lua/CPPMarineActionFinderMixin.lua", "post" )
 ModLoader.SetupFileHook( "lua/Hud/Marine/GUIMarineHUD.lua", "lua/CPPGUIMarineHud.lua", "post" )
 ModLoader.SetupFileHook( "lua/TechPoint_Server.lua", "lua/CPPTechPoint_Server.lua", "post" )
+ModLoader.SetupFileHook( "lua/Armory.lua", "lua/CPPArmory.lua", "post" )
 ModLoader.SetupFileHook( "lua/Armory_Client.lua", "lua/CPPArmory_Client.lua", "post" )
 ModLoader.SetupFileHook( "lua/PowerPoint.lua", "lua/CPPPowerPoint.lua", "post" )
 ModLoader.SetupFileHook( "lua/Sentry.lua", "lua/CPPSentry.lua", "post" )

@@ -7,7 +7,7 @@ CombatMessageUI.kXpDisplayFadeoutTimer = 2
 CombatMessageUI.kXpDisplayFontHeight = 100
 CombatMessageUI.kXpDisplayMinFontHeight = 80
 CombatMessageUI.kMessageTimer = 1.25
-CombatMessageUI.kTimeToDisplayFinalAccumulatedValue = 2
+CombatMessageUI.kTimeToDisplayFinalAccumulatedValue = 1.25
 
 local kAccumulatingSourceTypes = { [kXPSourceType.Damage] = true, [kXPSourceType.Weld] = true, [kXPSourceType.Heal] = true }
 

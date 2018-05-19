@@ -1,3 +1,15 @@
+--[[
+ * Natural Selection 2 - Combat++ Mod
+ * Authors:
+ *          WhiteWizard
+ *
+ * Some marine spawn code, and initial structure placement.
+]]
+
+MarineTeam.kSpawnArmoryMaxRetries = 200
+MarineTeam.kArmorySpawnMinDistance = 6
+MarineTeam.kArmorySpawnMaxDistance = 60
+
 --Cache for spawned ip positions
 local takenInfantryPortalPoints = {}
 
@@ -108,12 +120,6 @@ end
 
 function MarineTeam:SpawnWarmUpStructures()
 
-    local techPoint = self.startTechPoint
-
-    if not (Shared.GetCheatsEnabled() and MarineTeam.gSandboxMode) and #self.warmupStructures == 0 then
-        self.warmupStructures[#self.warmupStructures + 1] = CreateTechEntity(techPoint, kTechId.Observatory, -3.5, 2, kMarineTeamType)
-    end
-
 end
 
 function MarineTeam:SpawnInitialStructures(techPoint)
@@ -132,16 +138,29 @@ function MarineTeam:SpawnInitialStructures(techPoint)
         CreateSpawnPoint(self, techPoint)
     end
 
-    -- Spawn an armory at start
-    local forwardOffset = 2
-    if math.random() < 0.5 then
-        forwardOffset = -2
-    end
+    -- Check if there is already an Armory
+	if #GetEntitiesForTeam("Armory", self:GetTeamNumber()) == 0 then	
 
-    CreateTechEntity(techPoint, kTechId.Armory, 3.5, forwardOffset, kMarineTeamType)
+        -- spawn initial Armory for marine team    
+        local techPointOrigin = techPoint:GetOrigin() + Vector(0, 2, 0)
+        
+        for i = 1, MarineTeam.kSpawnArmoryMaxRetries do
 
-    if Shared.GetCheatsEnabled() and MarineTeam.gSandboxMode then
-        CreateTechEntity(techPoint, kTechId.Observatory, -3.5, forwardOffset * -1, kMarineTeamType)
+            -- Increase the spawn distance on a gradual basis.
+            local origin = CalculateRandomSpawn(nil, techPointOrigin, kTechId.Armory, true, MarineTeam.kArmorySpawnMinDistance, (MarineTeam.kArmorySpawnMaxDistance * i / MarineTeam.kSpawnArmoryMaxRetries), nil)
+
+            if origin then
+
+                local armory = CreateEntity(Armory.kMapName, origin - Vector(0, 0.1, 0), self:GetTeamNumber())
+                
+                SetRandomOrientation(armory)
+                armory:SetConstructionComplete()
+                break
+
+            end
+
+        end
+
     end
 
     return tower, commandStation

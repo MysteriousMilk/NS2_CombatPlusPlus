@@ -1,12 +1,11 @@
--- Copied because its local and 'UpdateClientEffects' calls this
-local function UpdatePoisonedEffect(self)
-
-    local feedbackUI = ClientUI.GetScript("GUIPoisonedFeedback")
-    if self.poisoned and self:GetIsAlive() and feedbackUI and not feedbackUI:GetIsAnimating() then
-        feedbackUI:TriggerPoisonEffect()
-    end
-
-end
+--[[
+ * Natural Selection 2 - Combat++ Mod
+ * Authors:
+ *          WhiteWizard
+ *
+ * Turn on Combat HUD, trigger new buy menu, provide support for placing structures, and
+ * override ArmsLab check.
+]]
 
 local ns2_Marine_UpdateClientEffects = Marine.UpdateClientEffects
 function Marine:UpdateClientEffects(deltaTime, isLocal)
@@ -71,4 +70,16 @@ function Marine:UpdateGhostModel()
 
     end
 
+end
+
+function MarineUI_GetHasArmsLab()
+
+    local player = Client.GetLocalPlayer()
+    
+    if player then
+        return true
+    end
+    
+    return false
+    
 end
