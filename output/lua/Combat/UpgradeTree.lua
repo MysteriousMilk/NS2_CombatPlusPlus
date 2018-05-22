@@ -108,7 +108,7 @@ function UpgradeTree:GetUpgradesByCategoryAndPrereq(category, prereqTechId)
         function(a,b)
             local rankA = LookupUpgradeData(a, kUpDataRankIndex)
             local rankB = LookupUpgradeData(b, kUpDataRankIndex)
-            return rankA > rankB
+            return rankA < rankB
         end)
 
     return upgrades
@@ -255,6 +255,25 @@ function UpgradeTree:GetPurchasedUpgrades()
     end
 
     return purchasedUpgrades
+
+end
+
+function UpgradeTree:GetUnlockedUpgradesByCategory(category)
+
+    local unlockedUpgradesByCat = {}
+
+    for _, nodeTechId in ipairs(self.techIdList) do
+
+        local node = self:GetNode(nodeTechId)
+        local cat = LookupUpgradeData(nodeTechId, kUpDataCategoryIndex)
+
+        if node:GetIsUnlocked() and cat == category then
+            table.insert(unlockedUpgradesByCat, node)
+        end
+
+    end
+
+    return unlockedUpgradesByCat
 
 end
 

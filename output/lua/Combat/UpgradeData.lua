@@ -56,6 +56,15 @@ kUpDataLargeIconTextureOffsetIndex = "largeTexOffset"
 -- Index used to retrieve a table that specifies the size of the upgrade icon displayed on the buy menu information window
 kUpDataLargeIconSizeIndex = "largeIconSize"
 
+-- Index used to retrieve flag that indicates if an ability is tier 1
+kUpDataRequiresOneHiveIndex = "onehive"
+
+-- Index used to retrieve flag that indicates if an ability is tier 2
+kUpDataRequiresTwoHivesIndex = "twohives"
+
+-- Index used to retrieve flag that indicates if an ability is tier 3
+kUpDataRequiresThreeHivesIndex = "threehives"
+
 kCombatUpgradeData =
 {
 	[kTechId.Marine] =
@@ -619,7 +628,7 @@ kCombatUpgradeData =
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "skulk",
 		[kUpDataCategoryIndex] = "Lifeform",
-		[kUpDataPersistIndex] = false,
+		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { kTechId.Gorge, kTechId.Lerk, kTechId.Fade, kTechId.Onos },
 		[kUpDataRequiresGestation] = true
@@ -633,7 +642,7 @@ kCombatUpgradeData =
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "gorge",
 		[kUpDataCategoryIndex] = "Lifeform",
-		[kUpDataPersistIndex] = false,
+		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { kTechId.Skulk, kTechId.Lerk, kTechId.Fade, kTechId.Onos },
 		[kUpDataRequiresGestation] = true
@@ -647,7 +656,7 @@ kCombatUpgradeData =
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "lerk",
 		[kUpDataCategoryIndex] = "Lifeform",
-		[kUpDataPersistIndex] = false,
+		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { kTechId.Skulk, kTechId.Gorge, kTechId.Fade, kTechId.Onos },
 		[kUpDataRequiresGestation] = true
@@ -661,7 +670,7 @@ kCombatUpgradeData =
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "fade",
 		[kUpDataCategoryIndex] = "Lifeform",
-		[kUpDataPersistIndex] = false,
+		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { kTechId.Skulk, kTechId.Gorge, kTechId.Lerk, kTechId.Onos },
 		[kUpDataRequiresGestation] = true
@@ -675,7 +684,7 @@ kCombatUpgradeData =
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "onos",
 		[kUpDataCategoryIndex] = "Lifeform",
-		[kUpDataPersistIndex] = false,
+		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { kTechId.Skulk, kTechId.Gorge, kTechId.Lerk, kTechId.Fade },
 		[kUpDataRequiresGestation] = true
@@ -860,7 +869,10 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { },
-		[kUpDataRequiresGestation] = false
+		[kUpDataRequiresGestation] = false,
+		[kUpDataRequiresOneHiveIndex] = true,
+		[kUpDataRequiresTwoHivesIndex] = false,
+		[kUpDataRequiresThreeHivesIndex] = false
 	},
 
 	[kTechId.Leap] =
@@ -874,7 +886,10 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { },
-		[kUpDataRequiresGestation] = false
+		[kUpDataRequiresGestation] = false,
+		[kUpDataRequiresOneHiveIndex] = true,
+		[kUpDataRequiresTwoHivesIndex] = true,
+		[kUpDataRequiresThreeHivesIndex] = false
 	},
 
 	[kTechId.Xenocide] =
@@ -888,7 +903,10 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { },
-		[kUpDataRequiresGestation] = false
+		[kUpDataRequiresGestation] = false,
+		[kUpDataRequiresOneHiveIndex] = true,
+		[kUpDataRequiresTwoHivesIndex] = true,
+		[kUpDataRequiresThreeHivesIndex] = true
 	},
 
 	[kTechId.Spores] =
@@ -902,7 +920,10 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { },
-		[kUpDataRequiresGestation] = false
+		[kUpDataRequiresGestation] = false,
+		[kUpDataRequiresOneHiveIndex] = true,
+		[kUpDataRequiresTwoHivesIndex] = true,
+		[kUpDataRequiresThreeHivesIndex] = false
 	},
 
 	[kTechId.Umbra] =
@@ -916,7 +937,10 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { },
-		[kUpDataRequiresGestation] = false
+		[kUpDataRequiresGestation] = false,
+		[kUpDataRequiresOneHiveIndex] = true,
+		[kUpDataRequiresTwoHivesIndex] = false,
+		[kUpDataRequiresThreeHivesIndex] = false
 	},
 
 	[kTechId.MetabolizeEnergy] =
@@ -930,7 +954,10 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { },
-		[kUpDataRequiresGestation] = false
+		[kUpDataRequiresGestation] = false,
+		[kUpDataRequiresOneHiveIndex] = true,
+		[kUpDataRequiresTwoHivesIndex] = false,
+		[kUpDataRequiresThreeHivesIndex] = false
 	},
 
 	[kTechId.MetabolizeHealth] =
@@ -958,7 +985,13 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { },
-		[kUpDataRequiresGestation] = false
+		[kUpDataRequiresGestation] = false,
+		[kUpDataRequiresOneHiveIndex] = true,
+		[kUpDataRequiresTwoHivesIndex] = true,
+		[kUpDataRequiresThreeHivesIndex] = false,
+		[kUpDataRequiresOneHiveIndex] = true,
+		[kUpDataRequiresTwoHivesIndex] = true,
+		[kUpDataRequiresThreeHivesIndex] = false
 	},
 
 	[kTechId.Charge] =
@@ -972,7 +1005,10 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { },
-		[kUpDataRequiresGestation] = false
+		[kUpDataRequiresGestation] = false,
+		[kUpDataRequiresOneHiveIndex] = true,
+		[kUpDataRequiresTwoHivesIndex] = false,
+		[kUpDataRequiresThreeHivesIndex] = false
 	},
 
 	[kTechId.BoneShield] =
@@ -986,7 +1022,10 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { },
-		[kUpDataRequiresGestation] = false
+		[kUpDataRequiresGestation] = false,
+		[kUpDataRequiresOneHiveIndex] = true,
+		[kUpDataRequiresTwoHivesIndex] = true,
+		[kUpDataRequiresThreeHivesIndex] = false
 	},
 
 	[kTechId.Stomp] =
@@ -1000,7 +1039,10 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { },
-		[kUpDataRequiresGestation] = false
+		[kUpDataRequiresGestation] = false,
+		[kUpDataRequiresOneHiveIndex] = true,
+		[kUpDataRequiresTwoHivesIndex] = true,
+		[kUpDataRequiresThreeHivesIndex] = true
 	}
 }
 

@@ -226,6 +226,7 @@ function CombatPlusPlus_AlienPurchase(purchaseTable)
     end
 
     if #purchaseTechIds > 0 then
+        Print("Sending buy message.")
         Client.SendNetworkMessage("Buy", BuildBuyMessage(purchaseTechIds), true)
     end
 

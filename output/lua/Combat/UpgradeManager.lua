@@ -75,35 +75,10 @@ end
 
     Can be extended in subclasses to provided additional pre-checks.
 ]]
-function UpgradeManager:PreGiveUpgrade(node, player)
+function UpgradeManager:PreGiveUpgrades(techIdList, player, overrideCost)
 
-    local techId = node:GetTechId()
-    local cost = LookupUpgradeData(techId, kUpDataCostIndex)
-
-    local canAfford = (cost <= player:GetCombatUpgradePoints())
-
-    if not canAfford then
-        Server.PlayPrivateSound(player, player:GetNotEnoughResourcesSound(), player, 1.0, Vector(0, 0, 0))
-    end
-
-    return canAfford and node:GetIsUnlocked() and node:MeetsPreconditions(self.Upgrades)
-
-end
-
---[[
-    Gives the player all upgrades provided in the upgrade list.
-]]
-function UpgradeManager:GiveUpgrades(techIdList, player, overrideCost)
-
-    assert(type(techIdList) == "table")
-
-    --Nothing to buy
-    if table.icount(techIdList) == 0 then
-        return true
-    end
-
-    local success = true
     local totalCost = 0
+    local success = true
 
     -- do prechecks for all upgrades and calculate a cost
     for k, techId in ipairs(techIdList) do
@@ -126,7 +101,32 @@ function UpgradeManager:GiveUpgrades(techIdList, player, overrideCost)
 
     end
 
+    return success, totalCost
+
+end
+
+--[[
+    Gives the player all upgrades provided in the upgrade list.
+]]
+function UpgradeManager:GiveUpgrades(techIdList, player, overrideCost)
+
+    assert(type(techIdList) == "table")
+
+    Shared.Message("GiveUpgrades called")
+
+    --Nothing to buy
+    if table.icount(techIdList) == 0 then
+        return true
+    end
+
+    local success = true
+    local totalCost = 0
+
+    success, totalCost = self:PreGiveUpgrades(techIdList, player, overrideCost)
+
     if success then
+
+        Shared.Message("Prereq check passed.")
 
         -- cost check
         if (totalCost <= player:GetCombatUpgradePoints()) or overrideCost then
@@ -229,7 +229,13 @@ function UpgradeManager:SpawnUpgrades(player)
 
     local upgradeIds = {}
     for k, node in ipairs(self.Upgrades:GetPurchasedPersistentUpgrades()) do
-        table.insert(upgradeIds, node:GetTechId())
+
+        local techId = node:GetTechId()
+        
+        if techId ~= player:GetTechId() then
+            table.insert(upgradeIds, techId)
+        end
+
     end
 
     self:GiveUpgrades(upgradeIds, player, true)
