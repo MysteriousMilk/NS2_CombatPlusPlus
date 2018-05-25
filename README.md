@@ -1,5 +1,5 @@
 # NS2 Combat++
-**Version 0.2 Alpha**
+**Version 0.3 Alpha**
 
 ## Overview
 The intent of this mod is to bring back a gameplay type using the orignial Natural Selection 1 Combat Mod for primary insiration, use the [Natural Selection 2 Combat Mod](https://github.com/AlexHayton/NS2Combat) as a reference and possibly incorporate some ideas from the Combat Standalone (placing structures, etc).  Seeing as how the title is still 'Combat', I'd like to keep that original gametype feel as much as possible (individual xp, no commanders), an not alter the lifeform, gun, or game physics as many players use combat for practicing for the vanilla game.
@@ -8,6 +8,14 @@ The intent of this mod is to bring back a gameplay type using the orignial Natur
 Check out the issues backlog.  If something is marked **Help Wanted**, then feel free to implement it and send me a pull request.
 
 ## Change Log
+**5/25/2018** - Alien Abilities
+
+    > Alien abilities can now be purchased as upgrades from the Alien Buy Menu
+
+    > Fixed issue with the upgrade tree not getting properly reset and initialized when switching teams mid game
+
+    > Fixed issue with xp not resetting when switching teams mid game
+
 **5/18/2018** - UI Improvements
 
     > Made the Buy Menus more transparent.

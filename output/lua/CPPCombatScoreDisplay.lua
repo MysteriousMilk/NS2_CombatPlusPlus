@@ -52,6 +52,8 @@ function CombatScoreDisplayUI_UpgradePointEarned(source, kills, assists)
             msg = string.format("Got Your Back! : %s Upgrade Point Earned", kUpgradePointTable[source])
         elseif source == kUpgradePointSourceType.DamageDealer then
             msg = string.format("Damage Dealer! : %s Upgrade Point Earned", kUpgradePointTable[source])
+        elseif source == kUpgradePointSourceType.Refund then
+            msg = string.format("Refunded Some Upgrade Points")
         end
 
         player:SetTeamMessage(string.UTF8Upper(msg))

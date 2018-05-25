@@ -104,13 +104,10 @@ local function GetTotalCost(self)
     end
 
     -- upgrade costs
-    for i, currentButton in ipairs(self.techButtons) do
+    for i, techId in ipairs(self:GetSelectedUpgrades()) do
 
-        local upgradeCost = LookupUpgradeData(currentButton.TechId, kUpDataCostIndex)
-
-        if currentButton.IsSelected then
-            totalCost = totalCost + upgradeCost
-        end
+        local upgradeCost = LookupUpgradeData(techId, kUpDataCostIndex)
+        totalCost = totalCost + upgradeCost
 
     end
 
@@ -125,9 +122,9 @@ local function GetNumberOfNewlySelectedUpgrades(self)
 
     if player then
 
-        for i, currentButton in ipairs(self.upgradeList) do
+        for _, techId in ipairs(self:GetSelectedUpgrades()) do
 
-            if not GetUpgradeTree():GetIsPurchased(currentButton) then
+            if not GetUpgradeTree():GetIsPurchased(techId) then
                 numSelected = numSelected + 1
             end
 
@@ -150,6 +147,15 @@ function AlienBuyMenu:_GetIsMouseOver(overItem)
     end
     self.mouseOverStates[overItem] = mouseOver
     return mouseOver
+
+end
+
+local function CreateTechButton(self, techId, position)
+
+    local button = AnimatedTechButton()
+    button:Initialize(self, techId, position)
+    button:SetColors(kIconColors[kAlienTeamType], Color(1,0,0,1), Color(0.4, 0.7, 0, 1), Color(0.4, 0.7, 0, 1))
+    return button
 
 end
 
@@ -248,7 +254,8 @@ function AlienBuyMenu:Initialize()
 
     self.numSelectedUpgrades = 0
     self.mouseOverStates = { }
-    self.upgradeList = {}
+    self.techButtons = { }
+    --self.upgradeList = {}
     self.abilityIcons = {}
     self.selectedAlienType = AlienBuy_GetCurrentAlien()
 
@@ -304,6 +311,22 @@ function AlienBuyMenu:OnResolutionChanged(oldX, oldY, newX, newY)
 
     self:Uninitialize()
     self:Initialize()
+
+end
+
+function AlienBuyMenu:GetSelectedUpgrades()
+
+    local selectedUpgrades = {}
+
+    for _, button in ipairs(self.techButtons) do
+
+        if button.IsSelected then
+            table.insert(selectedUpgrades, button.TechId)
+        end
+
+    end
+
+    return selectedUpgrades
 
 end
 
@@ -710,27 +733,27 @@ function AlienBuyMenu:_InitializeLifeforms()
 
 end
 
-local function CreateAbilityIcon(self, alienGraphicItem, techId)
+-- local function CreateAbilityIcon(self, alienGraphicItem, techId)
 
-    local graphicItem = GetGUIManager():CreateGraphicItem()
-    graphicItem:SetTexture(AlienBuyMenu.kAbilityIcons)
-    graphicItem:SetSize(AlienBuyMenu.kUpgradeButtonSize)
-    graphicItem:SetAnchor(GUIItem.Middle, GUIItem.Bottom)
-    graphicItem:SetTexturePixelCoordinates(GUIUnpackCoords(GetTextureCoordinatesForIcon(techId, false)))
-    graphicItem:SetColor(kIconColors[kAlienTeamType])
+--     local graphicItem = GetGUIManager():CreateGraphicItem()
+--     graphicItem:SetTexture(AlienBuyMenu.kAbilityIcons)
+--     graphicItem:SetSize(AlienBuyMenu.kUpgradeButtonSize)
+--     graphicItem:SetAnchor(GUIItem.Middle, GUIItem.Bottom)
+--     graphicItem:SetTexturePixelCoordinates(GUIUnpackCoords(GetTextureCoordinatesForIcon(techId, false)))
+--     graphicItem:SetColor(kIconColors[kAlienTeamType])
 
-    local highLight = GetGUIManager():CreateGraphicItem()
-    highLight:SetSize(AlienBuyMenu.kUpgradeButtonSize)
-    highLight:SetIsVisible(false)
-    highLight:SetTexture(AlienBuyMenu.kBuyMenuTexture)
-    highLight:SetTexturePixelCoordinates(GUIUnpackCoords(AlienBuyMenu.kUpgradeButtonBackgroundTextureCoordinates))
+--     local highLight = GetGUIManager():CreateGraphicItem()
+--     highLight:SetSize(AlienBuyMenu.kUpgradeButtonSize)
+--     highLight:SetIsVisible(false)
+--     highLight:SetTexture(AlienBuyMenu.kBuyMenuTexture)
+--     highLight:SetTexturePixelCoordinates(GUIUnpackCoords(AlienBuyMenu.kUpgradeButtonBackgroundTextureCoordinates))
 
-    graphicItem:AddChild(highLight)
-    alienGraphicItem:AddChild(graphicItem)
+--     graphicItem:AddChild(highLight)
+--     alienGraphicItem:AddChild(graphicItem)
 
-    return { Icon = graphicItem, TechId = techId, HighLight = highLight }
+--     return { Icon = graphicItem, TechId = techId, HighLight = highLight }
 
-end
+-- end
 
 local function CreateAbilityIcons(self, alienGraphicItem, alienType)
 
@@ -742,13 +765,13 @@ local function CreateAbilityIcons(self, alienGraphicItem, alienType)
 
     for i = 1, numAbilities do
 
-        local techId = abilities[numAbilities - i + 1]
-        local ability = CreateAbilityIcon(self, alienGraphicItem, techId)
-        local xPos = ( ( (i - 1) * AlienBuyMenu.kUpgradeButtonSize.x ) + 10 ) - (totalWidth / 2)
-        local yPos = 10
+        local xPos = (((i - 1) * AlienBuyMenu.kUpgradeButtonSize.x) + GUIScaleWidth(10)) - (totalWidth / 2)
+        local yPos = GUIScaleHeight(15)
 
-        ability.Icon:SetPosition(Vector(xPos, yPos, 0))
-        table.insert(self.abilityIcons, ability)
+        local button = CreateTechButton(self, abilities[i], Vector(xPos, yPos, 0))
+        button.Icon:SetAnchor(GUIItem.Middle, GUIItem.Bottom)
+        alienGraphicItem:AddChild(button.Icon)
+        table.insert(self.techButtons, button)
 
     end
 
@@ -761,7 +784,7 @@ function AlienBuyMenu:_InitializeAlienButtons()
     for k, alienType in ipairs(AlienBuyMenu.kAlienTypes) do
 
         -- The alien image.
-        local alienGraphicItem = GUIManager:CreateGraphicItem()
+        local alienGraphicItem = self:CreateAnimatedGraphicItem()
         local ARAdjustedHeight = (alienType.Height / alienType.Width) * AlienBuyMenu.kAlienButtonSize.y
         alienGraphicItem:SetSize(Vector(AlienBuyMenu.kAlienButtonSize.x, ARAdjustedHeight, 0))
         alienGraphicItem:SetAnchor(GUIItem.Middle, GUIItem.Center)
@@ -782,7 +805,7 @@ function AlienBuyMenu:_InitializeAlienButtons()
         alienGraphicItem:AddChild(playersText)
 
         -- Create the selected background item for this alien item.
-        local selectedBackground = GUIManager:CreateGraphicItem()
+        local selectedBackground = self:CreateAnimatedGraphicItem()
         selectedBackground:SetAnchor(GUIItem.Middle, GUIItem.Top)
         selectedBackground:SetSize(AlienBuyMenu.kAlienSelectedButtonSize)
         selectedBackground:SetTexture(AlienBuyMenu.kAlienSelectedBackground)
@@ -802,21 +825,10 @@ function AlienBuyMenu:_InitializeAlienButtons()
 
 end
 
-local function CreateTechButton(self, techId, position)
-
-    local button = AnimatedTechButton()
-    button:Initialize(self, techId, position)
-    button:SetColors(kIconColors[kAlienTeamType], Color(1,0,0,1), Color(0.4, 0.7, 0, 1), Color(0.4, 0.7, 0, 1))
-    return button
-
-end
-
-
 function AlienBuyMenu:_InitializeUpgrades()
 
     local categories = GetUpgradeTree():GetUpgradesByCategory("UpgradeType")
     self.upgradeButtons = { }
-    self.techButtons = { }
 
     local binSize = (self.backgroundCenteredArea:GetSize().x - (AlienBuyMenu.kUpgradesTitleOffest.x * 2)) / #categories
 
@@ -1023,13 +1035,13 @@ function AlienBuyMenu:_UpdateEvolvePanel()
 
     local index = 2
 
-    for k, upgradeTechId in ipairs(self.upgradeList) do
+    for k, techId in ipairs(self:GetSelectedUpgrades()) do
 
-        self.evolveQueue[index].TechId = upgradeTechId
+        self.evolveQueue[index].TechId = techId
         self.evolveQueue[index].Cost = LookupUpgradeData(self.evolveQueue[index].TechId, kUpDataCostIndex)
 
         self.evolveQueue[index].Icon:SetTexture(AlienBuyMenu.kBuyHUDTexture)
-        self.evolveQueue[index].Icon:SetTexturePixelCoordinates(GUIUnpackCoords(GetTextureCoordinatesForIcon(upgradeTechId)))
+        self.evolveQueue[index].Icon:SetTexturePixelCoordinates(GUIUnpackCoords(GetTextureCoordinatesForIcon(techId)))
         self.evolveQueue[index].Icon:SetIsVisible(true)
 
         index = index + 1
@@ -1180,8 +1192,9 @@ function AlienBuyMenu:_UpdateAbilities()
         local cost = LookupUpgradeData(abilityItem.TechId, kUpDataCostIndex)
         local canAfford = cost <= player.combatUpgradePoints
         local hasRequiredRank = LookupUpgradeData(abilityItem.TechId, kUpDataRankIndex) <= player.combatRank
+        local hasPrereq = self.kAlienTypes[self.selectedAlienType].TechId == GetUpgradeTree():GetNode(abilityItem.TechId).prereqTechId
 
-        if not hasRequiredRank then
+        if not hasRequiredRank or not hasPrereq then
             abilityItem.Icon:SetColor(kNotAvailableColor)
         elseif not canAfford then
             abilityItem.Icon:SetColor(kNotAllowedColor)
@@ -1216,7 +1229,7 @@ local function HasMutualExclusivity(self, techId)
     -- end
 
     -- check queued 'potential' upgrades for mutual exclusivity
-    for j, upgradeTechId in ipairs(self.upgradeList) do
+    for j, upgradeTechId in ipairs(self:GetSelectedUpgrades()) do
         
         for _, mutualExclusiveTechId in ipairs(LookupUpgradeData(upgradeTechId, kUpDataMutuallyExclusiveIndex)) do
 
@@ -1240,7 +1253,7 @@ local function IsPurchasedOrPurchasing(self, techId)
         return true
     end
 
-    for j, upgradeTechId in ipairs(self.upgradeList) do
+    for j, upgradeTechId in ipairs(self:GetSelectedUpgrades()) do
 
         if techId == upgradeTechId then
             return true
@@ -1262,7 +1275,13 @@ function AlienBuyMenu:_UpdateUpgrades(deltaTime)
         button:SetIsPurchased(GetUpgradeTree():GetNode(button.TechId):GetIsPurchased())
 
         local canAfford = (player:GetCombatUpgradePoints() - GetTotalCost(self)) > 0
-        button:SetIsEnabled(IsPurchasedOrPurchasing(self, button.TechId) or (canAfford and not HasMutualExclusivity(self, button.TechId)))
+        local hasPrereq = true
+    
+        if LookupUpgradeData(button.TechId, kUpDataCategoryIndex) == "Ability" then
+            hasPrereq = GetUpgradeTree():GetNode(button.TechId).prereqTechId == self.kAlienTypes[self.selectedAlienType].TechId
+        end
+
+        button:SetIsEnabled((IsPurchasedOrPurchasing(self, button.TechId) or (canAfford and not HasMutualExclusivity(self, button.TechId))) and hasPrereq)
 
         button:Update(deltaTime)
 
@@ -1328,14 +1347,14 @@ end
 local function SelectButton( self, button )
     if not button.IsSelected then
         button:SetIsSelected(true)
-        table.insertunique(self.upgradeList, button.TechId)
+        --table.insertunique(self.upgradeList, button.TechId)
     end
 end
 
 local function DeselectButton( self, button )
     if button.IsSelected then
         button:SetIsSelected(false)
-        table.removevalue( self.upgradeList, button.TechId )
+        --table.removevalue( self.upgradeList, button.TechId )
     end
 end
 
@@ -1387,18 +1406,15 @@ function AlienBuyMenu:SendKeyEvent(key, down)
                 end
 
                 -- Buy all selected upgrades.
-                for i, currentButton in ipairs(self.techButtons) do
-
-                    if currentButton.IsSelected then
-                        table.insert(purchases, { Type = "Upgrade", Alien = self.selectedAlienType, TechId = currentButton.TechId })
-                    end
-
+                for i, techId in ipairs(self:GetSelectedUpgrades()) do
+                    table.insert(purchases, { Type = "Upgrade", Alien = self.selectedAlienType, TechId = techId })
                 end
 
                 closeMenu = true
                 inputHandled = true
 
                 if #purchases > 0 then
+                    Print("Calling purchase")
                     CombatPlusPlus_AlienPurchase(purchases)
                 end
 
@@ -1453,7 +1469,6 @@ function AlienBuyMenu:SendKeyEvent(key, down)
 
         closeMenu = true
         inputHandled = true
-        AlienBuy_OnClose()
 
     end
 
@@ -1461,6 +1476,7 @@ function AlienBuyMenu:SendKeyEvent(key, down)
 
         self.closingMenu = true
         AlienBuy_OnClose()
+        AlienBuy_Close()
 
     end
 
@@ -1497,34 +1513,16 @@ function AlienBuyMenu:_HandleUpgradeClicked(mouseX, mouseY)
             ToggleButton( self, currentButton )
 
             if currentButton.IsSelected then
-
-                --local hiveTypeCurrent = GetHiveTypeForUpgrade( currentButton.TechId )
-
-                -- for j, otherButton in ipairs(self.upgradeButtons) do
-
-                --     if currentButton ~= otherButton and otherButton.Selected then
-
-                --         local hiveTypeOther = GetHiveTypeForUpgrade( otherButton.TechId )
-                --         if hiveTypeCurrent == hiveTypeOther then
-                --             DeselectButton( self, otherButton )
-                --         end
-
-                --     end
-
-                -- end
-
                 AlienBuy_OnUpgradeSelected()
-
             else
-
                 AlienBuy_OnUpgradeDeselected()
-
             end
 
             inputHandled = true
             break
 
         end
+
     end
 
     return inputHandled
