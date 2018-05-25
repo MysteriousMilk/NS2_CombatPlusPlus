@@ -246,11 +246,12 @@ function AlienStatusHUD:Update(deltaTime)
             local animSpeed = ConditionalValue(currentXP < self.lastXP, AlienStatusHUD.kAnimSpeedDown, AlienStatusHUD.kAnimSpeedUp)
 
             local xpFraction = currentXPNorm / newXPThresholdNorm
-            local xpBarSize = Vector(AlienStatusHUD.kXPBarSizeScaled.x * xpFraction, AlienStatusHUD.kXPBarSizeScaled.y, 0)
+            local xpBarScaledVec = Vector(GUIScaleWidth(AlienStatusHUD.kXPBarSize.x), AlienStatusHUD.kXPBarSize.y, 0)
+            local xpBarSize = Vector(xpBarScaledVec.x * xpFraction, xpBarScaledVec.y, 0)
 
             self.xpBar:DestroyAnimations()
             self.xpBar:SetSize(xpBarSize, animSpeed)
-            self.xpBar:SetTexturePixelCoordinates(0, 0, xpBarSize.x, xpBarSize.y, animSpeed)
+            self.xpBar:SetTexturePixelCoordinates(0, 0, xpBarSize.x, 32, animSpeed)
             self.xpBar:SetColor( Color(1, 1, 1, 1) )
 
             self.lastXP = currentXP

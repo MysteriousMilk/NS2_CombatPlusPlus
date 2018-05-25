@@ -45,7 +45,7 @@ if Server then
             if owner and owner:isa("Player") then
 
                 local cost = LookupUpgradeData(techId, kUpDataCostIndex)
-                owner:GiveCombatUpgradePoints(cost, kXPSourceType.Refund)
+                owner:GiveCombatUpgradePoints(cost, kUpgradePointSourceType.Refund)
 
             end
 
@@ -269,6 +269,10 @@ if Server then
         local success = false
         local newPlayer = nil
 
+        if oldTeamNumber ~= newTeamNumber and player.UpgradeManager then
+            player.UpgradeManager:GetTree():Initialize()
+        end
+
         success, newPlayer = ns2_NS2GameRules_JoinTeam(self, player, newTeamNumber, force)
 
         if success and oldTeamNumber ~= newTeamNumber then
@@ -278,9 +282,16 @@ if Server then
 
             -- reset the player's upgrades
             if newPlayer.UpgradeManager then
+
+                -- reset xp
+                newPlayer:ResetCombatScores()
+
+                -- reset upgrade manager
+                newPlayer.UpgradeManager:SetPlayer(newPlayer)
                 newPlayer.UpgradeManager:Reset()
                 newPlayer.UpgradeManager:UpdateUnlocks(false)
                 newPlayer.UpgradeManager:GetTree():SendFullTree(newPlayer)
+
             end
 
         end

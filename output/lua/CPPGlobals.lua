@@ -13,7 +13,6 @@ kMaxCombatUpgradePoints = 100
 kXPSourceType = enum(
 {
     "Console",
-    "Refund",
     "Kill",
     "Assist",
     "Damage",
@@ -27,6 +26,7 @@ kXPSourceType = enum(
 kUpgradePointSourceType = enum(
 {
     "LevelUp",
+    "Refund",
     "KillStreak",
     "AssistStreak",
     "DamageDealer"

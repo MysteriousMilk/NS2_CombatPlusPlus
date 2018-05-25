@@ -84,7 +84,7 @@ function UpgradeManager:PreGiveUpgrades(techIdList, player, overrideCost)
     for k, techId in ipairs(techIdList) do
 
         local teamForTechId = LookupUpgradeData(techId, kUpDataTeamIndex)
-        assert(teamForTechId == player:GetTeamNumber())
+        assert(teamForTechId == player:GetTeamNumber(), "TechId " .. kTechId[techId] .. " does not belong to the current team.")
 
         local node = self.Upgrades:GetNode(techId)
         local cost = LookupUpgradeData(techId, kUpDataCostIndex)
@@ -112,8 +112,6 @@ function UpgradeManager:GiveUpgrades(techIdList, player, overrideCost)
 
     assert(type(techIdList) == "table")
 
-    Shared.Message("GiveUpgrades called")
-
     --Nothing to buy
     if table.icount(techIdList) == 0 then
         return true
@@ -126,23 +124,11 @@ function UpgradeManager:GiveUpgrades(techIdList, player, overrideCost)
 
     if success then
 
-        Shared.Message("Prereq check passed.")
-
         -- cost check
         if (totalCost <= player:GetCombatUpgradePoints()) or overrideCost then
 
             local newPlayerClass = nil
-
-            for k, techId in ipairs(techIdList) do
-
-                local node = self.Upgrades:GetNode(techId)
-                local logicSuccess = false
-
-                -- apply the upgrade
-                logicSuccess, newPlayerClass = self:UpgradeLogic(techIdList, node, player, overrideCost)
-                success = success and logicSuccess
-
-            end
+            success, newPlayerClass = self:UpgradeLogic(techIdList, node, player, overrideCost)
 
             if success then
                 -- update the tree and spend the points
@@ -178,9 +164,18 @@ function UpgradeManager:UpgradeLogic(techIdList, currNode, player, overrideCost)
     local success = true
     local newPlayerClass = nil
 
-    -- run the upgrade func for the node
-    if currNode.upgradeFunc then
-        success, newPlayerClass = currNode.upgradeFunc(currNode:GetTechId(), player)
+    for k, techId in ipairs(techIdList) do
+
+        local node = self.Upgrades:GetNode(techId)
+        local logicSuccess = true
+
+        -- run the upgrade func for the node
+        if node.upgradeFunc then
+            logicSuccess, newPlayerClass = node.upgradeFunc(techId, player)
+        end
+
+        success = success and logicSuccess
+
     end
 
     return success, newPlayerClass
@@ -199,10 +194,26 @@ function UpgradeManager:PostGiveUpgrades(techIds, player, cost, overrideCost)
         node:SetIsUnlocked(true)
         self.Upgrades:SetIsPurchased(node:GetTechId(), true)
 
-        -- unpurchase an mutually exclusive upgrades for this upgrade
+        --local refundAmount = 0
+
+        -- unpurchase any mutually exclusive upgrades for this upgrade
         for _, mutuallyExculsiveTechId in ipairs(LookupUpgradeData(techId, kUpDataMutuallyExclusiveIndex)) do
-            self.Upgrades:SetIsPurchased(mutuallyExculsiveTechId, false)
+
+            --if self.Upgrades:GetIsPurchased(mutuallyExculsiveTechId) then
+
+                -- unpurchase mutually exclusive upgrade
+                self.Upgrades:SetIsPurchased(mutuallyExculsiveTechId, false)
+
+                -- calculate refund amount
+                --refundAmount = Clamp(refundAmount, 0, LookupUpgradeData(mutuallyExculsiveTechId, kUpDataCostIndex) + refundAmount)
+
+            --end
+
         end
+
+        -- if refundAmount > 0 then
+        --     player:GiveCombatSkillPoints(refundAmount, kUpgradePointSourceType.Refund)
+        -- end
 
         if not overrideCost then
             local cost = LookupUpgradeData(node:GetTechId(), kUpDataCostIndex)

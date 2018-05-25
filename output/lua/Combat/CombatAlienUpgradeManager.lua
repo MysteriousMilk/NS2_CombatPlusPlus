@@ -4,64 +4,6 @@ Script.Load("lua/CPPUtilities.lua")
 
 class 'CombatAlienUpgradeManager' (UpgradeManager)
 
--- local function GiveAbility(techId, player)
-
---     local success = false
---     local mapName = LookupTechData(techId, kTechDataMapName)
-
---     Shared.Message(string.format("In GiveAbility %s", kTechId[techId]))
-
---     player.oneHive = LookupUpgradeData(techId, kUpDataRequiresOneHive)
---     player.twoHives = LookupUpgradeData(techId, kUpDataRequiresTwoHives)
---     player.threeHives = LookupUpgradeData(techId, kUpDataRequiresThreeHives)
-
---     if mapName and player:GetIsAlive() then
-
---         Shared.Message("mapName check passed - " .. mapName)
-    
---         local activeWeapon = player:GetActiveWeapon()
-
---         -- local tierWeapon = player:GetWeapon(mapName)
---         -- if not tierWeapon then
-
---             Shared.Message("Giving Ability")
-        
---             player:GiveItem(mapName)
-
---             local soundData = GetVoiceSoundData(kVoiceId.AlienTaunt)
---             if soundData then
-
---                 local soundName = soundData.Sound
-
---                 if soundData.Function then            
---                     soundName = soundData.Function(player) or soundName    
---                 end
-
---                 if soundName then
---                     StartSoundEffectOnEntity(soundName, player)
---                 end
-
---             end
-            
---             if activeWeapon then
---                 player:SetActiveWeapon(activeWeapon:GetMapName())
---             end
-
---             success = true
-            
---         --end
-    
---     end
-
---     return success
-
--- end
-
--- local function GiveTierTwo(techId, player)
---     player.twoHives = true
---     return true
--- end
-
 function CombatAlienUpgradeManager:CreateUpgradeTree()
 
     -- class upgrades
@@ -118,8 +60,7 @@ function CombatAlienUpgradeManager:CreateUpgradeTree()
 end
 
 function CombatAlienUpgradeManager:PreGiveUpgrades(techIdList, player, overrideCost)
-    
-    Shared.Message("In PreGiveUpgrades")
+
     local totalCost = 0
     local success = true
     local hasNewLifeformUpgrade = false
@@ -149,9 +90,7 @@ function CombatAlienUpgradeManager:PreGiveUpgrades(techIdList, player, overrideC
             
         if node then
 
-            -- If we have a lifeform upgrade, do not check prereqs on abilities because they are given
-            -- post gestation.  If we check prereqs now, it will fail because the player has not yet been
-            -- upgraded to the new lifeform.
+            -- If we have a lifeform upgrade, check prereqs against the new lifeform.
             if hasNewLifeformUpgrade and LookupUpgradeData(techId, kUpDataCategoryIndex) == "Ability" then
                 success = success and node:GetIsUnlocked() and node.prereqTechId == lifeformTechId
             else
@@ -236,8 +175,6 @@ end
 
 local function Gestate(gestateUpgrades, player)
 
-    local success = false
-
     if table.icount(gestateUpgrades) > 0 then
 
         local lifeFormTechId = ConditionalValue(LookupTechData(gestateUpgrades[1], kTechDataGestateName), gestateUpgrades[1], player:GetTechId())
@@ -264,48 +201,24 @@ local function Gestate(gestateUpgrades, player)
 
             newPlayer:SetGestationData(gestateUpgrades, player:GetTechId(), player:GetHealthFraction(), player:GetArmorScalar())
 
-            success = true
+            return true, newPlayer
 
         end
 
     end
 
-    return success
+    return false, nil
 
 end
 
 function CombatAlienUpgradeManager:UpgradeLogic(techIdList, currNode, player, overrideCost)
 
-    local requiresGestation = false
     local success = true
-
-    for k, techId in ipairs(techIdList) do
-        if LookupUpgradeData(techId, kUpDataRequiresGestation) then
-            requiresGestation = true
-            break
-        end
-    end
-
-    if not requiresGestation then
-        Shared.Message("No Gestation required")
-        success = UpgradeManager.UpgradeLogic(self, techIdList, currNode, player, overrideCost)
-    end
-
-    return success, nil
-
-end
-
-function CombatAlienUpgradeManager:PostGiveUpgrades(techIds, player, cost, overrideCost)
-
+    local newPlayer = nil
     local gestateUpgrades = {}
-    local success = true
-
-    local oldUpgradePointAmount = player:GetCombatUpgradePoints()
-
-    UpgradeManager.PostGiveUpgrades(self, techIds, player, cost, overrideCost)
 
     -- build a table of upgrades that require gestation
-    for k, techId in ipairs(techIds) do
+    for k, techId in ipairs(techIdList) do
         if LookupUpgradeData(techId, kUpDataRequiresGestation) then
             table.insert(gestateUpgrades, techId)
         end
@@ -316,12 +229,9 @@ function CombatAlienUpgradeManager:PostGiveUpgrades(techIds, player, cost, overr
 
     -- if the player should gestate, make them do so
     if table.icount(gestateUpgrades) > 0 then
-        success = Gestate(gestateUpgrades, player)
+        success, newPlayer = Gestate(gestateUpgrades, player)
     end
 
-    -- if we could not gestate, refund the upgrade points
-    if not success then
-        player:SetCombatUpgradePoints(oldUpgradePointAmount)
-    end
+    return success, newPlayer
 
 end

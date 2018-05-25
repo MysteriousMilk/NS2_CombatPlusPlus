@@ -1192,8 +1192,9 @@ function AlienBuyMenu:_UpdateAbilities()
         local cost = LookupUpgradeData(abilityItem.TechId, kUpDataCostIndex)
         local canAfford = cost <= player.combatUpgradePoints
         local hasRequiredRank = LookupUpgradeData(abilityItem.TechId, kUpDataRankIndex) <= player.combatRank
+        local hasPrereq = self.kAlienTypes[self.selectedAlienType].TechId == GetUpgradeTree():GetNode(abilityItem.TechId).prereqTechId
 
-        if not hasRequiredRank then
+        if not hasRequiredRank or not hasPrereq then
             abilityItem.Icon:SetColor(kNotAvailableColor)
         elseif not canAfford then
             abilityItem.Icon:SetColor(kNotAllowedColor)
@@ -1274,7 +1275,13 @@ function AlienBuyMenu:_UpdateUpgrades(deltaTime)
         button:SetIsPurchased(GetUpgradeTree():GetNode(button.TechId):GetIsPurchased())
 
         local canAfford = (player:GetCombatUpgradePoints() - GetTotalCost(self)) > 0
-        button:SetIsEnabled(IsPurchasedOrPurchasing(self, button.TechId) or (canAfford and not HasMutualExclusivity(self, button.TechId)))
+        local hasPrereq = true
+    
+        if LookupUpgradeData(button.TechId, kUpDataCategoryIndex) == "Ability" then
+            hasPrereq = GetUpgradeTree():GetNode(button.TechId).prereqTechId == self.kAlienTypes[self.selectedAlienType].TechId
+        end
+
+        button:SetIsEnabled((IsPurchasedOrPurchasing(self, button.TechId) or (canAfford and not HasMutualExclusivity(self, button.TechId))) and hasPrereq)
 
         button:Update(deltaTime)
 

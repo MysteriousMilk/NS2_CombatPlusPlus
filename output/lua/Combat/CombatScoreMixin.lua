@@ -104,10 +104,8 @@ function CombatScoreMixin:GiveCombatUpgradePoints(source, points)
 
         self.combatUpgradePoints = Clamp(self.combatUpgradePoints + points, 0, kMaxCombatUpgradePoints)
 
-        if source ~= kXPSourceType.Refund then
-            -- notify the client about the new upgrade points
-            Server.SendNetworkMessage(Server.GetOwner(self), "CombatUpgradePointUpdate", { source = source, kills = self.killsGainedCurrentLife, assists = self.assistsGainedCurrentLife }, true)
-        end
+        -- notify the client about the new upgrade points
+        Server.SendNetworkMessage(Server.GetOwner(self), "CombatUpgradePointUpdate", { source = source, kills = self.killsGainedCurrentLife, assists = self.assistsGainedCurrentLife }, true)
 
     end
 
