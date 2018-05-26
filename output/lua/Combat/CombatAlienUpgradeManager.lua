@@ -213,15 +213,50 @@ end
 
 function CombatAlienUpgradeManager:UpgradeLogic(techIdList, currNode, player, overrideCost)
 
+    local requiresGestation = false
     local success = true
-    local newPlayer = nil
+
+    for k, techId in ipairs(techIdList) do
+        if LookupUpgradeData(techId, kUpDataRequiresGestation) then
+            requiresGestation = true
+            break
+        end
+    end
+
+    if not requiresGestation then
+        success = UpgradeManager.UpgradeLogic(self, techIdList, currNode, player, overrideCost)
+    end
+
+    return success, nil
+
+end
+
+function CombatAlienUpgradeManager:PostGiveUpgrades(techIds, player, cost, overrideCost)
+
     local gestateUpgrades = {}
+    local success = true
+    local hasLifeformTechId = false
+
+    local oldUpgradePointAmount = player:GetCombatUpgradePoints()
+
+    UpgradeManager.PostGiveUpgrades(self, techIds, player, cost, overrideCost)
 
     -- build a table of upgrades that require gestation
-    for k, techId in ipairs(techIdList) do
+    for k, techId in ipairs(techIds) do
+
         if LookupUpgradeData(techId, kUpDataRequiresGestation) then
             table.insert(gestateUpgrades, techId)
         end
+
+        if LookupTechData(techId, kTechDataGestateName) then
+            hasLifeformTechId = true
+        end
+
+    end
+
+    -- if no new lifeform tech id, insert current lifeform tech id
+    if not hasLifeformTechId then
+        table.insert(gestateUpgrades, player:GetTechId())
     end
 
     -- push lifeform techId to top
@@ -229,9 +264,12 @@ function CombatAlienUpgradeManager:UpgradeLogic(techIdList, currNode, player, ov
 
     -- if the player should gestate, make them do so
     if table.icount(gestateUpgrades) > 0 then
-        success, newPlayer = Gestate(gestateUpgrades, player)
+        success = Gestate(gestateUpgrades, player)
     end
 
-    return success, newPlayer
+    -- if we could not gestate, refund the upgrade points
+    if not success then
+        player:SetCombatUpgradePoints(oldUpgradePointAmount)
+    end
 
 end

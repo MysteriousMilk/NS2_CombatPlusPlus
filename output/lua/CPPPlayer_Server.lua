@@ -23,6 +23,11 @@ function Player:Reset()
         self.UpgradeManager:UpdateUnlocks(true)
     end
 
+    self.isSpawning = false
+    self.gotSpawnProtect = nil
+    self.activeSpawnProtect = false
+    self.deactivateSpawnProtect = nil
+
     self.ownedStructures = {}
 
 end
@@ -38,6 +43,11 @@ function Player:CopyPlayerDataFrom(player)
     if self.UpgradeManager and player.UpgradeManager then
         self.UpgradeManager:GetTree():CopyFrom(player.UpgradeManager:GetTree(), false)
     end
+
+    self.isSpawning = player.isSpawning
+    self.gotSpawnProtect = player.gotSpawnProtect
+    self.activeSpawnProtect = player.activeSpawnProtect
+    self.deactivateSpawnProtect = player.deactivateSpawnProtect
 
 end
 
@@ -81,5 +91,102 @@ function Player:KillOwnedStructures()
     end
 
     self.ownedStructures = {}
+
+end
+
+-- function for spawn protect
+function Player:SetSpawnProtect()
+
+    self.activeSpawnProtect = true
+    self.deactivateSpawnProtect = nil
+
+end
+
+function Player:DeactivateSpawnProtect()
+
+    self:SetHealth( self:GetMaxHealth() )
+    self:SetArmor( self:GetMaxArmor() )
+
+    self.activeSpawnProtect = nil
+    self.gotSpawnProtect = nil
+
+    -- Deactivate the nano shield by manipulating the time variable.
+    self.timeNanoShieldInit = 0
+
+end
+
+function Player:PerformSpawnProtect()
+
+    -- Only make the effects once.
+    if not self.gotSpawnProtect then
+
+        -- Fire the effects on a slight delay because something in the NS2 code normally clears it first!
+        if not self.spawnProtectActivateTime then
+
+            self.spawnProtectActivateTime = Shared.GetTime() + kCombatSpawnProtectDelay
+
+        elseif Shared.GetTime() >= self.spawnProtectActivateTime then
+
+            if HasMixin(self, "NanoShieldAble") then
+
+                self:ActivateNanoShield()
+                if self.nanoShielded then
+                    self.gotSpawnProtect = true
+                end
+
+            elseif self:isa("Alien") then
+
+                local spawnProtectTimeLeft = self.deactivateSpawnProtect - Shared.GetTime()
+                self:SetHasUmbra(true, spawnProtectTimeLeft)
+                self.gotSpawnProtect = true
+
+            end
+
+        end
+
+    end
+
+end
+
+local ns2_Player_OnUpdatePlayer = Player.OnUpdatePlayer
+function Player:OnUpdatePlayer(deltaTime)
+
+    ns2_Player_OnUpdatePlayer(self, deltaTime)
+
+    -- Spawn Protect
+    if self.activeSpawnProtect then
+
+        if self:GetIsAlive() and (self:GetTeamNumber() == 1 or self:GetTeamNumber() == 2) then
+
+            if not self.deactivateSpawnProtect then
+
+                -- set the real spawn protect time here
+                local spawnProtectTime = 0
+                if self:isa("Alien") then
+                    spawnProtectTime = kCombatAlienSpawnProtectTime
+                else
+                    spawnProtectTime = kCombatMarineSpawnProtectTime
+                end
+
+                self.deactivateSpawnProtect = Shared.GetTime() +  kCombatMarineSpawnProtectTime
+
+            end
+
+            if Shared.GetTime() >= self.deactivateSpawnProtect then
+
+                -- end spawn protect
+                self:DeactivateSpawnProtect()
+
+            else
+
+                if not self.gotSpawnProtect then
+                    self:PerformSpawnProtect()
+                end
+
+            end
+            
+        end
+
+    end
 
 end

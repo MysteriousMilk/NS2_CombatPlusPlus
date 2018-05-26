@@ -113,6 +113,23 @@ function CombatPlusPlus_GetIsMarineClassTechId(techId)
 
 end
 
+function CombatPlusPlus_GetIsPrimaryWeapon(kMapName)
+
+    local isPrimary = false
+    
+    if kMapName == Shotgun.kMapName or
+       kMapName == Flamethrower.kMapName  or
+       kMapName == GrenadeLauncher.kMapName or
+       kMapName == HeavyMachineGun.kMapName or
+       kMapName == Rifle.kMapName then
+        
+        isPrimary = true
+        
+    end
+    
+    return isPrimary
+end
+
 function CombatPlusPlus_GetIsStructureTechId(techId)
 
     local structureIdTable =

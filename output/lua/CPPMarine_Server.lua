@@ -34,6 +34,8 @@ function Marine:OnKill(attacker, doer, point, direction)
     builder = self:GetWeapon(Builder.kMapName)
     builder:SetBuilderMode(kBuilderMode.Build)
 
+    self:DestroyWeapons()
+
     ns2_Marine_OnKill(self, attacker, doer, point, direction)
 
 end

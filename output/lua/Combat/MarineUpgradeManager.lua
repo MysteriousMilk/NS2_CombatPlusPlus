@@ -196,6 +196,19 @@ local function BuyItemUpgrade(techId, player)
 
     if mapName then
 
+        -- Need to remove the old primary weapon if we are replacing it with a 
+        -- new primary.
+        if CombatPlusPlus_GetIsPrimaryWeapon(mapName) then
+
+            local oldPrimaryWpn = player:GetWeaponInHUDSlot(1)
+
+            if oldPrimaryWpn then
+                player:RemoveWeapon(oldPrimaryWpn)
+                DestroyEntity(oldPrimaryWpn)
+            end
+
+        end
+
         -- Make sure we're ready to deploy new weapon so we switch to it properly.
         local newItem = player:GiveItem(mapName)
 

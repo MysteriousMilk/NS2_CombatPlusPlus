@@ -15,8 +15,17 @@ function Player:OnCreate()
 
     ns2_Player_OnCreate(self)
 
-    if Server and not self.UpgradeManager then
-        self.UpgradeManager = UpgradeManager()
+    if Server then
+
+        if not self.UpgradeManager then
+            self.UpgradeManager = UpgradeManager()
+        end
+
+        self.isSpawning = false
+        self.gotSpawnProtect = nil
+        self.activeSpawnProtect = false
+        self.deactivateSpawnProtect = nil
+
     end
 
     self.currentCreateStructureTechId = kTechId.None

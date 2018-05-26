@@ -252,7 +252,7 @@ function AlienStatusHUD:Update(deltaTime)
             self.xpBar:DestroyAnimations()
             self.xpBar:SetSize(xpBarSize, animSpeed)
             self.xpBar:SetTexturePixelCoordinates(0, 0, xpBarSize.x, 32, animSpeed)
-            self.xpBar:SetColor( Color(1, 1, 1, 1) )
+            --self.xpBar:SetColor( Color(1, 1, 1, 1) )
 
             self.lastXP = currentXP
 
