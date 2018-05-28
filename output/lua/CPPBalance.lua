@@ -107,12 +107,11 @@ kAssistStreakValue = 5
 -- Amount of damage needed for the "Damage Dealer" award.
 kDamageDealerValue = 2500
 
--- This table drives how many upgrade points are awarded for a particular action
-kUpgradePointTable = {}
-kUpgradePointTable[kUpgradePointSourceType.LevelUp] = 1
-kUpgradePointTable[kUpgradePointSourceType.KillStreak] = 1
-kUpgradePointTable[kUpgradePointSourceType.AssistStreak] = 1
-kUpgradePointTable[kUpgradePointSourceType.DamageDealer] = 1
+-- This table drives how much xp is awarded for special cases
+kSpecialXpAwardTable = {}
+kSpecialXpAwardTable[kXPSourceType.KillStreak] = 500
+kSpecialXpAwardTable[kXPSourceType.AssistStreak] = 400
+kSpecialXpAwardTable[kXPSourceType.DamageDealer] = 600
 
 -- How long the player has to wait in between using the MedPackAbility (in sec)
 kMedPackAbilityCooldown = 60

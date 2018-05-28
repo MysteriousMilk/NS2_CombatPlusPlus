@@ -36,27 +36,21 @@ function CombatScoreDisplayUI_SetNewXPAward(xp, source, targetId)
 
 end
 
-function CombatScoreDisplayUI_UpgradePointEarned(source, kills, assists)
+function CombatScoreDisplayUI_UpgradePointsEarned(source, points)
 
     player = Client.GetLocalPlayer()
 
     if player and HasMixin(player, "TeamMessage") then
 
-        local msg
+        local pointStr = ConditionalValue(points == 1, "Point", "Points")
 
         if source == kUpgradePointSourceType.LevelUp then
-            msg = string.format("Leveled Up! : %s Upgrade Point Earned", kUpgradePointTable[source])
-        elseif source == kUpgradePointSourceType.KillStreak then
-            msg = string.format("Rampage! : %s Upgrade Point Earned", kUpgradePointTable[source])
-        elseif source == kUpgradePointSourceType.AssistStreak then
-            msg = string.format("Got Your Back! : %s Upgrade Point Earned", kUpgradePointTable[source])
-        elseif source == kUpgradePointSourceType.DamageDealer then
-            msg = string.format("Damage Dealer! : %s Upgrade Point Earned", kUpgradePointTable[source])
+            msg = string.format("Leveled Up! : %s Upgrade " .. pointStr .. " Earned", points)
+            player:SetTeamMessage(string.UTF8Upper(msg))
         elseif source == kUpgradePointSourceType.Refund then
-            msg = string.format("Refunded Some Upgrade Points")
+            msg = string.format("Refunded %s Upgrade " .. pointStr, points)
+            player:SetTeamMessage(string.UTF8Upper(msg))
         end
-
-        player:SetTeamMessage(string.UTF8Upper(msg))
 
     end
 

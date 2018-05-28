@@ -19,8 +19,7 @@ Shared.RegisterNetworkMessage("CombatScoreUpdate", kCombatScoreUpdate)
 local kCombatUpgradePointUpdate =
 {
     source = "enum kUpgradePointSourceType",
-    kills = "integer",
-    assists = "integer"
+    points = "integer"
 }
 
 Shared.RegisterNetworkMessage("CombatUpgradePointUpdate", kCombatUpgradePointUpdate)

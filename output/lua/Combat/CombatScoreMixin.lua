@@ -105,7 +105,7 @@ function CombatScoreMixin:GiveCombatUpgradePoints(source, points)
         self.combatUpgradePoints = Clamp(self.combatUpgradePoints + points, 0, kMaxCombatUpgradePoints)
 
         -- notify the client about the new upgrade points
-        Server.SendNetworkMessage(Server.GetOwner(self), "CombatUpgradePointUpdate", { source = source, kills = self.killsGainedCurrentLife, assists = self.assistsGainedCurrentLife }, true)
+        Server.SendNetworkMessage(Server.GetOwner(self), "CombatUpgradePointUpdate", { source = source, points = points }, true)
 
     end
 
@@ -164,11 +164,11 @@ function CombatScoreMixin:AddCombatKill(victimRank)
 
     self.killsGainedCurrentLife = self.killsGainedCurrentLife + 1
 
-    if self.killsGainedCurrentLife == kKillsForRampageReward then
-        self:GiveCombatUpgradePoints(kUpgradePointSourceType.KillStreak)
-    end
-
     self:AddXP(CombatPlusPlus_GetBaseKillXP(victimRank), kXPSourceType.Kill, Entity.invalidId)
+
+    if self.killsGainedCurrentLife == kKillsForRampageReward then
+        self:AddXP(CombatPlusPlus_GetSpecialXpAwardAmount(kXPSourceType.KillStreak), kXPSourceType.KillStreak)
+    end
 
 end
 
@@ -186,16 +186,17 @@ function CombatScoreMixin:AddCombatAssistKill(victimRank)
 
     self.assistsGainedCurrentLife = self.assistsGainedCurrentLife + 1
 
-    if self.assistsGainedCurrentLife == kAssistsForAssistReward then
-        self:GiveCombatUpgradePoints(kUpgradePointSourceType.AssistStreak)
-    end
-
     local xp = CombatPlusPlus_GetBaseKillXP(victimRank) * kXPAssistModifier
     self:AddXP(xp, kXPSourceType.Assist, Entity.invalidId)
+
+    if self.assistsGainedCurrentLife == kAssistsForAssistReward then
+        self:AddXP(CombatPlusPlus_GetSpecialXpAwardAmount(kXPSourceType.AssistStreak), kXPSourceType.AssistStreak)
+    end
 
 end
 
 function CombatScoreMixin:AddCombatNearbyKill(victimRank)
+
     if GetGameInfoEntity():GetWarmUpActive() then return end
 
     if not self.combatXP then
@@ -204,6 +205,7 @@ function CombatScoreMixin:AddCombatNearbyKill(victimRank)
 
     local xp = CombatPlusPlus_GetBaseKillXP(victimRank) * kNearbyKillXPModifier
     self:AddXP(xp, kXPSourceType.Nearby, Entity.invalidId)
+
 end
 
 function CombatScoreMixin:AddCombatDamage(damage)
@@ -219,12 +221,6 @@ function CombatScoreMixin:AddCombatDamage(damage)
     end
 
     self.damageDealtCurrentLife = self.damageDealtCurrentLife + damage
-
-    if not self.damageDealerAwardReceived and self.damageDealtCurrentLife >= kDamageForDamageDealerAward then
-        self:GiveCombatUpgradePoints(kUpgradePointSourceType.DamageDealer)
-        self.damageDealerAwardReceived = true
-    end
-
     self.damageSinceLastXPAward = self.damageSinceLastXPAward + damage
 
     -- if the current damage amount crosses the threshold required, reward a little xp
@@ -236,6 +232,11 @@ function CombatScoreMixin:AddCombatDamage(damage)
         -- add the xp
         self:AddXP(kDamageRequiredXPReward * kDamageXPModifier, kXPSourceType.Damage)
 
+    end
+
+    if not self.damageDealerAwardReceived and self.damageDealtCurrentLife >= kDamageForDamageDealerAward then
+        self:AddXP(CombatPlusPlus_GetSpecialXpAwardAmount(kXPSourceType.DamageDealer), kXPSourceType.DamageDealer)
+        self.damageDealerAwardReceived = true
     end
 
 end

@@ -11,7 +11,7 @@ end
 Client.HookNetworkMessage("CombatScoreUpdate", OnCombatScoreUpdate)
 
 local function OnCombatUpgradePointUpdate(message)
-    CombatScoreDisplayUI_UpgradePointEarned(message.source, message.kill, message.assists)
+    CombatScoreDisplayUI_UpgradePointsEarned(message.source, message.points)
 end
 Client.HookNetworkMessage("CombatUpgradePointUpdate", OnCombatUpgradePointUpdate)
 

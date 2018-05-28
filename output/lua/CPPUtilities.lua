@@ -62,6 +62,12 @@ function CombatPlusPlus_GetRankByXP(xp)
 
 end
 
+function CombatPlusPlus_GetSpecialXpAwardAmount(type)
+
+    return kSpecialXpAwardTable[type]
+
+end
+
 function CombatPlusPlus_GetIsScalableXPType(type)
 
     local scalableXPTypes =
@@ -93,6 +99,12 @@ function CombatPlusPlus_GetDisplayNameForXpSourceType(source)
         displayStr = "Assist"
     elseif source == kXPSourceType.Nearby then
         displayStr = "Nearby Kill"
+    elseif source == kXPSourceType.KillStreak then
+        displayStr = "Special Award: Rampage!"
+    elseif source == kXPSourceType.AssistStreak then
+        displayStr = "Special Award: Got Your Back!"
+    elseif source == kXPSourceType.DamageDealer then
+        displayStr = "Special Award: Damage Dealer!"
     end
 
     return displayStr

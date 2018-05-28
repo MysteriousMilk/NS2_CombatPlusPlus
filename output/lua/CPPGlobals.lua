@@ -19,17 +19,17 @@ kXPSourceType = enum(
     "Nearby",
     "Build",
     "Weld",
-    "Heal"
+    "Heal",
+    "KillStreak",
+    "AssistStreak",
+    "DamageDealer"
 })
 
 -- Enumeration used to indicate the source of the upgrade point award
 kUpgradePointSourceType = enum(
 {
     "LevelUp",
-    "Refund",
-    "KillStreak",
-    "AssistStreak",
-    "DamageDealer"
+    "Refund"
 })
 
 -- Enumeration used to specify the two different operation modes for the builder ability
