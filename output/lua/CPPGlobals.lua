@@ -48,4 +48,9 @@ kCombatUpgradeType = enum(
 	"Class", 
     "Upgrade",
     "Structure"
-}) 
+})
+
+CombatSettings =
+{
+    ["MaxSpawnersPerWave"] = 2
+}

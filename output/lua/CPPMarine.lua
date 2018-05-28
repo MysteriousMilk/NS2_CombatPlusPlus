@@ -52,6 +52,13 @@ function Marine:OnInitialized()
 
 end
 
+-- Weapons can't be dropped anymore
+function Marine:Drop()
+
+    -- just do nothing
+
+end
+
 function Marine:GetArmorLevel()
     return self.armorLevel
 end

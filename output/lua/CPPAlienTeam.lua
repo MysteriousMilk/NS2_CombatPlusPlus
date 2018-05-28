@@ -8,7 +8,7 @@
  * Overriden Functions:
  *  'AlienTeam:SpawnWarmUpStructures' - Spawns a Crag and a Shade during warmup mode.
  *  'AlienTeam:SpawnInitialStructures' - Spawns the initial set of structures for the team.
-]]
+]]   
 
 function AlienTeam:SpawnWarmUpStructures()
 
@@ -60,5 +60,9 @@ function AlienTeam:SpawnInitialStructures(techPoint)
     end
 
     return tower, hive
+
+end
+
+function AlienTeam:UpdateAlienSpectators()
 
 end

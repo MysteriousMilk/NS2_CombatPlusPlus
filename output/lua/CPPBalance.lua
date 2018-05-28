@@ -10,30 +10,25 @@
 
 
 -- ============= ALTERED NS2 VALUES ===================
----- SPAWN TIMES ----
-kMarineRespawnTime = 9
-kAlienSpawnTime = 10
--- changed from 13 to 10
-kEggGenerationRate = 10
-kAlienEggsPerHive = 2
+kAlienEggsPerHive = 0
 -- =========== END ALTERED NS2 VALUES =================
 
 -- ======== COMBAT++ SPECIFIC BALANCE VALUES ==========
 
 kXPTable = {}
 kXPTable[1]  = { Rank = 1,   XP = 0,     MarineName = "Private",             AlienName = "Hatchling",   BaseXpOnKill = 200 }
-kXPTable[2]  = { Rank = 2,   XP = 1000,  MarineName = "Private First Class", AlienName = "Underling",   BaseXpOnKill = 220 }
-kXPTable[3]  = { Rank = 3,   XP = 2500,  MarineName = "Corporal",            AlienName = "Zenoform",    BaseXpOnKill = 240 }
-kXPTable[4]  = { Rank = 4,   XP = 5000,  MarineName = "Sergeant",            AlienName = "Minon",       BaseXpOnKill = 260 }
-kXPTable[5]  = { Rank = 5,   XP = 8000,  MarineName = "Lieutenant",          AlienName = "Ambusher",    BaseXpOnKill = 280 }
-kXPTable[6]  = { Rank = 6,   XP = 12000, MarineName = "Captain",             AlienName = "Hunter",      BaseXpOnKill = 300 }
-kXPTable[7]  = { Rank = 7,   XP = 17000, MarineName = "Commander",           AlienName = "Stalker",     BaseXpOnKill = 320 }
-kXPTable[8]  = { Rank = 8,   XP = 23000, MarineName = "Major",               AlienName = "Devourer",    BaseXpOnKill = 340 }
-kXPTable[9]  = { Rank = 9,   XP = 30000, MarineName = "Field Marshal",       AlienName = "Slaughterer", BaseXpOnKill = 360 }
-kXPTable[10] = { Rank = 10,  XP = 38000, MarineName = "General",             AlienName = "Eliminator",  BaseXpOnKill = 380 }
-kXPTable[11] = { Rank = 11,  XP = 47000, MarineName = "Elite",               AlienName = "Behemoth",    BaseXpOnKill = 400 }
-kXPTable[12] = { Rank = 12,  XP = 57000, MarineName = "Badass",              AlienName = "Overlord",    BaseXpOnKill = 420 }
-kXPTable[13] = { Rank = 13,  XP = 68000, MarineName = "Rambo",               AlienName = "Hive Mind",   BaseXpOnKill = 440 }
+kXPTable[2]  = { Rank = 2,   XP = 500,  MarineName = "Private First Class", AlienName = "Underling",   BaseXpOnKill = 220 }
+kXPTable[3]  = { Rank = 3,   XP = 1000,  MarineName = "Corporal",            AlienName = "Zenoform",    BaseXpOnKill = 240 }
+kXPTable[4]  = { Rank = 4,   XP = 2000,  MarineName = "Sergeant",            AlienName = "Minon",       BaseXpOnKill = 260 }
+kXPTable[5]  = { Rank = 5,   XP = 3000,  MarineName = "Lieutenant",          AlienName = "Ambusher",    BaseXpOnKill = 280 }
+kXPTable[6]  = { Rank = 6,   XP = 5000, MarineName = "Captain",             AlienName = "Hunter",      BaseXpOnKill = 300 }
+kXPTable[7]  = { Rank = 7,   XP = 7000, MarineName = "Commander",           AlienName = "Stalker",     BaseXpOnKill = 320 }
+kXPTable[8]  = { Rank = 8,   XP = 10000, MarineName = "Major",               AlienName = "Devourer",    BaseXpOnKill = 340 }
+kXPTable[9]  = { Rank = 9,   XP = 13000, MarineName = "Field Marshal",       AlienName = "Slaughterer", BaseXpOnKill = 360 }
+kXPTable[10] = { Rank = 10,  XP = 17000, MarineName = "General",             AlienName = "Eliminator",  BaseXpOnKill = 380 }
+kXPTable[11] = { Rank = 11,  XP = 21000, MarineName = "Elite",               AlienName = "Behemoth",    BaseXpOnKill = 400 }
+kXPTable[12] = { Rank = 12,  XP = 26000, MarineName = "Badass",              AlienName = "Overlord",    BaseXpOnKill = 420 }
+kXPTable[13] = { Rank = 13,  XP = 31000, MarineName = "Rambo",               AlienName = "Hive Mind",   BaseXpOnKill = 440 }
 
 -- the highest rank the player can reach
 kMaxCombatRank = table.maxn(kXPTable)
@@ -133,3 +128,18 @@ kScanAbilityCooldown = 90
 
 -- Rate at which the Hive will 'Auto Cyst'
 kHiveAutoCystFrequency = 40
+
+-- respawn variables
+kCombatRespawnTimer = 12
+kCombatOvertimeRespawnTimer = 16
+kSpawnMaxRetries = 50
+kSpawnMinDistance = 2
+kSpawnMaxDistance = 25
+kSpawnMaxVertical = 30
+kSpawnGestateTime = 0.5
+
+-- spawn protection
+kCombatSpawnProtectDelay = 0.1
+kCombatMarineSpawnProtectTime = 2
+kNanoShieldDuration = kCombatMarineSpawnProtectTime 
+kCombatAlienSpawnProtectTime = kSpawnGestateTime + 2
