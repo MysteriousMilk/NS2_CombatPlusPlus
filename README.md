@@ -8,6 +8,16 @@ The intent of this mod is to bring back a gameplay type using the orignial Natur
 Check out the issues backlog.  If something is marked **Help Wanted**, then feel free to implement it and send me a pull request.
 
 ## Change Log
+**5/27/2018** - Respawn Improvements
+
+    > Updated respawn code to mimic Combat Classic wave spawning. The number of players that spawn each wave is controlled through a variable that will be made available in a config later.
+
+    > Moved over spawn protection code from Combat Classic
+
+    > Fixed isssue with advanced metabolize not working
+
+    > Fixed issue #41 that caused the server to crash with "too many entities"
+    
 **5/25/2018** - Alien Abilities
 
     > Alien abilities can now be purchased as upgrades from the Alien Buy Menu
