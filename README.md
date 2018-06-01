@@ -1,5 +1,5 @@
 # NS2 Combat++
-**Version 0.3 Alpha**
+**Version 0.4 Alpha**
 
 ## Overview
 The intent of this mod is to bring back a gameplay type using the orignial Natural Selection 1 Combat Mod for primary insiration, use the [Natural Selection 2 Combat Mod](https://github.com/AlexHayton/NS2Combat) as a reference and possibly incorporate some ideas from the Combat Standalone (placing structures, etc).  Seeing as how the title is still 'Combat', I'd like to keep that original gametype feel as much as possible (individual xp, no commanders), an not alter the lifeform, gun, or game physics as many players use combat for practicing for the vanilla game.
