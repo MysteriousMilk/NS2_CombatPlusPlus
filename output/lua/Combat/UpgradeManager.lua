@@ -6,8 +6,6 @@
  * Base Upgrade Manager for Combat++.
 ]]
 
-Script.Load("lua/Combat/UpgradeTree.lua")
-
 class 'UpgradeManager'
 
 function UpgradeManager:Initialize()

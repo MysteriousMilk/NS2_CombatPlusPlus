@@ -1,7 +1,3 @@
-Script.Load("lua/Combat/UpgradeManager.lua")
-Script.Load("lua/Combat/UpgradeData.lua")
-Script.Load("lua/CPPUtilities.lua")
-
 class 'CombatAlienUpgradeManager' (UpgradeManager)
 
 function CombatAlienUpgradeManager:CreateUpgradeTree()

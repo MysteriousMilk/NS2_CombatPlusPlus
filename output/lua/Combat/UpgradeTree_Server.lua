@@ -5,7 +5,7 @@ function UpgradeTree:SendFullTree(player)
     if self.complete then
 
         Server.SendNetworkMessage(player, "ClearUpgradeTree", {}, true)
-
+        
         for _, nodeTechId in ipairs(self.techIdList) do
 
             local node = self:GetNode(nodeTechId)

@@ -6,7 +6,7 @@ CombatMessageUI.kXpDisplayPopTimer = 0.1
 CombatMessageUI.kXpDisplayFadeoutTimer = 2
 CombatMessageUI.kXpDisplayFontHeight = 100
 CombatMessageUI.kXpDisplayMinFontHeight = 80
-CombatMessageUI.kMessageTimer = 1.25
+CombatMessageUI.kMessageTimer = 1.4
 CombatMessageUI.kTimeToDisplayFinalAccumulatedValue = 1.25
 
 local kAccumulatingSourceTypes = { [kXPSourceType.Damage] = true, [kXPSourceType.Weld] = true, [kXPSourceType.Heal] = true }
@@ -29,7 +29,7 @@ function CombatMessageUI:Initialize()
     self.visible = true
     self.lastQueueIndex = 0
 
-    local textColor = ConditionalValue(PlayerUI_GetTeamType() == kAlienTeamType, kAlienFontColor, Color(0.2, 0.71, 0.86, 1))
+    self.textColor = ConditionalValue(PlayerUI_GetTeamType() == kAlienTeamType, kAlienFontColor, Color(0.2, 0.71, 0.86, 1))
 
     self.xpDisplay = GUIManager:CreateTextItem()
     self.xpDisplay:SetFontName(Fonts.kAgencyFB_Medium)
@@ -38,7 +38,7 @@ function CombatMessageUI:Initialize()
     self.xpDisplay:SetPosition(GUIScale(Vector(-425, -480, 0)))
     self.xpDisplay:SetTextAlignmentX(GUIItem.Align_Center)
     self.xpDisplay:SetTextAlignmentY(GUIItem.Align_Min)
-    self.xpDisplay:SetColor(textColor)
+    self.xpDisplay:SetColor(self.textColor)
     self.xpDisplay:SetIsVisible(false)
 
     self.messages = {}
@@ -54,7 +54,7 @@ function CombatMessageUI:Initialize()
         textItem:SetPosition(GUIScale(Vector(-365, -480 + ((i-1) * 15), 0)))
         textItem:SetTextAlignmentX(GUIItem.Align_Min)
         textItem:SetTextAlignmentY(GUIItem.Align_Min)
-        textItem:SetColor(textColor)
+        textItem:SetColor(self.textColor)
         textItem:SetScale(Vector(0.7, 0.7, 0.7))
         textItem:SetIsVisible(false)
 
@@ -100,10 +100,10 @@ function CombatMessageUI:ResetAnimationSequence()
 
     -- Restart the animation sequence.
     self.xpDisplayPopupTime = CombatMessageUI.kXpDisplayPopTimer
+    self.xpDisplay:SetColor(self.textColor)
     self.isAnimating = true
     self.xpDisplayPopdownTime = 0
     self.xpDisplayFadeoutTime = 0
-    self.xpSinceReset = 0
 
 end
 
@@ -125,6 +125,7 @@ function CombatMessageUI:UpdateXpDisplay(deltaTime, xp)
 
     if self.xpDisplayFadeoutTime > 0 then
 
+        self.isAnimating = false
         self.xpDisplayFadeoutTime = math.max(0, self.xpDisplayFadeoutTime - deltaTime)
         local fadeRate = 1 - (self.xpDisplayFadeoutTime / CombatMessageUI.kXpDisplayFadeoutTimer)
         local fadeColor = self.xpDisplay:GetColor()
@@ -133,7 +134,7 @@ function CombatMessageUI:UpdateXpDisplay(deltaTime, xp)
         self.xpDisplay:SetColor(fadeColor)
         if self.xpDisplayFadeoutTime == 0 then
             self.xpDisplay:SetIsVisible(false)
-            self.isAnimating = false
+            self.xpSinceReset = 0
         end
 
     end
@@ -161,7 +162,7 @@ function CombatMessageUI:UpdateXpDisplay(deltaTime, xp)
 
     end
 
-    if self.lastQueueIndex > 0 then
+    if self.lastQueueIndex == 0 and self.xpDisplayFadeoutTime == 0 then
         self.xpDisplayFadeoutTime = CombatMessageUI.kXpDisplayFadeoutTimer
     end
 
@@ -196,6 +197,7 @@ function CombatMessageUI:UpdateMessageDisplay(deltaTime)
             self.messages[self.lastQueueIndex].Xp = 0
             self.messages[self.lastQueueIndex].Source = nil
             self.messages[self.lastQueueIndex].TextItem:SetIsVisible(false)
+            self.xpDisplayFadeoutTime = CombatMessageUI.kXpDisplayFadeoutTimer
 
             self.lastQueueIndex = self.lastQueueIndex - 1
             self.timeInQueue = 0

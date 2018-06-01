@@ -1,4 +1,9 @@
 <game>
 	<name>combat++</name>
-	<description>Natural Selection 2 - Combat++</description>
+	<description>Natural Selection 2 (Combat++)</description>
+	<client>lua/Client.lua</client>
+	<server>lua/Server.lua</server>
+	<predict>lua/Predict.lua</predict>
+	<loading>lua/Loading.lua</loading>
+	<soundinfo>sound/NS2.soundinfo</soundinfo>
 </game>
