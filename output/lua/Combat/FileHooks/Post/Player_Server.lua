@@ -13,17 +13,6 @@
  *  'Player:ProcessBuyAction' - Uses the Upgrade Manager to purchase new upgrades.
 ]]
 
--- local ns2_Player_OnClientConnect = Player.OnClientConnect
--- function Player:OnClientConnect(client)
-
---     ns2_Player_OnClientConnect(self, client)
-
---     if GetGamerules():GetGameStarted() then
---         self.awaitingFirstJoin = true
---     end
-
--- end
-
 local ns2_Player_Reset = Player.Reset
 function Player:Reset()
 
@@ -59,8 +48,7 @@ function Player:CopyPlayerDataFrom(player)
     self.gotSpawnProtect = player.gotSpawnProtect
     self.activeSpawnProtect = player.activeSpawnProtect
     self.deactivateSpawnProtect = player.deactivateSpawnProtect
-    self.eligibleForLateJoinXp = player.eligibleForLateJoinXp
-
+    
 end
 
 -- A table of tech Ids is passed in.

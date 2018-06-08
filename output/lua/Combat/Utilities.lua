@@ -359,6 +359,12 @@ function CombatPlusPlus_GetStructureCountForTeam(techId, teamNumber)
 
 end
 
+function GetIsPlayingTeam(teamNumber)
+
+    return teamNumber == kTeam1Index or teamNumber == kTeam2Index
+
+end
+
 function GetTimeDigital(timeInSeconds, showMinutes, showMilliseconds)
 
     local timeLeftText = ""
@@ -423,28 +429,28 @@ function GetIsOvertime()
 
 end
 
-function CreateTechEntity( techPoint, techId, rightOffset, forwardOffset, teamType )
+-- function CreateTechEntity( techPoint, techId, rightOffset, forwardOffset, teamType )
 
-    local origin = techPoint:GetOrigin() + Vector(0, 2, 0)
-    local right = techPoint:GetCoords().xAxis
-    local forward = techPoint:GetCoords().zAxis
-    local position = origin + right * rightOffset + forward * forwardOffset
+--     local origin = techPoint:GetOrigin() + Vector(0, 2, 0)
+--     local right = techPoint:GetCoords().xAxis
+--     local forward = techPoint:GetCoords().zAxis
+--     local position = origin + right * rightOffset + forward * forwardOffset
 
-    local trace = Shared.TraceRay(position, position - Vector(0, 10, 0), CollisionRep.Move, PhysicsMask.All)
-    if trace.fraction < 1 then
-        position = trace.endPoint
-    end
+--     local trace = Shared.TraceRay(position, position - Vector(0, 10, 0), CollisionRep.Move, PhysicsMask.All)
+--     if trace.fraction < 1 then
+--         position = trace.endPoint
+--     end
 
-    local newEnt = CreateEntityForTeam(techId, position, teamType, nil)
-    if HasMixin( newEnt, "Construct" ) then
-        SetRandomOrientation( newEnt )
-        newEnt:SetConstructionComplete()
-    end
+--     local newEnt = CreateEntityForTeam(techId, position, teamType, nil)
+--     if HasMixin( newEnt, "Construct" ) then
+--         SetRandomOrientation( newEnt )
+--         newEnt:SetConstructionComplete()
+--     end
 
-    if HasMixin( newEnt, "Live" ) then
-        newEnt:SetIsAlive(true)
-    end
+--     if HasMixin( newEnt, "Live" ) then
+--         newEnt:SetIsAlive(true)
+--     end
 
-    return newEnt
+--     return newEnt
 
-end
+-- end

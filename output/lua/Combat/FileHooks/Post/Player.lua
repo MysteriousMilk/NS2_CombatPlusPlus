@@ -7,6 +7,7 @@
 ]]
 
 Script.Load("lua/Combat/CombatScoreMixin.lua")
+Script.Load("lua/Combat/CombatDataMixin.lua")
 
 local networkVarsEx =
 {
@@ -19,6 +20,7 @@ local ns2_Player_OnCreate = Player.OnCreate
 function Player:OnCreate()
 
     InitMixin(self, CombatScoreMixin)
+    InitMixin(self, CombatDataMixin)
 
     ns2_Player_OnCreate(self)
 
@@ -32,7 +34,6 @@ function Player:OnCreate()
         self.gotSpawnProtect = nil
         self.activeSpawnProtect = false
         self.deactivateSpawnProtect = nil
-        self.eligibleForLateJoinXp = true
 
     end
 
@@ -91,6 +92,17 @@ function Player:OnStructureCreated(structure)
     end
 
     self.currentCreateStructureTechId = kTechId.None
+
+end
+
+local ns2_Player_OnInitialSpawn = Player.OnInitialSpawn
+function Player:OnInitialSpawn(techPointOrigin)
+
+    ns2_Player_OnInitialSpawn(self, techPointOrigin)
+
+    if GetIsPlayingTeam(self:GetTeamNumber()) then
+        self:MakeIneligibleForLateJoinXp()
+    end
 
 end
 

@@ -92,7 +92,10 @@ end
 
 function GameStatusHUD:Uninitialize()
 
-	GUI.DestroyItem(self.timeRemainingText)
+    GUIAnimatedScript.Uninitialize(self)
+    
+    GUI.DestroyItem(self.timeRemainingText)
+    GUI.DestroyItem(self.timeRemainingTextShadow)
     GUI.DestroyItem(self.background)
 
 end
