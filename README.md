@@ -8,6 +8,8 @@ The intent of this mod is to bring back a gameplay type using the orignial Natur
 Check out the issues backlog.  If something is marked **Help Wanted**, then feel free to implement it and send me a pull request.
 
 ## Change Log
+**6/8/2018** - Added rejoin penalty and free spawn time at beginning of match.
+
 **6/1/2018** - Refactored code to use Ghoul's folder hooks method.  Added round time (with overtime), team rebalance xp, and late join xp.
 
 **5/27/2018** - Respawn Improvements
