@@ -12,12 +12,12 @@
 
 function AlienTeam:SpawnWarmUpStructures()
 
-    local techPoint = self.startTechPoint
+    -- local techPoint = self.startTechPoint
 
-    if not Shared.GetCheatsEnabled() and #self.warmupStructures == 0 then
-        self.warmupStructures[#self.warmupStructures + 1] = CreateTechEntity(techPoint, kTechId.Crag, 3.5, -2, kAlienTeamType)
-        self.warmupStructures[#self.warmupStructures + 1] = CreateTechEntity(techPoint, kTechId.Shade, -3.5, 2, kAlienTeamType)
-    end
+    -- if not Shared.GetCheatsEnabled() and #self.warmupStructures == 0 then
+    --     self.warmupStructures[#self.warmupStructures + 1] = CreateTechEntity(techPoint, kTechId.Crag, 3.5, -2, kAlienTeamType)
+    --     self.warmupStructures[#self.warmupStructures + 1] = CreateTechEntity(techPoint, kTechId.Shade, -3.5, 2, kAlienTeamType)
+    -- end
 
 end
 

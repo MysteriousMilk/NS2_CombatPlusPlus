@@ -42,9 +42,7 @@ function PlayingTeam:Update(timePassed)
 			respawnTimer = kCombatOvertimeRespawnTimer
         end
         
-		local timeToSpawn = (self.timeSinceLastSpawn >= respawnTimer)
-        
-        if timeToSpawn then
+        if self.timeSinceLastSpawn >= respawnTimer then
             
 			-- Reset the spawn timer.
 			self:ResetSpawnTimer()
@@ -81,9 +79,29 @@ function PlayingTeam:Update(timePassed)
                 end
 
             end
-            
+  
         else
             
+            if GetGamerules():GetIsFreeSpawnTime() then
+
+                -- Loop through the respawn queue and spawn any players that have not yet intially spawned
+                for i = 1, #self.respawnQueue do
+
+                    local playerid = self.respawnQueue[i]
+                    local thisPlayer = Shared.GetEntity(playerid)
+
+                    if thisPlayer and thisPlayer:IsInitialSpawn() then
+
+                        if not self:SpawnPlayer(thisPlayer) then
+                            break
+                        end
+
+                    end
+
+                end
+
+            end
+
 			-- Send any 'waiting to respawn' messages (normally these only go to AlienSpectators)
             for _, player in ipairs(self:GetPlayers()) do
                 
@@ -160,14 +178,7 @@ function PlayingTeam:SpawnPlayer(player)
         newPlayer.isSpawning = false
 
         -- check for late join xp eligibility
-        if GetGamerules():GetGameStarted() and newPlayer.eligibleForLateJoinXp then
-            local averageXp = CombatPlusPlus_GetTeamAverageXp(newPlayer:GetTeamNumber(), newPlayer)
-            newPlayer:BalanceXp(averageXp)
-        end
-
-        if newPlayer:GetTeamNumber() == kTeam1Index or newPlayer:GetTeamNumber() == kTeam2Index then
-            newPlayer.eligibleForLateJoinXp = false
-        end
+        newPlayer:CheckLateJoinXp()
 
     else
 
@@ -205,7 +216,11 @@ function PlayingTeam:RespawnPlayer(player, origin, angles)
     else
         Print("PlayingTeam:RespawnPlayer(): No initial tech point.")
     end
-    
+
+    if success then
+        player.CombatData.IsInitialSpawn = false
+    end
+
     return success
     
 end

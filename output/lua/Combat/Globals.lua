@@ -53,8 +53,19 @@ kCombatUpgradeType = enum(
 
 CombatSettings =
 {
+    -- Game time limit
     ["TimeLimit"] = 1500,
+
+    -- Number of upgrade points the player starts with at the beginning of the round
     ["UpgradePointsAtStart"] = 1,
+
+    -- Number of players that spawn each wave
     ["MaxSpawnersPerWave"] = 2,
-    ["PenaltyLevel"] = 1
+
+    -- Number of levels to penalize a player for leaving and rejoining the same team
+    ["PenaltyLevel"] = 1,
+
+    -- Amount of time at the beginning of the game tha new players can join and instanly 
+    -- respawn without getting stuck in the queue waiting on the next wave
+    ["FreeSpawnTime"] = 60
 }

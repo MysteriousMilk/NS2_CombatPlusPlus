@@ -30,6 +30,16 @@ if Server then
 
     end
 
+    function NS2Gamerules:GetIsFreeSpawnTime()
+
+        if self:GetGameStarted() then
+            return Shared.GetTime() - self:GetGameStartTime() <= CombatSettings["FreeSpawnTime"]
+        end
+
+        return false
+
+    end
+
     local ns2_NS2Gamerules_OnClientDisconnect = NS2Gamerules.OnClientDisconnect
     function NS2Gamerules:OnClientDisconnect(client)
 
@@ -128,6 +138,10 @@ if Server then
         
     end
 
+    function NS2Gamerules:GetCanSpawnImmediately()
+        return not self:GetGameStarted() or Shared.GetCheatsEnabled()
+    end
+
     local ns2_NS2GameRules_JoinTeam = NS2Gamerules.JoinTeam
     function NS2Gamerules:JoinTeam(player, newTeamNumber, force)
 
@@ -142,37 +156,38 @@ if Server then
         success, newPlayer = ns2_NS2GameRules_JoinTeam(self, player, newTeamNumber, force)
 
         if success then
-        
-            local oldRank = newPlayer:GetCombatRank()
 
-            -- reset the player's upgrades
-            if newPlayer.UpgradeManager then
+            -- Rejoin penalty only applies to a playing team.
+            -- Only update last team if it is a playing team that the player is joining.
+            if GetIsPlayingTeam(newTeamNumber) then
 
-                -- reset xp
-                newPlayer:ResetCombatScores()
-                
-                -- reset upgrade manager
-                newPlayer.UpgradeManager:SetPlayer(newPlayer)
-                newPlayer.UpgradeManager:Reset()
-                newPlayer.UpgradeManager:UpdateUnlocks(false)
-                newPlayer.UpgradeManager:GetTree():SendFullTree(newPlayer)
+                local oldRank = newPlayer:GetCombatRank()
+
+                -- reset the player's upgrades
+                if newPlayer.UpgradeManager then
+
+                    -- reset xp
+                    newPlayer:ResetCombatScores()
+                    
+                    -- reset upgrade manager
+                    newPlayer.UpgradeManager:SetPlayer(newPlayer)
+                    newPlayer.UpgradeManager:Reset()
+                    newPlayer.UpgradeManager:UpdateUnlocks(false)
+                    newPlayer.UpgradeManager:GetTree():SendFullTree(newPlayer)
+
+                end
+
+                if oldTeamNumber ~= newTeamNumber then
+
+                    -- kill any structures the player owned on their old team
+                    player:KillOwnedStructures()
+
+                end
+
+                newPlayer:CheckRejoinPenalty(newTeamNumber, oldRank)
+                newPlayer:SetLastTeam(newTeamNumber)
 
             end
-
-            if oldTeamNumber ~= newTeamNumber then
-
-                -- kill any structures the player owned on their old team
-                player:KillOwnedStructures()
-
-            end
-
-            -- if oldTeamNumber == newTeamNumber and oldRank >= CombatSettings["PenaltyLevel"] + 1 then
-                
-            --     -- enact penalty for leaving and rejoining the same team
-            --     local newRank = oldRank - CombatSettings["PenaltyLevel"]
-            --     newPlayer:GiveCombatRank(newRank)
-
-            -- end
 
         end
 
@@ -192,25 +207,25 @@ if Server then
 
     end
 
-    local ns2_SetGameState = NS2Gamerules.SetGameState
-    function NS2Gamerules:SetGameState(state)
+--     local ns2_SetGameState = NS2Gamerules.SetGameState
+--     function NS2Gamerules:SetGameState(state)
 
 
-        -- Reset player upgrade trees
-        if state ~= self.gameState and state == kGameState.Started then
+--         -- Reset player upgrade trees
+--         if state ~= self.gameState and state == kGameState.Started then
             
-            local function MakeIneligibleForLateJoinXp(player)
-                player.eligibleForLateJoinXp = false
-            end
+--             local function MakeIneligibleForLateJoinXp(player)
+--                 player.eligibleForLateJoinXp = false
+--             end
 
-            self:GetTeam1():ForEachPlayer(MakeIneligibleForLateJoinXp)
-            self:GetTeam2():ForEachPlayer(MakeIneligibleForLateJoinXp)
+--             self:GetTeam1():ForEachPlayer(MakeIneligibleForLateJoinXp)
+--             self:GetTeam2():ForEachPlayer(MakeIneligibleForLateJoinXp)
 
-        end
+--         end
 
-        ns2_SetGameState(self, state)
+--         ns2_SetGameState(self, state)
 
-end
+-- end
 
     function NS2Gamerules:CheckGameStart()
 
