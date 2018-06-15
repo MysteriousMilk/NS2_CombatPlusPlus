@@ -104,7 +104,7 @@ function CombatScoreMixin:SetCombatUpgradePoints(upgradePoints)
     self.combatUpgradePoints = Clamp(upgradePoints, 0, kMaxCombatUpgradePoints)
 end
 
-function CombatScoreMixin:GiveCombatUpgradePoints(source, points)
+function CombatScoreMixin:GiveCombatUpgradePoints(source, points, notify)
 
     if Server and not GetGameInfoEntity():GetWarmUpActive() then
 
@@ -114,8 +114,10 @@ function CombatScoreMixin:GiveCombatUpgradePoints(source, points)
 
         self.combatUpgradePoints = Clamp(self.combatUpgradePoints + points, 0, kMaxCombatUpgradePoints)
 
-        -- notify the client about the new upgrade points
-        Server.SendNetworkMessage(Server.GetOwner(self), "CombatUpgradePointUpdate", { source = source, points = points }, true)
+        if notify then
+            -- notify the client about the new upgrade points
+            Server.SendNetworkMessage(Server.GetOwner(self), "CombatUpgradePointUpdate", { source = source, points = points }, true)
+        end
 
     end
 
@@ -132,6 +134,13 @@ function CombatScoreMixin:SpendUpgradePoints(pointsToSpend)
         self.combatUpgradePoints = Clamp(self.combatUpgradePoints - pointsToSpend, 0, kMaxCombatUpgradePoints)
 
     end
+
+end
+
+function CombatScoreMixin:Refund(techId, notify)
+
+    local cost = LookupUpgradeData(techId, kUpDataCostIndex)
+    self:GiveCombatUpgradePoints(kUpgradePointSourceType.Refund, cost, notify)
 
 end
 

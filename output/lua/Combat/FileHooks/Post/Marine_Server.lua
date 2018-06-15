@@ -14,18 +14,18 @@ function Marine:CopyPlayerDataFrom(player)
 
 end
 
-function Marine:InitWeapons()
+-- function Marine:InitWeapons()
 
-    Player.InitWeapons(self)
+--     Player.InitWeapons(self)
 
-    self:GiveItem(Rifle.kMapName)
-    self:GiveItem(Axe.kMapName)
-    self:GiveItem(Builder.kMapName)
+--     self:GiveItem(Rifle.kMapName)
+--     self:GiveItem(Axe.kMapName)
+--     self:GiveItem(Builder.kMapName)
 
-    self:SetQuickSwitchTarget(Axe.kMapName)
-    self:SetActiveWeapon(Rifle.kMapName)
+--     self:SetQuickSwitchTarget(Axe.kMapName)
+--     self:SetActiveWeapon(Rifle.kMapName)
 
-end
+--end
 
 local ns2_Marine_OnKill = Marine.OnKill
 function Marine:OnKill(attacker, doer, point, direction)

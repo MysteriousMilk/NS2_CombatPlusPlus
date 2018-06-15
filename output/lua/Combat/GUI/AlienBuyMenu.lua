@@ -818,6 +818,7 @@ end
 function AlienBuyMenu:_InitializeUpgrades()
 
     local categories = GetUpgradeTree():GetUpgradesByCategory("UpgradeType")
+    table.sort(categories, SortByPriority)
 
     local binSize = (self.backgroundCenteredArea:GetSize().x - (AlienBuyMenu.kUpgradesTitleOffest.x * 2)) / #categories
 
@@ -856,6 +857,7 @@ function AlienBuyMenu:_InitializeUpgrades()
         local parentIconPos = Vector(parentIconOffsetX, AlienBuyMenu.kUpgradeParentIconOfffsetY, 0)
 
         local upsByCategory = GetUpgradeTree():GetUpgradesByPrereq(categories[i])
+        table.sort(upsByCategory, SortByPriority)
 
         for j = 1, #upsByCategory do
 
@@ -869,7 +871,7 @@ function AlienBuyMenu:_InitializeUpgrades()
             self.backgroundCenteredArea:AddChild(line)
 
             local subTechButton = CreateTechButton(self, upsByCategory[j], iconPos)
-            subTechButton:SetToolTip(GetTooltipInfoText(upsByCategory[i]))
+            subTechButton:SetToolTip(GetTooltipInfoText(upsByCategory[j]))
             self.backgroundCenteredArea:AddChild(subTechButton.Icon)
             table.insert(self.techButtons, subTechButton)
 

@@ -13,19 +13,19 @@ function CombatAlienUpgradeManager:CreateUpgradeTree()
     self.Upgrades:AddUpgradeNode(kTechId.Spur, kTechId.None, nil)
     self.Upgrades:AddUpgradeNode(kTechId.Adrenaline, kTechId.Spur, nil)
     self.Upgrades:AddUpgradeNode(kTechId.Celerity, kTechId.Spur, nil)
-    self.Upgrades:AddUpgradeNode(kTechId.Silence, kTechId.Spur, nil)
+    self.Upgrades:AddUpgradeNode(kTechId.Crush, kTechId.Spur, nil)
 
     -- veil upgrades
     self.Upgrades:AddUpgradeNode(kTechId.Veil, kTechId.None, nil)
     self.Upgrades:AddUpgradeNode(kTechId.Aura, kTechId.Veil, nil)
     self.Upgrades:AddUpgradeNode(kTechId.Focus, kTechId.Veil, nil)
-    self.Upgrades:AddUpgradeNode(kTechId.Vampirism, kTechId.Veil, nil)
+    self.Upgrades:AddUpgradeNode(kTechId.Camouflage, kTechId.Veil, nil)
 
     -- shell upgrades
     self.Upgrades:AddUpgradeNode(kTechId.Shell, kTechId.None, nil)
     self.Upgrades:AddUpgradeNode(kTechId.Regeneration, kTechId.Shell, nil)
     self.Upgrades:AddUpgradeNode(kTechId.Carapace, kTechId.Shell, nil)
-    self.Upgrades:AddUpgradeNode(kTechId.Crush, kTechId.Shell, nil)
+    self.Upgrades:AddUpgradeNode(kTechId.Vampirism, kTechId.Shell, nil)
 
     -- skulk upgrades
     self.Upgrades:AddUpgradeNode(kTechId.Leap, kTechId.Skulk, nil)
@@ -267,5 +267,27 @@ function CombatAlienUpgradeManager:PostGiveUpgrades(techIds, player, cost, overr
     if not success then
         player:SetCombatUpgradePoints(oldUpgradePointAmount)
     end
+
+end
+
+function CombatAlienUpgradeManager:ApplyAllUpgrades(player)
+
+    if player:GetTechId() ~= kTechId.Skulk then
+
+        for _, childTechId in ipairs(self.Upgrades:GetUpgradesByPrereq(kTechId.Skulk)) do
+
+            if LookupUpgradeData(childTechId, kUpDataPersistIndex) then
+                -- unpurchase
+                self.Upgrades:SetIsPurchased(childTechId, false)
+
+                -- refund
+                player:Refund(childTechId, false)
+            end
+
+        end
+
+    end
+
+    UpgradeManager.ApplyAllUpgrades(self, player)
 
 end

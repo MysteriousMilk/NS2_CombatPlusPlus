@@ -429,6 +429,12 @@ function GetIsOvertime()
 
 end
 
+function SortByPriority(techId1, techId2)
+
+    return LookupUpgradeData(techId1, kUpDataPriorityIndex) <  LookupUpgradeData(techId2, kUpDataPriorityIndex)
+    
+end
+
 -- function CreateTechEntity( techPoint, techId, rightOffset, forwardOffset, teamType )
 
 --     local origin = techPoint:GetOrigin() + Vector(0, 2, 0)

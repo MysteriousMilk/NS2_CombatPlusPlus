@@ -92,6 +92,10 @@ end
 
 local function BuyJetpack(techId, player)
 
+    if player:isa("JetpackMarine") or player:isa("Exo") then
+        return true, nil
+    end
+
     local activeWeapon = player:GetActiveWeapon()
     local activeWeaponMapName
     local health = player:GetHealth()
@@ -187,10 +191,22 @@ end
 
 local function BuyItemUpgrade(techId, player)
 
+    if player:isa("Exo") then
+        return true, nil
+    end
+
     local success = false
     local mapName = LookupTechData(techId, kTechDataMapName)
 
     if mapName then
+
+        -- If the player already has this weapon, no need to give it again
+        local hasWeapon = player:GetWeapon(mapName)
+        if hasWeapon then
+            Shared.Message("Player already has " .. mapName)
+            -- player already has this weapon
+            return true
+        end
 
         -- Need to remove the old primary weapon if we are replacing it with a 
         -- new primary.
@@ -209,11 +225,6 @@ local function BuyItemUpgrade(techId, player)
         local newItem = player:GiveItem(mapName)
 
         if newItem then
-
-            if newItem.UpdateWeaponSkins then
-                -- Apply weapon variant
-                newItem:UpdateWeaponSkins( player:GetClient() )
-            end
 
             StartSoundEffectAtOrigin(Marine.kGunPickupSound, player:GetOrigin())
             ConfigureLoadout(player)

@@ -25,6 +25,12 @@ function UpgradeNode:GetTechId()
 
 end
 
+function UpgradeNode:GetType()
+
+	return self.type
+
+end
+
 function UpgradeNode:GetIsUnlocked()
 
 	return self.isUnlocked

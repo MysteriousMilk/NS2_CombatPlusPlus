@@ -63,10 +63,7 @@ if Server then
             local owner = targetEntity:GetOwner()
 
             if owner and owner:isa("Player") then
-
-                local cost = LookupUpgradeData(techId, kUpDataCostIndex)
-                owner:GiveCombatUpgradePoints(cost, kUpgradePointSourceType.Refund)
-
+                owner:Refund(techId, true)
             end
 
         end

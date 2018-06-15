@@ -132,7 +132,7 @@ function UpgradeManager:GiveUpgrades(techIdList, player, overrideCost)
                 -- update the tree and spend the points
                 if newPlayerClass then
                     newPlayerClass.UpgradeManager:PostGiveUpgrades(techIdList, newPlayerClass, totalCost, overrideCost)
-                    newPlayerClass.UpgradeManager:SpawnUpgrades(newPlayerClass)
+                    newPlayerClass.UpgradeManager:ApplyAllUpgrades(newPlayerClass)
                 else
                     self:PostGiveUpgrades(techIdList, player, totalCost, overrideCost)
                 end
@@ -174,6 +174,10 @@ function UpgradeManager:UpgradeLogic(techIdList, currNode, player, overrideCost)
 
         success = success and logicSuccess
 
+        if newPlayerClass then
+            break
+        end
+
     end
 
     return success, newPlayerClass
@@ -190,28 +194,29 @@ function UpgradeManager:PostGiveUpgrades(techIds, player, cost, overrideCost)
         local node = self.Upgrades:GetNode(techId)
 
         node:SetIsUnlocked(true)
-        self.Upgrades:SetIsPurchased(node:GetTechId(), true)
+        self.Upgrades:SetIsPurchased(techId, true)
 
-        --local refundAmount = 0
+        local refundAmount = 0
 
         -- unpurchase any mutually exclusive upgrades for this upgrade
         for _, mutuallyExculsiveTechId in ipairs(LookupUpgradeData(techId, kUpDataMutuallyExclusiveIndex)) do
 
-            --if self.Upgrades:GetIsPurchased(mutuallyExculsiveTechId) then
+            if self.Upgrades:GetIsPurchased(mutuallyExculsiveTechId) then
 
                 -- unpurchase mutually exclusive upgrade
                 self.Upgrades:SetIsPurchased(mutuallyExculsiveTechId, false)
 
                 -- calculate refund amount
-                --refundAmount = Clamp(refundAmount, 0, LookupUpgradeData(mutuallyExculsiveTechId, kUpDataCostIndex) + refundAmount)
+                refundAmount = LookupUpgradeData(mutuallyExculsiveTechId, kUpDataCostIndex) + refundAmount
+                refundAmount = Clamp(refundAmount, 0, kMaxCombatRank + CombatSettings["UpgradePointsAtStart"])
 
-            --end
+            end
 
         end
 
-        -- if refundAmount > 0 then
-        --     player:GiveCombatSkillPoints(refundAmount, kUpgradePointSourceType.Refund)
-        -- end
+        if refundAmount > 0 then
+            player:GiveCombatUpgradePoints(kUpgradePointSourceType.Refund, refundAmount, true)
+        end
 
         if not overrideCost then
             local cost = LookupUpgradeData(node:GetTechId(), kUpDataCostIndex)
@@ -223,28 +228,50 @@ function UpgradeManager:PostGiveUpgrades(techIds, player, cost, overrideCost)
 end
 
 --[[
-    Called every time the player spawns.
+    Applies all purchased, persistent upgrades to the player and refunds any purchased
+    upgrades that are not persistent.
 ]]
-function UpgradeManager:SpawnUpgrades(player)
+function UpgradeManager:ApplyAllUpgrades(player)
 
     -- set everything back to 'not purchased' at spawn except persist items
     for k, node in ipairs(self.Upgrades:GetPurchasedUpgrades()) do
 
-        if not LookupUpgradeData(node:GetTechId(), kUpDataPersistIndex) then
+        if player:GetTechId() ~= kTechId.Exo and
+           node:GetTechId() ~= player:GetTechId() and not
+           LookupUpgradeData(node:GetTechId(), kUpDataPersistIndex) then
+
+            -- unpurchase
             self.Upgrades:SetIsPurchased(node:GetTechId(), false)
+
+            -- refund
+            player:Refund(node:GetTechId(), false)
+
         end
 
     end
 
+    local classTechId = kTechId.None
     local upgradeIds = {}
+
     for k, node in ipairs(self.Upgrades:GetPurchasedPersistentUpgrades()) do
 
         local techId = node:GetTechId()
         
         if techId ~= player:GetTechId() then
-            table.insert(upgradeIds, techId)
+
+            if node:GetType() == kCombatUpgradeType.Class then
+                assert(classTechId == kTechId.None)
+                classTechId = techId
+            else
+                table.insert(upgradeIds, techId)
+            end
+
         end
 
+    end
+
+    if classTechId ~= kTechId.None then
+        table.insert(upgradeIds, 1, classTechId)
     end
 
     self:GiveUpgrades(upgradeIds, player, true)

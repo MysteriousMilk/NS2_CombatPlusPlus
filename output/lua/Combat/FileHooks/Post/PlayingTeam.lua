@@ -158,12 +158,8 @@ function PlayingTeam:SpawnPlayer(player)
         --give spawn protection (dont set the time here, just that spawn protect is active)
         newPlayer:SetSpawnProtect()
 
-        if newPlayer.UpgradeManager then
-            newPlayer.UpgradeManager:SpawnUpgrades(newPlayer)
-        end
-
         -- spawn effect
-        if newPlayer:isa("Marine") or newPlayer:isa("Exo") then
+        if newPlayer:isa("Marine") then
             newPlayer:TriggerEffects("infantry_portal_spawn")
         end
 
@@ -179,6 +175,11 @@ function PlayingTeam:SpawnPlayer(player)
 
         -- check for late join xp eligibility
         newPlayer:CheckLateJoinXp()
+
+        -- do this last because newPlayer can be replace if there is a class upgrade
+        if newPlayer.UpgradeManager then
+            newPlayer.UpgradeManager:ApplyAllUpgrades(newPlayer)
+        end
 
     else
 
