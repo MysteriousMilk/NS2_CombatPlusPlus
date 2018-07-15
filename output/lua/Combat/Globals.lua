@@ -48,6 +48,8 @@ kCombatUpgradeType = enum(
 { 
 	"Class", 
     "Upgrade",
+    "Special",
+    "Passive",
     "Structure"
 })
 

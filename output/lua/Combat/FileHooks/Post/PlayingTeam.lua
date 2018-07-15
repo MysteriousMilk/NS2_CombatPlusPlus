@@ -1,3 +1,26 @@
+local ns2_PlayingTeam_OnInitialized = PlayingTeam.OnInitialized
+function PlayingTeam:OnInitialized()
+
+    ns2_PlayingTeam_OnInitialized(self)
+
+    if Server then
+
+        if not self.UpgradeHelper then
+            self.UpgradeHelper = UpgradeManager()
+        end
+
+        self.UpgradeHelper:Initialize()
+
+    end
+
+end
+
+function PlayingTeam:GetUpgradeHelper()
+
+    return self.UpgradeHelper
+
+end
+
 function PlayingTeam:GetHasTeamLost()
 
     -- Don't bother with the original - we just set our own logic here.
@@ -142,6 +165,7 @@ function PlayingTeam:SpawnPlayer(player)
 
     local success = false
     local newPlayer = nil
+    local intialSpawn = player:IsInitialSpawn()
 
     player.isSpawning = true
 
@@ -165,11 +189,8 @@ function PlayingTeam:SpawnPlayer(player)
 
         newPlayer:TriggerEffects("spawnSoundEffects")
 
-        -- Remove the third-person mode (bug introduced in 216).
+        -- Remove the third-person mode.
         newPlayer:SetCameraDistance(0)
-
-        -- always switch to first weapon
-        newPlayer:SwitchWeapon(1)
 
         newPlayer.isSpawning = false
 
@@ -177,9 +198,7 @@ function PlayingTeam:SpawnPlayer(player)
         newPlayer:CheckLateJoinXp()
 
         -- do this last because newPlayer can be replace if there is a class upgrade
-        if newPlayer.UpgradeManager then
-            newPlayer.UpgradeManager:ApplyAllUpgrades(newPlayer)
-        end
+        self:GetUpgradeHelper():ApplyAllUpgrades(newPlayer)
 
     else
 
@@ -189,6 +208,35 @@ function PlayingTeam:SpawnPlayer(player)
 
     return success
 
+end
+
+--
+-- Transform player to appropriate team respawn class and respawn them at an appropriate spot for the team.
+-- Pass nil origin/angles to have spawn entity chosen.
+--
+function PlayingTeam:ReplaceRespawnPlayer(player, origin, angles, mapName)
+
+    local spawnMapName = self.respawnEntity
+    
+    if mapName ~= nil then
+        spawnMapName = mapName
+    end
+    
+    local newPlayer = player:Replace(spawnMapName, self:GetTeamNumber(), false, origin)
+    
+    -- If we fail to find a place to respawn this player, put them in the Team's
+    -- respawn queue.
+    if not self:RespawnPlayer(newPlayer, origin, angles) then
+    
+        newPlayer = newPlayer:Replace(newPlayer:GetDeathMapName())
+        self:PutPlayerInRespawnQueue(newPlayer)
+        
+    end
+    
+    newPlayer:ClearGameEffects()
+    
+    return (newPlayer ~= nil), newPlayer
+    
 end
 
 -- Call with origin and angles, or pass nil to have them determined from team location and spawn points.

@@ -62,4 +62,20 @@ local function OnCommandCombatGiveRank(client, rank)
 
 end
 
+local function OnDebugUpgrades(client)
+
+    local player = client:GetControllingPlayer()
+
+    -- there must be a player for this command
+    if not player then
+        return
+    end
+
+    if GetIsPlayingTeam(player:GetTeamNumber()) then
+        player:DebugPrintUpgrades()
+    end
+
+end
+
 Event.Hook("Console_cppgiverank", OnCommandCombatGiveRank)
+Event.Hook("Console_cppdebugupgrades", OnDebugUpgrades)

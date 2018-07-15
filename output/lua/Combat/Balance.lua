@@ -17,12 +17,12 @@ kAlienEggsPerHive = 0
 
 kXPTable = {}
 kXPTable[1]  = { Rank = 1,   XP = 0,     MarineName = "Private",             AlienName = "Hatchling",   BaseXpOnKill = 200 }
-kXPTable[2]  = { Rank = 2,   XP = 500,  MarineName = "Private First Class", AlienName = "Underling",   BaseXpOnKill = 220 }
+kXPTable[2]  = { Rank = 2,   XP = 500,   MarineName = "Private First Class", AlienName = "Underling",   BaseXpOnKill = 220 }
 kXPTable[3]  = { Rank = 3,   XP = 1000,  MarineName = "Corporal",            AlienName = "Zenoform",    BaseXpOnKill = 240 }
 kXPTable[4]  = { Rank = 4,   XP = 2000,  MarineName = "Sergeant",            AlienName = "Minon",       BaseXpOnKill = 260 }
 kXPTable[5]  = { Rank = 5,   XP = 3000,  MarineName = "Lieutenant",          AlienName = "Ambusher",    BaseXpOnKill = 280 }
-kXPTable[6]  = { Rank = 6,   XP = 5000, MarineName = "Captain",             AlienName = "Hunter",      BaseXpOnKill = 300 }
-kXPTable[7]  = { Rank = 7,   XP = 7000, MarineName = "Commander",           AlienName = "Stalker",     BaseXpOnKill = 320 }
+kXPTable[6]  = { Rank = 6,   XP = 5000,  MarineName = "Captain",             AlienName = "Hunter",      BaseXpOnKill = 300 }
+kXPTable[7]  = { Rank = 7,   XP = 7000,  MarineName = "Commander",           AlienName = "Stalker",     BaseXpOnKill = 320 }
 kXPTable[8]  = { Rank = 8,   XP = 10000, MarineName = "Major",               AlienName = "Devourer",    BaseXpOnKill = 340 }
 kXPTable[9]  = { Rank = 9,   XP = 13000, MarineName = "Field Marshal",       AlienName = "Slaughterer", BaseXpOnKill = 360 }
 kXPTable[10] = { Rank = 10,  XP = 17000, MarineName = "General",             AlienName = "Eliminator",  BaseXpOnKill = 380 }
@@ -132,6 +132,7 @@ kSpawnMinDistance = 2
 kSpawnMaxDistance = 25
 kSpawnMaxVertical = 30
 kSpawnGestateTime = 0.5
+kUpgradeGestateTime = 1.5
 
 -- spawn protection
 kCombatSpawnProtectDelay = 0.1

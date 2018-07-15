@@ -1,31 +1,13 @@
-local ns2_Marine_CopyPlayerDataFrom = Marine.CopyPlayerDataFrom
-function Marine:CopyPlayerDataFrom(player)
-
-    ns2_Marine_CopyPlayerDataFrom(self, player)
-
-    local playerInRR = player:GetTeamNumber() == kNeutralTeamType
-
-    if not playerInRR and GetGamerules():GetGameStarted() then
-
-        self.armorLevel = player.armorLevel
-        self.weaponLevel = player.weaponLevel
-
-    end
-
-end
-
--- function Marine:InitWeapons()
-
---     Player.InitWeapons(self)
-
---     self:GiveItem(Rifle.kMapName)
---     self:GiveItem(Axe.kMapName)
---     self:GiveItem(Builder.kMapName)
-
---     self:SetQuickSwitchTarget(Axe.kMapName)
---     self:SetActiveWeapon(Rifle.kMapName)
-
---end
+--[[
+ * Natural Selection 2 - Combat++ Mod
+ * Authors:
+ *          WhiteWizard
+ *
+ * Add some additional capabilities to the Marine entity.
+ *
+ * Hooked Functions:
+ *  'Marine:OnKill' - Reset builder mode, destory weapons and exosuit.
+]]
 
 local ns2_Marine_OnKill = Marine.OnKill
 function Marine:OnKill(attacker, doer, point, direction)
@@ -36,6 +18,25 @@ function Marine:OnKill(attacker, doer, point, direction)
 
     self:DestroyWeapons()
 
+    self:DestroyExosuit()
+
     ns2_Marine_OnKill(self, attacker, doer, point, direction)
+
+end
+
+--[[
+    If a player owns an exosuit, that is, the pickupable version,
+    destory it.
+]]
+function Marine:DestroyExosuit()
+
+    -- Kill any exosuits the player owns
+    for i, exosuit in ientitylist(Shared.GetEntitiesWithClassname("Exosuit")) do
+        
+        if exosuit.ownerId == self:GetId() then
+            exosuit:Kill(nil, nil, exosuit:GetOrigin())
+        end
+
+    end
 
 end

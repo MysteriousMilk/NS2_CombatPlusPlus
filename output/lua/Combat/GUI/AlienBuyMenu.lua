@@ -124,7 +124,7 @@ local function GetNumberOfNewlySelectedUpgrades(self)
 
         for _, techId in ipairs(self:GetSelectedUpgrades()) do
 
-            if not GetUpgradeTree():GetIsPurchased(techId) then
+            if not player:GetHasUpgrade(techId) then
                 numSelected = numSelected + 1
             end
 
@@ -660,9 +660,9 @@ function AlienBuyMenu:_InitializeCurrentEvolutionDisplay()
     local abilityOffsetIndex = 0
     local upgradeOffsetIndex = 0
 
-    for _, abilityTechId in ipairs(GetUpgradeTree():GetUpgradesByCategoryAndPrereq("Ability", player:GetTechId())) do
+    for _, abilityTechId in ipairs(LookupUpgradesByCategoryAndPrereq("Ability", player:GetTechId(), player:GetTeamNumber())) do
 
-        if GetUpgradeTree():GetIsPurchased(abilityTechId) then
+        if player:GetHasUpgrade(abilityTechId) then
 
             local abilityIcon = GUIManager:CreateGraphicItem()
 
@@ -686,10 +686,21 @@ function AlienBuyMenu:_InitializeCurrentEvolutionDisplay()
     end
 
     local upgradeOffsetY = GUIScaleHeight(-16) + AlienBuyMenu.kUpgradeButtonSize.y
+    local upgrades = {}
 
-    for _, upgradeTechId in ipairs(GetUpgradeTree():GetUpgradesByCategory("Upgrade")) do
+    for _, upgradeTechId in ipairs(LookupUpgradesByCategory("SpurUpgrades", player:GetTeamNumber())) do
+        table.insert(upgrades, upgradeTechId)
+    end
+    for _, upgradeTechId in ipairs(LookupUpgradesByCategory("VeilUpgrades", player:GetTeamNumber())) do
+        table.insert(upgrades, upgradeTechId)
+    end
+    for _, upgradeTechId in ipairs(LookupUpgradesByCategory("ShellUpgrades", player:GetTeamNumber())) do
+        table.insert(upgrades, upgradeTechId)
+    end
 
-        if GetUpgradeTree():GetIsPurchased(upgradeTechId) then
+    for _, upgradeTechId in ipairs(upgrades) do
+
+        if player:GetHasUpgrade(upgradeTechId) then
 
             local upgradeIcon = GUIManager:CreateGraphicItem()
 
@@ -747,7 +758,7 @@ end
 local function CreateAbilityIcons(self, alienGraphicItem, alienType)
 
     local lifeFormTechId = IndexToAlienTechId(alienType.Index)
-    local abilities = GetUpgradeTree():GetUpgradesByCategoryAndPrereq("Ability", lifeFormTechId)
+    local abilities = LookupUpgradesByCategoryAndPrereq("Ability", lifeFormTechId, kTeam2Index)
 
     local numAbilities = #abilities
     local totalWidth = numAbilities * (AlienBuyMenu.kUpgradeButtonSize.x + 10)
@@ -815,9 +826,39 @@ function AlienBuyMenu:_InitializeAlienButtons()
 
 end
 
+local function GetUpgradesByType(categoryTechId)
+
+    if (categoryTechId == kTechId.Spur or
+        categoryTechId == kTechId.TwoSpurs or
+        categoryTechId == kTechId.ThreeSpurs) then
+
+            return LookupUpgradesByCategory("SpurUpgrades", kTeam2Index)
+
+    end
+
+    if (categoryTechId == kTechId.Veil or
+        categoryTechId == kTechId.TwoVeils or
+        categoryTechId == kTechId.ThreeVeils) then
+
+            return LookupUpgradesByCategory("VeilUpgrades", kTeam2Index)
+
+    end
+
+    if (categoryTechId == kTechId.Shell or
+        categoryTechId == kTechId.TwoShells or
+        categoryTechId == kTechId.ThreeShells) then
+
+            return LookupUpgradesByCategory("ShellUpgrades", kTeam2Index)
+
+    end
+
+    return {}
+
+end
+
 function AlienBuyMenu:_InitializeUpgrades()
 
-    local categories = GetUpgradeTree():GetUpgradesByCategory("UpgradeType")
+    local categories = LookupUpgradesByCategory("UpgradeType", kTeam2Index)
     table.sort(categories, SortByPriority)
 
     local binSize = (self.backgroundCenteredArea:GetSize().x - (AlienBuyMenu.kUpgradesTitleOffest.x * 2)) / #categories
@@ -856,7 +897,7 @@ function AlienBuyMenu:_InitializeUpgrades()
         local parentIconOffsetX = AlienBuyMenu.kUpgradesTitleOffest.x + (bin * binSize) + posInBin
         local parentIconPos = Vector(parentIconOffsetX, AlienBuyMenu.kUpgradeParentIconOfffsetY, 0)
 
-        local upsByCategory = GetUpgradeTree():GetUpgradesByPrereq(categories[i])
+        local upsByCategory = GetUpgradesByType(categories[i])
         table.sort(upsByCategory, SortByPriority)
 
         for j = 1, #upsByCategory do
@@ -1171,15 +1212,6 @@ end
 
 local function HasMutualExclusivity(self, techId)
 
-    -- check purchased upgrades for mutual exclusivity
-    -- for k, node in ipairs(GetUpgradeTree():GetPurchasedUpgrades()) do
-
-    --     if node:IsMutuallyExclusiveTo(techId) then
-    --         return true
-    --     end
-
-    -- end
-
     -- check queued 'potential' upgrades for mutual exclusivity
     for j, upgradeTechId in ipairs(self:GetSelectedUpgrades()) do
         
@@ -1197,11 +1229,40 @@ local function HasMutualExclusivity(self, techId)
     
 end
 
+local function HasPrerequisites(self, techId)
+
+    local player = Client.GetLocalPlayer()
+    local hasPrereqs = true
+
+    for _, prereqTechId in ipairs(LookupUpgradeData(techId, kUpDataPrerequisiteIndex)) do
+
+        if LookupUpgradeData(prereqTechId, kUpDataTypeIndex) == kCombatUpgradeType.Class then
+
+            if not prereqTechId == self.kAlienTypes[self.selectedAlienType].TechId then
+                hasPrereqs = false
+                break
+            end
+            
+        else
+
+            if not player:GetHasUpgrade(prereqTechId) then
+                hasPrereqs = false
+                break
+            end
+
+        end
+
+    end
+
+    return hasPrereqs
+
+end
+
 local function IsPurchasedOrPurchasing(self, techId)
 
-    local node = GetUpgradeTree():GetNode(techId)
+    local player = Client.GetLocalPlayer()
 
-    if node:GetIsPurchased() then
+    if player:GetHasUpgrade(techId) then
         return true
     end
 
@@ -1223,14 +1284,14 @@ function AlienBuyMenu:_UpdateTechButtons(deltaTime)
 
     for _, button in ipairs(self.techButtons) do
 
-        button:SetIsUnlocked(GetUpgradeTree():GetIsUnlocked(button.TechId))
-        button:SetIsPurchased(GetUpgradeTree():GetNode(button.TechId):GetIsPurchased())
+        button:SetIsUnlocked(BuyUI_GetIsTechUnlocked(button.TechId))
+        button:SetIsPurchased(player:GetHasUpgrade(button.TechId))
 
         local canAfford = (player:GetCombatUpgradePoints() - GetTotalCost(self)) > 0
         local hasPrereq = true
     
         if LookupUpgradeData(button.TechId, kUpDataCategoryIndex) == "Ability" then
-            hasPrereq = GetUpgradeTree():GetNode(button.TechId).prereqTechId == self.kAlienTypes[self.selectedAlienType].TechId
+            hasPrereq = HasPrerequisites(self, button.TechId)
         end
 
         button:SetIsEnabled((IsPurchasedOrPurchasing(self, button.TechId) or (canAfford and not HasMutualExclusivity(self, button.TechId))) and hasPrereq)
@@ -1418,8 +1479,8 @@ end
 function AlienBuyMenu:GetCanSelect(upgradeButton, player)
 
     local isPassive = LookupUpgradeData(upgradeButton.TechId, kUpDataPassiveIndex)
-    local unlocked = GetUpgradeTree():GetIsUnlocked(upgradeButton.TechId)
-    local purchased = GetUpgradeTree():GetIsPurchased(upgradeButton.TechId)
+    local unlocked = LookupUpgradeData(upgradeButton.TechId, kUpDataRankIndex) <= player:GetCombatRank()
+    local purchased =player:GetHasUpgrade(upgradeButton.TechId)
 
     -- since you've already purchased it, it should be selectable
     return upgradeButton.IsEnabled and unlocked and not purchased and not isPassive

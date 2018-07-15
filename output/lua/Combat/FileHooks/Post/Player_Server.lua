@@ -18,11 +18,6 @@ function Player:Reset()
 
     ns2_Player_Reset(self)
 
-    if self.UpgradeManager then
-        self.UpgradeManager:Reset()
-        self.UpgradeManager:UpdateUnlocks(true)
-    end
-
     self.isSpawning = false
     self.gotSpawnProtect = nil
     self.activeSpawnProtect = false
@@ -40,10 +35,6 @@ function Player:CopyPlayerDataFrom(player)
     self.currentCreateStructureTechId = player.currentCreateStructureTechId
     self.ownedStructures = player.ownedStructures
 
-    if self.UpgradeManager and player.UpgradeManager then
-        self.UpgradeManager:GetTree():CopyFrom(player.UpgradeManager:GetTree(), false)
-    end
-
     self.isSpawning = player.isSpawning
     self.gotSpawnProtect = player.gotSpawnProtect
     self.activeSpawnProtect = player.activeSpawnProtect
@@ -59,15 +50,11 @@ function Player:ProcessBuyAction(techIds)
 
     local success = false
 
-    if self.UpgradeManager then
-
-        if CombatPlusPlus_GetIsStructureTechId(techIds[1]) then
-            -- use override cost flag because the cost will be subtracted when the structure is actually placed
-            success = self.UpgradeManager:GiveUpgrades(techIds, self, true)
-        else
-            success = self.UpgradeManager:GiveUpgrades(techIds, self)
-        end
-
+    if CombatPlusPlus_GetIsStructureTechId(techIds[1]) then
+        -- use override cost flag because the cost will be subtracted when the structure is actually placed
+        success = self:GetTeam():GetUpgradeHelper():GiveUpgrades(techIds, self, true)
+    else
+        success = self:GetTeam():GetUpgradeHelper():GiveUpgrades(techIds, self)
     end
 
     return success
@@ -85,7 +72,7 @@ function Player:KillOwnedStructures()
 
         -- kill the entity
         if HasMixin(entity, "Live") and entity:GetIsAlive() and entity:GetCanDie(true) then
-            entity:Kill()
+            entity:Kill(nil, nil, entity:GetOrigin())
         end
 
     end

@@ -34,25 +34,25 @@ function Marine:OnCountDownEnd()
 
 end
 
-function Marine:Buy()
+-- function Marine:Buy()
 
-  -- Don't allow display in the ready room
-  if self:GetTeamNumber() ~= 0 and Client.GetLocalPlayer() == self and not HelpScreen_GetHelpScreen():GetIsBeingDisplayed() then
+--   -- Don't allow display in the ready room
+--   if self:GetTeamNumber() ~= 0 and Client.GetLocalPlayer() == self and not HelpScreen_GetHelpScreen():GetIsBeingDisplayed() then
 
-      if not self.buyMenu then
+--       if not self.buyMenu then
 
-          self.buyMenu = GetGUIManager():CreateGUIScript("Combat/GUI/MarineBuyMenu")
-          self:TriggerEffects("marine_buy_menu_open")
+--           self.buyMenu = GetGUIManager():CreateGUIScript("Combat/GUI/MarineBuyMenu")
+--           self:TriggerEffects("marine_buy_menu_open")
 
-      else
+--       else
 
-        self:CloseMenu()
+--         self:CloseMenu()
 
-      end
+--       end
 
-  end
+--   end
 
-end
+-- end
 
 local ns2_Marine_UpdateGhostModel = Marine.UpdateGhostModel
 function Marine:UpdateGhostModel()

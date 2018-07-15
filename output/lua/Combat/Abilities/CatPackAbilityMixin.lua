@@ -6,23 +6,13 @@ local kUseSound = PrecacheAsset("sound/NS2.fev/marine/common/catalyst")
 
 CatPackAbilityMixin.networkVars =
 {
-    timeLastCatPackUsed = "time",
-    catPackAbilityEnabled = "boolean"
+    timeLastCatPackUsed = "time"
 }
 
 function CatPackAbilityMixin:__initmixin()
 
     self.timeLastCatPackUsed = 0
-    self.catPackAbilityEnabled = false
 
-end
-
-function CatPackAbilityMixin:GetIsCatPackAbilityEnabled()
-    return self.catPackAbilityEnabled
-end
-
-function CatPackAbilityMixin:SetIsCatPackAbilityEnabled(isEnabled)
-    self.catPackAbilityEnabled = isEnabled
 end
 
 local function GetRemainingCooldownTime(self)
@@ -46,10 +36,10 @@ function CatPackAbilityMixin:CanApplyCatPack()
         local coolDownTime = GetRemainingCooldownTime(self)
         local alive = self:GetIsAlive()
         local vortexed = GetIsVortexed()
-        local hasAbility = self.UpgradeManager:GetTree():GetIsPurchased(kTechId.CatPack)
+        local hasAbility = self.GetHasUpgrade and self:GetHasUpgrade(kTechId.CatPack)
         local canUse = self.GetCanUseCatPack and self:GetCanUseCatPack()
 
-        return hasAbility and canUse and self.catPackAbilityEnabled and coolDownTime == 0 and alive and not vortexed
+        return hasAbility and canUse and coolDownTime == 0 and alive and not vortexed
 
     end
 

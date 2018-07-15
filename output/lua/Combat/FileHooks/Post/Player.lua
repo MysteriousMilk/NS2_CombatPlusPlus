@@ -26,10 +26,6 @@ function Player:OnCreate()
 
     if Server then
 
-        if not self.UpgradeManager then
-            self.UpgradeManager = UpgradeManager()
-        end
-
         self.isSpawning = false
         self.gotSpawnProtect = nil
         self.activeSpawnProtect = false
@@ -47,14 +43,7 @@ function Player:OnInitialized()
     ns2_Player_OnInitialized(self)
 
     if Server then
-
-        if self.UpgradeManager then
-            self.UpgradeManager:Initialize()
-            self.UpgradeManager:SetPlayer(self)
-        end
-
         self.ownedStructures = {}
-
     end
 
 end
@@ -75,12 +64,8 @@ function Player:OnStructureCreated(structure)
 
     if Server then
 
-        if self.UpgradeManager then
-
-            local cost = LookupUpgradeData(self.currentCreateStructureTechId, kUpDataCostIndex)
-            self:SpendUpgradePoints(cost)
-
-        end
+        local cost = LookupUpgradeData(self.currentCreateStructureTechId, kUpDataCostIndex)
+        self:SpendUpgradePoints(cost)
 
         -- put builder back into build mode
         builder = self:GetWeapon(Builder.kMapName)
@@ -101,7 +86,32 @@ function Player:OnInitialSpawn(techPointOrigin)
     ns2_Player_OnInitialSpawn(self, techPointOrigin)
 
     if GetIsPlayingTeam(self:GetTeamNumber()) then
+
+        -- Player joined before game start or early enough that they do
+        -- not qualify for late join xp
         self:MakeIneligibleForLateJoinXp()
+        
+    end
+
+end
+
+function Player:Buy()
+
+    -- Don't allow display in the ready room, or as phantom
+    if self:GetIsLocalPlayer() and not HelpScreen_GetHelpScreen():GetIsBeingDisplayed() then
+
+        -- The Embryo cannot use the buy menu in any case.
+        if self:GetTeamNumber() ~= 0 and not self:isa("Embryo") then
+
+            if not self.buyMenu then
+                self.buyMenu = GetGUIManager():CreateGUIScript("GUIMarineBuyMenu")
+                self:TriggerEffects("marine_buy_menu_open")
+            else
+                self:CloseMenu()
+            end
+
+        end
+
     end
 
 end

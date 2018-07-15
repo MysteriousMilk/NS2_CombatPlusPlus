@@ -155,35 +155,23 @@ function UpdateAbilityAvailability(forAlien, tierOneTechId, tierTwoTechId, tierT
         forAlien.twoHives = false
         forAlien.threeHives = false
 
-        if forAlien.UpgradeManager then
+        -- iterate the unlocked abilities
+        for _, abilityTechId in ipairs(LookupUpgradesByCategoryAndPrereq("Ability", forAlien:GetTechId(), forAlien:GetTeamNumber())) do
 
-            -- iterate the unlocked abilities
-            for _, node in ipairs(forAlien.UpgradeManager:GetTree():GetUnlockedUpgradesByCategory("Ability")) do
+            local hasRequiredRank = LookupUpgradeData(abilityTechId, kUpDataRankIndex) <= forAlien:GetCombatRank()
 
-                -- only unlock abilities for the current alien lifeform
-                if node.prereqTechId == forAlien:GetTechId() then
+            if forAlien:GetHasUpgrade(abilityTechId) and hasRequiredRank then
 
-                    if node:GetIsPurchased() then
+                -- unlock the ability and set the proper "onehive, twohives, threehives" status
+                UnlockAbility(forAlien, abilityTechId)
+                forAlien.oneHive = forAlien.oneHive or LookupUpgradeData(abilityTechId, kUpDataRequiresOneHiveIndex)
+                forAlien.twoHives = forAlien.twoHives or LookupUpgradeData(abilityTechId, kUpDataRequiresTwoHivesIndex)
+                forAlien.threeHives = forAlien.threeHives or LookupUpgradeData(abilityTechId, kUpDataRequiresThreeHivesIndex)
 
-                        -- unlock the ability and set the proper "onehive, twohives, threehives" status
-                        UnlockAbility(forAlien, node:GetTechId())
-                        forAlien.oneHive = forAlien.oneHive or LookupUpgradeData(node:GetTechId(), kUpDataRequiresOneHiveIndex)
-                        forAlien.twoHives = forAlien.twoHives or LookupUpgradeData(node:GetTechId(), kUpDataRequiresTwoHivesIndex)
-                        forAlien.threeHives = forAlien.threeHives or LookupUpgradeData(node:GetTechId(), kUpDataRequiresThreeHivesIndex)
+            else
 
-                    else
-
-                        -- not purchased, so lock it
-                        LockAbility(forAlien, node:GetTechId())
-
-                    end
-
-                else
-
-                    -- not for the current lifefrom, so lock it
-                    LockAbility(forAlien, node:GetTechId())
-
-                end
+                -- not purchased, so lock it
+                LockAbility(forAlien, abilityTechId)
 
             end
 

@@ -8,10 +8,10 @@ MarineStatusHUD.kTexture =  PrecacheAsset("ui/marine_HUD_presbg.dds")
 MarineStatusHUD.kXpBarTexture = PrecacheAsset("ui/combatui_xp_bar.dds")
 
 MarineStatusHUD.kXPFontName = Fonts.kArial_13
-MarineStatusHUD.kXPTextPosition = Vector(0, -61, 0)
+MarineStatusHUD.kXPTextPosition = Vector(0, -113, 0)
 
 MarineStatusHUD.kRankFontName = Fonts.kAgencyFB_Small
-MarineStatusHUD.kRankTextPosition = Vector(0, -82, 0)
+MarineStatusHUD.kRankTextPosition = Vector(0, -134, 0)
 
 MarineStatusHUD.kXPBarSize = Vector(589, 10, 0)
 MarineStatusHUD.kXPBarSizeScaled = Vector(589, 10, 0)
@@ -203,7 +203,7 @@ function MarineStatusHUD:Reset(scale)
     local xpBarWidthBkg = GUIScaleWidth(600)
     self.newXpBarBkg:SetUniformScale(self.scale)
     self.newXpBarBkg:SetSize( Vector(xpBarWidthBkg, 32, 0) )
-    self.newXpBarBkg:SetPosition( Vector(-1 * xpBarWidthBkg / 2, -80, 0) )
+    self.newXpBarBkg:SetPosition( Vector(-1 * xpBarWidthBkg / 2, -132, 0) )
 
     MarineStatusHUD.kXPBarSizeScaled = Vector(GUIScaleWidth(MarineStatusHUD.kXPBarSizeScaled.x), MarineStatusHUD.kXPBarSizeScaled.y, 0)
     self.newXpBar:SetUniformScale(self.scale)
@@ -289,7 +289,7 @@ function MarineStatusHUD:UpdateCooldowns(player)
 
     if HasMixin(player, "MedPackAbility") then
 
-        local visible = player:GetIsMedPackAbilityEnabled()
+        local visible = player:GetHasUpgrade(kTechId.MedPack)
         local bkgColor = ConditionalValue(visible, MarineStatusHUD.kAbilityBkgColorEnabled, Color(1,1,1,1))
 
         self.medPackIconBackground:SetColor(bkgColor)
@@ -304,7 +304,7 @@ function MarineStatusHUD:UpdateCooldowns(player)
 
     if HasMixin(player, "AmmoPackAbility") then
 
-        local visible = player:GetIsAmmoPackAbilityEnabled()
+        local visible = player:GetHasUpgrade(kTechId.AmmoPack)
         local bkgColor = ConditionalValue(visible, MarineStatusHUD.kAbilityBkgColorEnabled, Color(1,1,1,1))
 
         self.ammoPackIconBackground:SetColor(bkgColor)
@@ -319,7 +319,7 @@ function MarineStatusHUD:UpdateCooldowns(player)
 
     if HasMixin(player, "CatPackAbility") then
 
-        local visible = player:GetIsCatPackAbilityEnabled()
+        local visible = player:GetHasUpgrade(kTechId.CatPack)
         local bkgColor = ConditionalValue(visible, MarineStatusHUD.kAbilityBkgColorEnabled, Color(1,1,1,1))
 
         self.catPackIconBackground:SetColor(bkgColor)
@@ -334,7 +334,7 @@ function MarineStatusHUD:UpdateCooldowns(player)
 
     if HasMixin(player, "ScanAbility") then
 
-        local visible = player:GetIsScanAbilityEnabled()
+        local visible = player:GetHasUpgrade(kTechId.Scan)
         local bkgColor = ConditionalValue(visible, MarineStatusHUD.kAbilityBkgColorEnabled, Color(1,1,1,1))
 
         self.scanIconBackground:SetColor(bkgColor)

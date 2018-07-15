@@ -4,11 +4,7 @@ function Alien:ProcessBuyAction(techIds)
     ASSERT(type(techIds) == "table")
     ASSERT(table.icount(techIds) > 0)
 
-    local success = false
-
-    if self.UpgradeManager then
-        success = self.UpgradeManager:GiveUpgrades(techIds, self)
-    end
+    local success = self:GetTeam():GetUpgradeHelper():GiveUpgrades(techIds, self)
 
     if not success then
         self:TriggerInvalidSound()

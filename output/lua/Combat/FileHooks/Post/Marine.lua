@@ -15,11 +15,7 @@ Script.Load("lua/Combat/Abilities/CatPackAbilityMixin.lua")
 Script.Load("lua/Combat/Abilities/MedPackAbilityMixin.lua")
 Script.Load("lua/Combat/Abilities/ScanAbilityMixin.lua")
 
-local networkVarsEx =
-{
-    armorLevel = "integer",
-    weaponLevel = "integer",
-}
+local networkVarsEx = {}
 
 AddMixinNetworkVars(MedPackAbilityMixin, networkVarsEx)
 AddMixinNetworkVars(AmmoPackAbilityMixin, networkVarsEx)
@@ -34,10 +30,6 @@ function Marine:OnCreate()
     InitMixin(self, CatPackAbilityMixin)
     InitMixin(self, ScanAbilityMixin)
 
-    if Server then
-        self.UpgradeManager = MarineUpgradeManager()
-    end
-
     ns2_Marine_OnCreate(self)
 
 end
@@ -46,9 +38,6 @@ local ns2_Marine_OnInitialized = Marine.OnInitialized
 function Marine:OnInitialized()
 
     ns2_Marine_OnInitialized(self)
-
-    self.armorLevel = 0
-    self.weaponLevel = 0
 
 end
 
@@ -60,46 +49,34 @@ function Marine:Drop()
 end
 
 function Marine:GetArmorLevel()
-    return self.armorLevel
+    
+    local armorLevel = 0
+
+    if self:GetHasUpgrade(kTechId.Armor1) then
+        armorLevel = 1
+    elseif self:GetHasUpgrade(kTechId.Armor2) then
+        armorLevel = 2
+    elseif self:GetHasUpgrade(kTechId.Armor3) then
+        armorLevel = 3
+    end
+
+    return armorLevel
+    
 end
 
 function Marine:GetWeaponLevel()
-    return self.weaponLevel
-end
 
-function Marine:SetArmorLevel(level)
-    self.armorLevel = Clamp(level, 0, 3)
-end
+    local wpnLevel = 0
 
-function Marine:SetArmorLevelByTechId(techId)
-
-    if techId == kTechId.Armor1 then
-        self:SetArmorLevel(1)
-    elseif techId == kTechId.Armor2 then
-        self:SetArmorLevel(2)
-    elseif techId == kTechId.Armor3 then
-        self:SetArmorLevel(3)
-    else
-        self:SetArmorLevel(0)
+    if self:GetHasUpgrade(kTechId.Weapons1) then
+        wpnLevel = 1
+    elseif self:GetHasUpgrade(kTechId.Weapons2) then
+        wpnLevel = 2
+    elseif self:GetHasUpgrade(kTechId.Weapons3) then
+        wpnLevel = 3
     end
 
-end
-
-function Marine:SetWeaponLevel(level)
-    self.weaponLevel = Clamp(level, 0, 3)
-end
-
-function Marine:SetWeaponLevelByTechId(techId)
-
-    if techId == kTechId.Weapons1 then
-        self:SetWeaponLevel(1)
-    elseif techId == kTechId.Weapons2 then
-        self:SetWeaponLevel(2)
-    elseif techId == kTechId.Weapons3 then
-        self:SetWeaponLevel(3)
-    else
-        self:SetWeaponLevel(0)
-    end
+    return wpnLevel
 
 end
 
@@ -111,6 +88,12 @@ function Marine:GetArmorAmount(armorLevels)
 
     return Marine.kBaseArmor + armorLevels * Marine.kArmorPerUpgradeLevel
 
+end
+
+function Marine:OnLevelUp()
+
+    self:TriggerEffects("infantry_portal_spawn")
+    
 end
 
 Shared.LinkClassToMap("Marine", Marine.kMapName, networkVarsEx, true)

@@ -8,66 +8,6 @@
 
 class 'MarineUpgradeManager' (UpgradeManager)
 
-local function BuyMedPackAbility(techId, player)
-
-    if not player:isa("Exo") then
-        player:SetIsMedPackAbilityEnabled(true)
-    end
-
-    return true
-
-end
-
-local function BuyAmmoPackAbility(techId, player)
-
-    if not player:isa("Exo") then
-        player:SetIsAmmoPackAbilityEnabled(true)
-    end
-
-    return true
-
-end
-
-local function BuyCatPackAbility(techId, player)
-
-    if not player:isa("Exo") then
-        player:SetIsCatPackAbilityEnabled(true)
-    end
-
-    return true
-
-end
-
-local function BuyScanAbility(techId, player)
-
-    if not player:isa("Exo") then
-        player:SetIsScanAbilityEnabled(true)
-    end
-    
-    return true
-
-end
-
-local function BuyArmorUpgrade(techId, player)
-
-    if not player:isa("Exo") then
-        player:SetArmorLevelByTechId(techId)
-    end
-
-    return true
-
-end
-
-local function BuyWeaponUpgrade(techId, player)
-
-    if not player:isa("Exo") then
-        player:SetWeaponLevelByTechId(techId)
-    end
-
-    return true
-
-end
-
 local function BuyStructureUpgrade(techId, player)
 
     local success = true
@@ -90,24 +30,66 @@ local function BuyStructureUpgrade(techId, player)
 
 end
 
+local function ExoEjectAsJetpacker(exoPlayer)
+
+    -- Create a pickupable version just long enough so that we can kill it
+    local exosuit = CreateEntity(Exosuit.kMapName, exoPlayer:GetOrigin(), exoPlayer:GetTeamNumber())
+    exosuit:SetLayout(exoPlayer.layout)
+    exosuit:SetCoords(exoPlayer:GetCoords())
+    exosuit:SetMaxArmor(exoPlayer:GetMaxArmor())
+    exosuit:SetArmor(exoPlayer:GetArmor())
+    exosuit:SetExoVariant(exoPlayer:GetExoVariant())
+
+    -- Player always reverts to a marine from an exo because class
+    -- upgrades are mutually exclusive. (Ex. Jetpack Marine gives up their jp
+    -- to become an Exo)
+    local jetpackMarine = exoPlayer:Replace(JetpackMarine.kMapName, exoPlayer:GetTeamNumber(), false, exoPlayer:GetOrigin() + Vector(0, 0.2, 0), { preventWeapons = false })
+    jetpackMarine:SetHealth(exoPlayer.prevPlayerHealth or kMarineHealth)
+    jetpackMarine:SetMaxArmor(exoPlayer.prevPlayerMaxArmor or kMarineArmor)
+    jetpackMarine:SetArmor(exoPlayer.prevPlayerArmor or kMarineArmor)
+    
+    jetpackMarine.onGround = false
+    local initialVelocity = exoPlayer:GetViewCoords().zAxis
+    initialVelocity:Scale(4)
+    initialVelocity.y = math.max(0,initialVelocity.y) + 9
+    jetpackMarine:SetVelocity(initialVelocity)
+
+    jetpackMarine:SetHUDSlotActive(1)
+    jetpackMarine:SetFuel(0.25)
+
+    -- kill the exosuit for effect
+    exosuit:Kill(nil, nil, exosuit:GetOrigin())
+
+    return jetpackMarine
+
+end
+
 local function BuyJetpack(techId, player)
 
-    if player:isa("JetpackMarine") or player:isa("Exo") then
-        return true, nil
+    local jetpackMarine = nil
+
+    if player:isa("JetpackMarine") then
+        return true, jetpackMarine
     end
 
-    local activeWeapon = player:GetActiveWeapon()
-    local activeWeaponMapName
+    if player:isa("Exo") then
+        jetpackMarine = ExoEjectAsJetpacker(player)
+        return true, jetpackMarine
+    end
+
+    -- local activeWeapon = player:GetActiveWeapon()
+    -- local activeWeaponMapName
     local health = player:GetHealth()
     
-    if activeWeapon ~= nil then
-        activeWeaponMapName = activeWeapon:GetMapName()
-    end
+    -- if activeWeapon ~= nil then
+    --     activeWeaponMapName = activeWeapon:GetMapName()
+    -- end
     
-    local jetpackMarine = player:Replace(JetpackMarine.kMapName, player:GetTeamNumber(), true, Vector(player:GetOrigin()))
+    jetpackMarine = player:Replace(JetpackMarine.kMapName, player:GetTeamNumber(), false, Vector(player:GetOrigin()))
     
-    jetpackMarine:SetActiveWeapon(activeWeaponMapName)
+    -- jetpackMarine:SetActiveWeapon(activeWeaponMapName)
     jetpackMarine:SetHealth(health)
+    jetpackMarine:SetHUDSlotActive(1)
 
     return true, jetpackMarine
 
@@ -119,7 +101,6 @@ local function BuyExo(techId, player)
     for index = 1, maxAttempts do
 
         -- Find open area nearby to place the big guy.
-        -- local capsuleHeight, capsuleRadius = self:GetTraceCapsule()
         local extents = Vector(Exo.kXZExtents, Exo.kYExtents, Exo.kXZExtents)
 
         local spawnPoint
@@ -135,10 +116,7 @@ local function BuyExo(techId, player)
 
         if spawnPoint then
 
-            local weapons = player:GetWeapons()
-            for i = 1, #weapons do
-                weapons[i]:SetParent(nil)
-            end
+            player:DestroyWeapons()
 
             local exo
 
@@ -150,12 +128,6 @@ local function BuyExo(techId, player)
                 exo = player:GiveClawRailgunExo(spawnPoint)
             elseif techId == kTechId.DualRailgunExosuit then
                 exo = player:GiveDualRailgunExo(spawnPoint)
-            end
-
-            if exo then
-                for i = 1, #weapons do
-                    exo:StoreWeapon(weapons[i])
-                end
             end
 
             exo:TriggerEffects("spawn_exo")
@@ -179,46 +151,25 @@ local function ConfigureLoadout(player)
         player:SetHUDSlotActive(primaryWpn:GetHUDSlot())
     end
 
-    if player.UpgradeManager:GetTree():GetIsPurchased(kTechId.Welder) then
-        player:SetQuickSwitchTarget(Welder.kMapName)
-    end
-
-    if player.UpgradeManager:GetTree():GetIsPurchased(kTechId.Pistol) then
-        player:SetQuickSwitchTarget(Pistol.kMapName)
-    end    
+    player:SetQuickSwitchTarget(Pistol.kMapName)  
 
 end
 
-local function BuyItemUpgrade(techId, player)
-
-    if player:isa("Exo") then
-        return true, nil
-    end
+local function BuyPrimaryWeapon(techId, player)
 
     local success = false
     local mapName = LookupTechData(techId, kTechDataMapName)
 
+    if player:isa("Exo") then
+        return true
+    end
+
     if mapName then
 
-        -- If the player already has this weapon, no need to give it again
-        local hasWeapon = player:GetWeapon(mapName)
-        if hasWeapon then
-            Shared.Message("Player already has " .. mapName)
-            -- player already has this weapon
-            return true
-        end
-
-        -- Need to remove the old primary weapon if we are replacing it with a 
-        -- new primary.
-        if CombatPlusPlus_GetIsPrimaryWeapon(mapName) then
-
-            local oldPrimaryWpn = player:GetWeaponInHUDSlot(1)
-
-            if oldPrimaryWpn then
-                player:RemoveWeapon(oldPrimaryWpn)
-                DestroyEntity(oldPrimaryWpn)
-            end
-
+        local oldPrimaryWpn = player:GetWeaponInHUDSlot(1)
+        if oldPrimaryWpn then
+            player:RemoveWeapon(oldPrimaryWpn)
+            DestroyEntity(oldPrimaryWpn)
         end
 
         -- Make sure we're ready to deploy new weapon so we switch to it properly.
@@ -239,54 +190,129 @@ local function BuyItemUpgrade(techId, player)
 
 end
 
-function MarineUpgradeManager:CreateUpgradeTree()
+local function RemovePrimaryWeapon(techId, player)
 
-    self.Upgrades:AddClassNode(kTechId.Marine, kTechId.None, nil)
-    self.Upgrades:AddClassNode(kTechId.Jetpack, kTechId.None, BuyJetpack)
-    self.Upgrades:AddClassNode(kTechId.DualMinigunExosuit, kTechId.None, BuyExo)
-    self.Upgrades:AddClassNode(kTechId.DualRailgunExosuit, kTechId.None, BuyExo)
+    if player:isa("Exo") then
+        return
+    end
 
-    self.Upgrades:AddUpgradeNode(kTechId.Pistol, kTechId.None, BuyItemUpgrade)
-    self.Upgrades:AddUpgradeNode(kTechId.Rifle, kTechId.None, BuyItemUpgrade)
-    self.Upgrades:AddUpgradeNode(kTechId.Shotgun, kTechId.None, BuyItemUpgrade)
-    self.Upgrades:AddUpgradeNode(kTechId.Flamethrower, kTechId.None, BuyItemUpgrade)
-    self.Upgrades:AddUpgradeNode(kTechId.GrenadeLauncher, kTechId.None, BuyItemUpgrade)
-    self.Upgrades:AddUpgradeNode(kTechId.HeavyMachineGun, kTechId.None, BuyItemUpgrade)
-    self.Upgrades:AddUpgradeNode(kTechId.Welder, kTechId.None, BuyItemUpgrade)
-    self.Upgrades:AddUpgradeNode(kTechId.LayMines, kTechId.None, BuyItemUpgrade)
-    self.Upgrades:AddUpgradeNode(kTechId.ClusterGrenade, kTechId.None, BuyItemUpgrade)
-    self.Upgrades:AddUpgradeNode(kTechId.GasGrenade, kTechId.None, BuyItemUpgrade)
-    self.Upgrades:AddUpgradeNode(kTechId.PulseGrenade, kTechId.None, BuyItemUpgrade)
-    self.Upgrades:AddUpgradeNode(kTechId.Armor1, kTechId.None, BuyArmorUpgrade)
-    self.Upgrades:AddUpgradeNode(kTechId.Armor2, kTechId.Armor1, BuyArmorUpgrade)
-    self.Upgrades:AddUpgradeNode(kTechId.Armor3, kTechId.Armor2, BuyArmorUpgrade)
-    self.Upgrades:AddUpgradeNode(kTechId.Weapons1, kTechId.None, BuyWeaponUpgrade)
-    self.Upgrades:AddUpgradeNode(kTechId.Weapons2, kTechId.Weapons1, BuyWeaponUpgrade)
-    self.Upgrades:AddUpgradeNode(kTechId.Weapons3, kTechId.Weapons2, BuyWeaponUpgrade)
-    self.Upgrades:AddUpgradeNode(kTechId.MedPack, kTechId.None, BuyMedPackAbility)
-    self.Upgrades:AddUpgradeNode(kTechId.AmmoPack, kTechId.None, BuyAmmoPackAbility)
-    self.Upgrades:AddUpgradeNode(kTechId.CatPack, kTechId.None, BuyCatPackAbility)
-    self.Upgrades:AddUpgradeNode(kTechId.Scan, kTechId.None, BuyScanAbility)
-    self.Upgrades:AddStructureNode(kTechId.Armory, kTechId.None, BuyStructureUpgrade)
-    self.Upgrades:AddStructureNode(kTechId.PhaseGate, kTechId.None, BuyStructureUpgrade)
-    self.Upgrades:AddStructureNode(kTechId.Observatory, kTechId.None, BuyStructureUpgrade)
-    self.Upgrades:AddStructureNode(kTechId.Sentry, kTechId.None, BuyStructureUpgrade)
-
-    self.Upgrades:SetIsUnlocked(kTechId.Marine, true)
-    self.Upgrades:SetIsPurchased(kTechId.Marine, true)
-    self.Upgrades:SetIsUnlocked(kTechId.Rifle, true)
-    self.Upgrades:SetIsPurchased(kTechId.Rifle, true)
-    self.Upgrades:SetIsUnlocked(kTechId.Pistol, true)
-    self.Upgrades:SetIsPurchased(kTechId.Pistol, true)
+    local oldPrimaryWpn = player:GetWeaponInHUDSlot(1)
+    if oldPrimaryWpn then
+        player:RemoveWeapon(oldPrimaryWpn)
+        DestroyEntity(oldPrimaryWpn)
+    end
 
 end
 
-function MarineUpgradeManager:PostGiveUpgrades(techIds, player, cost, overrideCost)
+local function BuyItemUpgrade(techId, player)
 
-    UpgradeManager.PostGiveUpgrades(self, techIds, player, cost, overrideCost)
+    local success = false
+    local mapName = LookupTechData(techId, kTechDataMapName)
 
-    if not overrideCost then
-        Shared.PlayPrivateSound(player, Marine.kSpendResourcesSoundName, nil, 1.0, player:GetOrigin())
+    if player:isa("Exo") then
+        return true
     end
+
+    if mapName then
+
+        -- If the player already has this weapon, no need to give it again
+        local hasWeapon = player:GetWeapon(mapName)
+        if hasWeapon then
+            -- player already has this weapon
+            return true
+        end
+
+        -- Make sure we're ready to deploy new weapon so we switch to it properly.
+        local newItem = player:GiveItem(mapName)
+
+        if newItem then
+
+            StartSoundEffectAtOrigin(Marine.kGunPickupSound, player:GetOrigin())
+            ConfigureLoadout(player)
+
+            success = true
+
+        end
+
+    end
+
+    return success
+
+end
+
+local function RemoveItemUpgrade(techId, player)
+
+    if player:isa("Exo") then
+        return
+    end
+        
+    local weapon = player:GetWeapon(mapName)
+
+    if weapon then
+        player:RemoveWeapon(weapon)
+        DestroyEntity(weapon)
+    end
+
+end
+
+function MarineUpgradeManager:Initialize()
+
+    AddUserDefinedUpgradeFunctions(kTechId.Jetpack, BuyJetpack, nil)
+    AddUserDefinedUpgradeFunctions(kTechId.DualMinigunExosuit, BuyExo, nil)
+    AddUserDefinedUpgradeFunctions(kTechId.DualRailgunExosuit, BuyExo, nil)
+
+    AddUserDefinedUpgradeFunctions(kTechId.Shotgun, BuyPrimaryWeapon, RemovePrimaryWeapon)
+    AddUserDefinedUpgradeFunctions(kTechId.Flamethrower, BuyPrimaryWeapon, RemovePrimaryWeapon)
+    AddUserDefinedUpgradeFunctions(kTechId.GrenadeLauncher, BuyPrimaryWeapon, RemovePrimaryWeapon)
+    AddUserDefinedUpgradeFunctions(kTechId.HeavyMachineGun, BuyPrimaryWeapon, RemovePrimaryWeapon)
+
+    AddUserDefinedUpgradeFunctions(kTechId.Welder, BuyItemUpgrade, RemoveItemUpgrade)
+    AddUserDefinedUpgradeFunctions(kTechId.LayMines, BuyItemUpgrade, RemoveItemUpgrade)
+    AddUserDefinedUpgradeFunctions(kTechId.ClusterGrenade, BuyItemUpgrade, RemoveItemUpgrade)
+    AddUserDefinedUpgradeFunctions(kTechId.GasGrenade, BuyItemUpgrade, RemoveItemUpgrade)
+    AddUserDefinedUpgradeFunctions(kTechId.PulseGrenade, BuyItemUpgrade, RemoveItemUpgrade)
+
+    AddUserDefinedUpgradeFunctions(kTechId.Armory, BuyStructureUpgrade, nil)
+    AddUserDefinedUpgradeFunctions(kTechId.PhaseGate, BuyStructureUpgrade, nil)
+    AddUserDefinedUpgradeFunctions(kTechId.Observatory, BuyStructureUpgrade, nil)
+    AddUserDefinedUpgradeFunctions(kTechId.Sentry, BuyStructureUpgrade, nil)
+
+end
+
+function MarineUpgradeManager:UpgradeLogic(techIdList, classTechId, player)
+
+    -- upgrading to new class
+    if classTechId then
+
+        local newPlayerClass = nil
+        local success
+
+        -- run custom upgrade code for this upgrade
+        local upgradeFunc = LookupUpgradeData(classTechId, kUpDataUpgradeFuncIndex)
+        if upgradeFunc then
+            success, newPlayerClass = upgradeFunc(classTechId, player)
+        end
+
+        -- we have a new player class so apply all upgrades to the new player entity
+        if newPlayerClass then
+            self:ApplyAllUpgrades(newPlayerClass, true)
+        end
+
+    else
+
+        -- No class upgrade, so loop the tech id list and apply each upgrade
+        for _, techId in ipairs(techIdList) do
+            
+            -- run custom upgrade code for this upgrade
+            local upgradeFunc = LookupUpgradeData(techId, kUpDataUpgradeFuncIndex)
+            if upgradeFunc then
+                upgradeFunc(techId, player)
+            end
+
+        end
+
+    end
+
+    return true
 
 end

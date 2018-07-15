@@ -16,3 +16,20 @@ local function OnRequestSocketPowerPoint(client, message)
 end
 
 Server.HookNetworkMessage("RequestSocketPowerPoint", OnRequestSocketPowerPoint)
+
+local function OnRefundUpgradesRequested(client, message)
+
+    local player = client:GetControllingPlayer()
+
+    -- there must be a player for this command
+    if not player then
+        return
+    end
+
+    local team = player:GetTeam()
+
+    if team then
+        team:GetUpgradeHelper():RefundUpgrades(player)
+    end
+
+end

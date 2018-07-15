@@ -31,6 +31,9 @@ local kPowerPointEntity =
 
 Shared.RegisterNetworkMessage("RequestSocketPowerPoint", kPowerPointEntity)
 
+Shared.RegisterNetworkMessage("CombatRefundUpgrades", {})
+Shared.RegisterNetworkMessage("CombatRecycleStructures", {})
+
 local kUpgradeNodeBaseMessage =
 {
     techId = string.format("integer (0 to %d)", kTechIdMax),

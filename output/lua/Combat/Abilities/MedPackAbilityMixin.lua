@@ -7,25 +7,14 @@ local kHealthSound = PrecacheAsset("sound/NS2.fev/marine/common/health")
 MedPackAbilityMixin.networkVars =
 {
     timeLastMedPackUsed = "time",
-    medPackAbilityEnabled = "boolean"
 }
 
 function MedPackAbilityMixin:__initmixin()
 
     self.medPackHealth = kMedpackHeal
     self.timeLastMedPackUsed = 0
-    self.medPackAbilityEnabled = false
 
 end
-
-function MedPackAbilityMixin:GetIsMedPackAbilityEnabled()
-    return self.medPackAbilityEnabled
-end
-
-function MedPackAbilityMixin:SetIsMedPackAbilityEnabled(isEnabled)
-    self.medPackAbilityEnabled = isEnabled
-end
-
 local function GetRemainingCooldownTime(self)
 
     if self.timeLastMedPackUsed == 0 then
@@ -47,9 +36,9 @@ function MedPackAbilityMixin:CanApplyMedPack()
         local coolDownTime = GetRemainingCooldownTime(self)
         local alive = self:GetIsAlive()
         local vortexed = GetIsVortexed()
-        local hasAbility = self.UpgradeManager:GetTree():GetIsPurchased(kTechId.MedPack)
+        local hasAbility = self.GetHasUpgrade and self:GetHasUpgrade(kTechId.MedPack)
 
-        return hasAbility and self.medPackAbilityEnabled and coolDownTime == 0 and alive and not vortexed and self:GetHealth() < self:GetMaxHealth()
+        return hasAbility and coolDownTime == 0 and alive and not vortexed and self:GetHealth() < self:GetMaxHealth()
 
     end
 

@@ -14,10 +14,5 @@ local ns2_Spectator_OnCreate = Spectator.OnCreate
 function Spectator:OnCreate()
 
     ns2_Spectator_OnCreate(self)
-
-    if Server then
-        self.UpgradeManager = UpgradeManager()
-        self.UpgradeManager:Initialize()
-    end
-
+    
 end

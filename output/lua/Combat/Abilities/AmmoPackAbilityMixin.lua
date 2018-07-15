@@ -6,23 +6,13 @@ local kUseSound = PrecacheAsset("sound/NS2.fev/marine/common/pickup_ammo")
 
 AmmoPackAbilityMixin.networkVars =
 {
-    timeLastAmmoPackUsed = "time",
-    ammoPackAbilityEnabled = "boolean"
+    timeLastAmmoPackUsed = "time"
 }
 
 function AmmoPackAbilityMixin:__initmixin()
 
     self.timeLastAmmoPackUsed = 0
-    self.ammoPackAbilityEnabled = false
 
-end
-
-function AmmoPackAbilityMixin:GetIsAmmoPackAbilityEnabled()
-    return self.ammoPackAbilityEnabled
-end
-
-function AmmoPackAbilityMixin:SetIsAmmoPackAbilityEnabled(isEnabled)
-    self.ammoPackAbilityEnabled = isEnabled
 end
 
 local function GetRemainingCooldownTime(self)
@@ -70,10 +60,10 @@ function AmmoPackAbilityMixin:CanApplyAmmoPack()
         local coolDownTime = GetRemainingCooldownTime(self)
         local alive = self:GetIsAlive()
         local vortexed = GetIsVortexed()
-        local hasAbility = self.UpgradeManager:GetTree():GetIsPurchased(kTechId.AmmoPack)
+        local hasAbility = self.GetHasUpgrade and self:GetHasUpgrade(kTechId.AmmoPack)
         local needsAmmo = CheckNeedsAmmo(self)
 
-        return hasAbility and self.ammoPackAbilityEnabled and coolDownTime == 0 and alive and not vortexed and needsAmmo
+        return hasAbility and coolDownTime == 0 and alive and not vortexed and needsAmmo
 
     end
 

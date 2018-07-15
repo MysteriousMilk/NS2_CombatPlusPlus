@@ -14,6 +14,11 @@ Script.Load("lua/Combat/Globals.lua")
 CombatScoreMixin = CreateMixin(CombatScoreMixin)
 CombatScoreMixin.type = "CombatScore"
 
+CombatScoreMixin.optionalCallbacks =
+{
+    OnLevelUp = "Called when the player receives a new level/rank."
+}
+
 CombatScoreMixin.networkVars =
 {
     combatXP = "integer",
@@ -54,8 +59,8 @@ function CombatScoreMixin:AddXP(xp, source, targetId)
             --give upgrade points for number of ranks earned
             self:GiveCombatUpgradePoints(kUpgradePointSourceType.LevelUp, numberOfRanksEarned)
 
-            if self.UpgradeManager then
-                self.UpgradeManager:UpdateUnlocks(true)
+            if self.OnLevelUp then
+                self:OnLevelUp()
             end
             
         end

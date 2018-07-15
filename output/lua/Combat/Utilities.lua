@@ -163,20 +163,6 @@ function CombatPlusPlus_GetDisplayNameForXpSourceType(source)
 
 end
 
-function CombatPlusPlus_GetIsMarineClassTechId(techId)
-
-    local marineClassIdTable =
-    {
-        [kTechId.Marine] = true,
-        [kTechId.Jetpack] = true,
-        [kTechId.DualMinigunExosuit] = true,
-        [kTechId.DualRailgunExosuit] = true
-    }
-
-    return marineClassIdTable[techId]
-
-end
-
 function CombatPlusPlus_GetIsPrimaryWeapon(kMapName)
 
     local isPrimary = false
@@ -209,76 +195,36 @@ function CombatPlusPlus_GetIsStructureTechId(techId)
 
 end
 
-function CombatPlusPlus_GetIsMarineCooldownAbility(techId)
+function GetNextArmorTech(player)
 
-    local abilityIdTable =
-    {
-        [kTechId.MedPack] = true,
-        [kTechId.AmmoPack] = true,
-        [kTechId.CatPack] = true,
-        [kTechId.Scan] = true
-    }
+    local nextArmorTech = kTechId.Armor1
 
-    return abilityIdTable[techId]
-
-end
-
-function CombatPlusPlus_GetIsMarineArmorUpgrade(techId)
-
-    local armorIdTable =
-    {
-        [kTechId.Armor1] = true,
-        [kTechId.Armor2] = true,
-        [kTechId.Armor3] = true
-    }
-
-    return armorIdTable[techId]
-
-end
-
-function CombatPlusPlus_GetIsMarineWeaponUpgrade(techId)
-
-    local wpnIdTable =
-    {
-        [kTechId.Weapons1] = true,
-        [kTechId.Weapons2] = true,
-        [kTechId.Weapons3] = true
-    }
-
-    return wpnIdTable[techId]
-
-end
-
-function CombatPlusPlus_GetTechIdByArmorLevel(level)
-
-    local techId = kTechId.None
-
-    if level == 1 then
-        techId = kTechId.Armor1
-    elseif level == 2 then
-        techId = kTechId.Armor2
-    elseif level == 3 then
-        techId = kTechId.Armor3
+    if player:GetHasUpgrade(kTechId.Armor1) then
+        nextArmorTech = kTechId.Armor2
+    elseif player:GetHasUpgrade(kTechId.Armor2) then
+        nextArmorTech = kTechId.Armor3
+    elseif player:GetHasUpgrade(kTechId.Armor3) then
+        nextArmorTech = kTechId.None
     end
 
-    return techId
-    
+    return nextArmorTech
+
 end
 
-function CombatPlusPlus_GetTechIdByWeaponLevel(level)
+function GetNextWeaponTech(player)
 
-    local techId = kTechId.None
+    local nextWpnTech = kTechId.Weapons1
 
-    if level == 1 then
-        techId = kTechId.Weapons1
-    elseif level == 2 then
-        techId = kTechId.Weapons2
-    elseif level == 3 then
-        techId = kTechId.Weapons3
+    if player:GetHasUpgrade(kTechId.Weapons1) then
+        nextWpnTech = kTechId.Weapons2
+    elseif player:GetHasUpgrade(kTechId.Weapons2) then
+        nextWpnTech = kTechId.Weapons3
+    elseif player:GetHasUpgrade(kTechId.Weapons3) then
+        nextWpnTech = kTechId.None
     end
 
-    return techId
-    
+    return nextWpnTech
+
 end
 
 function CombatPlusPlus_GetTimeString(duration)
@@ -348,7 +294,7 @@ end
 
 function CombatPlusPlus_GetStructureCountForTeam(techId, teamNumber)
 
-    local className = LookupUpgradeData(techId, kUpDataClassIndex)
+    local className = LookupUpgradeData(techId, kUpDataStructClassIndex)
 
     if className then
         local structList = GetEntitiesForTeam(className, teamNumber)

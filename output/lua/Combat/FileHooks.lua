@@ -6,7 +6,7 @@
  * Hooks the base game files with the new Combat++ files.
 ]]
 
-kCombatVersion = 0.4
+kCombatVersion = 0.5
 
 -- Setup Filehooks based on the folder structure inside the FileHooks folder
 -- Warning: Paths are case sensitive at Linux

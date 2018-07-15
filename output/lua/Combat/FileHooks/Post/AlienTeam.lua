@@ -8,7 +8,18 @@
  * Overriden Functions:
  *  'AlienTeam:SpawnWarmUpStructures' - Spawns a Crag and a Shade during warmup mode.
  *  'AlienTeam:SpawnInitialStructures' - Spawns the initial set of structures for the team.
-]]   
+]]
+
+local ns2_AlienTeam_OnInitialized = AlienTeam.OnInitialized
+function AlienTeam:OnInitialized()
+
+    if Server then
+        self.UpgradeHelper = CombatAlienUpgradeManager()
+    end
+
+    ns2_AlienTeam_OnInitialized(self)
+
+end
 
 function AlienTeam:SpawnWarmUpStructures()
 

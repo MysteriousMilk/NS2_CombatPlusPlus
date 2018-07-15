@@ -1,7 +1,7 @@
 Script.Load("lua/TechTreeConstants.lua")
 
--- Index used to retrieve the class name for some tech ids
-kUpDataClassIndex = "class"
+-- Index used to retrieve the type of upgrade
+kUpDataTypeIndex = "type"
 
 -- Index used to retrieve the team the upgrade is tied to
 kUpDataTeamIndex = "team"
@@ -16,6 +16,9 @@ kUpDataCostIndex = "cost"
 -- Mostly used to sort on the buy menu and such.
 -- Lower priority = First
 kUpDataPriorityIndex = "priority"
+
+-- Index used to retrieve a table of prerequisites for the give techId.
+kUpDataPrerequisiteIndex = "prereq"
 
 -- Index used to get the value the upgrade is hardcapped at
 kUpDataHardCapIndex = "hardcap"
@@ -39,6 +42,9 @@ kUpDataPassiveIndex = "passive"
 -- Index used to retrieve a table of tech ids that indicate other upgrades that are
 -- mutually exclusive to the upgrade indicated
 kUpDataMutuallyExclusiveIndex = "mutuallyExclusive"
+
+-- Index used to retrieve the structure class name for some tech ids
+kUpDataStructClassIndex = "class"
 
 -- Index used to retrieve a flag that indicates if the upgrade requires the alien player to gestate
 kUpDataRequiresGestation = "gestation"
@@ -70,34 +76,42 @@ kUpDataRequiresTwoHivesIndex = "twohives"
 -- Index used to retrieve flag that indicates if an ability is tier 3
 kUpDataRequiresThreeHivesIndex = "threehives"
 
+if Server then
+	Script.Load("lua/Combat/UpgradeData_Server.lua")
+end
+
 kCombatUpgradeData =
 {
-	[kTechId.Marine] =
-	{
-		[kUpDataPriorityIndex] = 1,
-		[kUpDataTeamIndex] = 1,
-		[kUpDataRankIndex] = 1,
-		[kUpDataCostIndex] = 0,
-		[kUpDataHardCapIndex] = 0,
-		[kUpDataConsoleNameIndex] = "marine",
-		[kUpDataCategoryIndex] = "Root",
-		[kUpDataPersistIndex] = false,
-		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { }
-	},
+	-- [kTechId.Marine] =
+	-- {
+	-- 	[kUpDataTypeIndex] = kCombatUpgradeType.Class,
+	-- 	[kUpDataPriorityIndex] = 1,
+	-- 	[kUpDataTeamIndex] = 1,
+	-- 	[kUpDataRankIndex] = 1,
+	-- 	[kUpDataCostIndex] = 0,
+	-- 	[kUpDataHardCapIndex] = 0,
+	-- 	[kUpDataConsoleNameIndex] = "marine",
+	-- 	[kUpDataCategoryIndex] = "Root",
+	-- 	[kUpDataPersistIndex] = false,
+	-- 	[kUpDataPassiveIndex] = false,
+	-- 	[kUpDataMutuallyExclusiveIndex] = { },
+	-- 	[kUpDataPrerequisiteIndex] = { }
+	-- },
 
 	[kTechId.Jetpack] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Class,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 1,
 		[kUpDataRankIndex] = 6,
 		[kUpDataCostIndex] = 2,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "jp",
-		[kUpDataCategoryIndex] = "Tech",
+		[kUpDataCategoryIndex] = "Class",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.DualMinigunExosuit, kTechId.DualRailgunExosuit },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataIconTextureIndex] = "ui/combatui_marine_tech_icons.dds",
 		[kUpDataIconTextureOffsetIndex] = 5,
 		[kUpDataIconSizeIndex] = Vector(64, 64, 0),
@@ -108,17 +122,19 @@ kCombatUpgradeData =
 
 	[kTechId.DualMinigunExosuit] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Class,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 1,
 		[kUpDataRankIndex] = 7,
 		[kUpDataCostIndex] = 2,
 		[kUpDataHardCapIndex] = 1/3,
 		[kUpDataConsoleNameIndex] = "minigunexo",
-		[kUpDataCategoryIndex] = "Tech",
+		[kUpDataCategoryIndex] = "Class",
 		[kUpDataDescIndex] = "An armored exosuit with a minigun equipped to each arm.",
 		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { kTechId.DualRailgunExosuit },
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.DualRailgunExosuit, kTechId.Jetpack },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataIconTextureIndex] = "ui/combatui_marine_tech_icons.dds",
 		[kUpDataIconTextureOffsetIndex] = 6,
 		[kUpDataIconSizeIndex] = Vector(64, 64, 0),
@@ -129,17 +145,19 @@ kCombatUpgradeData =
 
 	[kTechId.DualRailgunExosuit] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Class,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 1,
 		[kUpDataRankIndex] = 7,
 		[kUpDataCostIndex] = 2,
 		[kUpDataHardCapIndex] = 1/3,
 		[kUpDataConsoleNameIndex] = "railgunexo",
-		[kUpDataCategoryIndex] = "Tech",
+		[kUpDataCategoryIndex] = "Class",
 		[kUpDataDescIndex] = "An armored exosuit with a railgun equipped to each arm.",
 		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { kTechId.DualMinigunExosuit },
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.DualMinigunExosuit, kTechId.Jetpack },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataIconTextureIndex] = "ui/combatui_marine_tech_icons.dds",
 		[kUpDataIconTextureOffsetIndex] = 7,
 		[kUpDataIconSizeIndex] = Vector(64, 64, 0),
@@ -148,48 +166,53 @@ kCombatUpgradeData =
 		[kUpDataLargeIconSizeIndex] = Vector(400, 300, 0)
 	},
 
-	[kTechId.Pistol] =
-	{
-		[kUpDataPriorityIndex] = 1,
-		[kUpDataTeamIndex] = 1,
-		[kUpDataRankIndex] = 1,
-		[kUpDataCostIndex] = 0,
-		[kUpDataHardCapIndex] = 0,
-		[kUpDataConsoleNameIndex] = "pistol",
-		[kUpDataCategoryIndex] = "Weapon",
-		[kUpDataPersistIndex] = true,
-		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { },
-		[kUpDataIconTextureIndex] = "ui/combatui_marine_weapon_icons.dds",
-		[kUpDataIconTextureOffsetIndex] = 0,
-		[kUpDataIconSizeIndex] = Vector(128, 64, 0),
-		[kUpDataLargeIconTextureIndex] = "ui/marine_buy_bigicons.dds",
-		[kUpDataLargeIconTextureOffsetIndex] = 1,
-		[kUpDataLargeIconSizeIndex] = Vector(400, 300, 0)
-	},
+	-- [kTechId.Pistol] =
+	-- {
+	-- 	[kUpDataTypeIndex] = kCombatUpgradeType.Upgrade,
+	-- 	[kUpDataPriorityIndex] = 1,
+	-- 	[kUpDataTeamIndex] = 1,
+	-- 	[kUpDataRankIndex] = 1,
+	-- 	[kUpDataCostIndex] = 0,
+	-- 	[kUpDataHardCapIndex] = 0,
+	-- 	[kUpDataConsoleNameIndex] = "pistol",
+	-- 	[kUpDataCategoryIndex] = "Weapon",
+	-- 	[kUpDataPersistIndex] = true,
+	-- 	[kUpDataPassiveIndex] = false,
+	-- 	[kUpDataMutuallyExclusiveIndex] = { },
+	-- 	[kUpDataPrerequisiteIndex] = { },
+	-- 	[kUpDataIconTextureIndex] = "ui/combatui_marine_weapon_icons.dds",
+	-- 	[kUpDataIconTextureOffsetIndex] = 0,
+	-- 	[kUpDataIconSizeIndex] = Vector(128, 64, 0),
+	-- 	[kUpDataLargeIconTextureIndex] = "ui/marine_buy_bigicons.dds",
+	-- 	[kUpDataLargeIconTextureOffsetIndex] = 1,
+	-- 	[kUpDataLargeIconSizeIndex] = Vector(400, 300, 0)
+	-- },
 
-	[kTechId.Rifle] =
-	{
-		[kUpDataPriorityIndex] = 1,
-		[kUpDataTeamIndex] = 1,
-		[kUpDataRankIndex] = 1,
-		[kUpDataCostIndex] = 0,
-		[kUpDataHardCapIndex] = 0,
-		[kUpDataConsoleNameIndex] = "rifle",
-		[kUpDataCategoryIndex] = "Weapon",
-		[kUpDataPersistIndex] = true,
-		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { kTechId.Shotgun, kTechId.Flamethrower, kTechId.GrenadeLauncher, kTechId.HeavyMachineGun },
-		[kUpDataIconTextureIndex] = "ui/combatui_marine_weapon_icons.dds",
-		[kUpDataIconTextureOffsetIndex] = 1,
-		[kUpDataIconSizeIndex] = Vector(128, 64, 0),
-		[kUpDataLargeIconTextureIndex] = "ui/marine_buy_bigicons.dds",
-		[kUpDataLargeIconTextureOffsetIndex] = 2,
-		[kUpDataLargeIconSizeIndex] = Vector(400, 300, 0)
-	},
+	-- [kTechId.Rifle] =
+	-- {
+	-- 	[kUpDataTypeIndex] = kCombatUpgradeType.Upgrade,
+	-- 	[kUpDataPriorityIndex] = 1,
+	-- 	[kUpDataTeamIndex] = 1,
+	-- 	[kUpDataRankIndex] = 1,
+	-- 	[kUpDataCostIndex] = 0,
+	-- 	[kUpDataHardCapIndex] = 0,
+	-- 	[kUpDataConsoleNameIndex] = "rifle",
+	-- 	[kUpDataCategoryIndex] = "Weapon",
+	-- 	[kUpDataPersistIndex] = true,
+	-- 	[kUpDataPassiveIndex] = false,
+	-- 	[kUpDataMutuallyExclusiveIndex] = { kTechId.Shotgun, kTechId.Flamethrower, kTechId.GrenadeLauncher, kTechId.HeavyMachineGun },
+	-- 	[kUpDataPrerequisiteIndex] = { },
+	-- 	[kUpDataIconTextureIndex] = "ui/combatui_marine_weapon_icons.dds",
+	-- 	[kUpDataIconTextureOffsetIndex] = 1,
+	-- 	[kUpDataIconSizeIndex] = Vector(128, 64, 0),
+	-- 	[kUpDataLargeIconTextureIndex] = "ui/marine_buy_bigicons.dds",
+	-- 	[kUpDataLargeIconTextureOffsetIndex] = 2,
+	-- 	[kUpDataLargeIconSizeIndex] = Vector(400, 300, 0)
+	-- },
 
 	[kTechId.Shotgun] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Upgrade,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 1,
 		[kUpDataRankIndex] = 3,
@@ -199,7 +222,8 @@ kCombatUpgradeData =
 		[kUpDataCategoryIndex] = "Weapon",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { kTechId.Rifle, kTechId.Flamethrower, kTechId.GrenadeLauncher, kTechId.HeavyMachineGun },
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.Flamethrower, kTechId.GrenadeLauncher, kTechId.HeavyMachineGun },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataIconTextureIndex] = "ui/combatui_marine_weapon_icons.dds",
 		[kUpDataIconTextureOffsetIndex] = 2,
 		[kUpDataIconSizeIndex] = Vector(128, 64, 0),
@@ -210,6 +234,7 @@ kCombatUpgradeData =
 
 	[kTechId.Flamethrower] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Upgrade,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 1,
 		[kUpDataRankIndex] = 4,
@@ -219,7 +244,8 @@ kCombatUpgradeData =
 		[kUpDataCategoryIndex] = "Weapon",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { kTechId.Rifle, kTechId.Shotgun, kTechId.GrenadeLauncher, kTechId.HeavyMachineGun },
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.Shotgun, kTechId.GrenadeLauncher, kTechId.HeavyMachineGun },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataIconTextureIndex] = "ui/combatui_marine_weapon_icons.dds",
 		[kUpDataIconTextureOffsetIndex] = 3,
 		[kUpDataIconSizeIndex] = Vector(128, 64, 0),
@@ -230,6 +256,7 @@ kCombatUpgradeData =
 
 	[kTechId.GrenadeLauncher] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Upgrade,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 1,
 		[kUpDataRankIndex] = 5,
@@ -239,7 +266,8 @@ kCombatUpgradeData =
 		[kUpDataCategoryIndex] = "Weapon",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { kTechId.Rifle, kTechId.Shotgun, kTechId.Flamethrower, kTechId.HeavyMachineGun },
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.Shotgun, kTechId.Flamethrower, kTechId.HeavyMachineGun },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataIconTextureIndex] = "ui/combatui_marine_weapon_icons.dds",
 		[kUpDataIconTextureOffsetIndex] = 4,
 		[kUpDataIconSizeIndex] = Vector(128, 64, 0),
@@ -250,6 +278,7 @@ kCombatUpgradeData =
 
 	[kTechId.HeavyMachineGun] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Upgrade,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 1,
 		[kUpDataRankIndex] = 5,
@@ -259,7 +288,8 @@ kCombatUpgradeData =
 		[kUpDataCategoryIndex] = "Weapon",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { kTechId.Rifle, kTechId.Shotgun, kTechId.Flamethrower, kTechId.GrenadeLauncher },
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.Shotgun, kTechId.Flamethrower, kTechId.GrenadeLauncher },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataIconTextureIndex] = "ui/combatui_marine_weapon_icons.dds",
 		[kUpDataIconTextureOffsetIndex] = 5,
 		[kUpDataIconSizeIndex] = Vector(128, 64, 0),
@@ -270,6 +300,7 @@ kCombatUpgradeData =
 
 	[kTechId.Welder] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Upgrade,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 1,
 		[kUpDataRankIndex] = 1,
@@ -280,6 +311,7 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataIconTextureIndex] = "ui/combatui_marine_tech_icons.dds",
 		[kUpDataIconTextureOffsetIndex] = 0,
 		[kUpDataIconSizeIndex] = Vector(64, 64, 0),
@@ -290,6 +322,7 @@ kCombatUpgradeData =
 
 	[kTechId.LayMines] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Upgrade,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 1,
 		[kUpDataRankIndex] = 3,
@@ -300,6 +333,7 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataIconTextureIndex] = "ui/combatui_marine_tech_icons.dds",
 		[kUpDataIconTextureOffsetIndex] = 1,
 		[kUpDataIconSizeIndex] = Vector(64, 64, 0),
@@ -310,6 +344,7 @@ kCombatUpgradeData =
 
 	[kTechId.ClusterGrenade] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Upgrade,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 1,
 		[kUpDataRankIndex] = 3,
@@ -320,6 +355,7 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { kTechId.GasGrenade, kTechId.PulseGrenade },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataIconTextureIndex] = "ui/combatui_marine_tech_icons.dds",
 		[kUpDataIconTextureOffsetIndex] = 2,
 		[kUpDataIconSizeIndex] = Vector(64, 64, 0),
@@ -330,6 +366,7 @@ kCombatUpgradeData =
 
 	[kTechId.GasGrenade] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Upgrade,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 1,
 		[kUpDataRankIndex] = 3,
@@ -340,6 +377,7 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { kTechId.ClusterGrenade, kTechId.PulseGrenade },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataIconTextureIndex] = "ui/combatui_marine_tech_icons.dds",
 		[kUpDataIconTextureOffsetIndex] = 3,
 		[kUpDataIconSizeIndex] = Vector(64, 64, 0),
@@ -350,6 +388,7 @@ kCombatUpgradeData =
 
 	[kTechId.PulseGrenade] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Upgrade,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 1,
 		[kUpDataRankIndex] = 3,
@@ -360,6 +399,7 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { kTechId.ClusterGrenade, kTechId.GasGrenade },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataIconTextureIndex] = "ui/combatui_marine_tech_icons.dds",
 		[kUpDataIconTextureOffsetIndex] = 4,
 		[kUpDataIconSizeIndex] = Vector(64, 64, 0),
@@ -370,6 +410,7 @@ kCombatUpgradeData =
 
 	[kTechId.Armor1] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Passive,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 1,
 		[kUpDataRankIndex] = 1,
@@ -379,7 +420,8 @@ kCombatUpgradeData =
 		[kUpDataCategoryIndex] = "Upgrades",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.Armor2, kTechId.Armor3 },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataIconTextureIndex] = "ui/combatui_marine_upgrade_icons.dds",
 		[kUpDataIconTextureOffsetIndex] = 0,
 		[kUpDataIconSizeIndex] = Vector(64, 64, 0),
@@ -390,6 +432,7 @@ kCombatUpgradeData =
 
 	[kTechId.Armor2] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Passive,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 1,
 		[kUpDataRankIndex] = 2,
@@ -399,7 +442,8 @@ kCombatUpgradeData =
 		[kUpDataCategoryIndex] = "Upgrades",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.Armor1, kTechId.Armor3 },
+		[kUpDataPrerequisiteIndex] = { kTechId.Armor1 },
 		[kUpDataIconTextureIndex] = "ui/combatui_marine_upgrade_icons.dds",
 		[kUpDataIconTextureOffsetIndex] = 1,
 		[kUpDataIconSizeIndex] = Vector(64, 64, 0),
@@ -410,6 +454,7 @@ kCombatUpgradeData =
 
 	[kTechId.Armor3] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Passive,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 1,
 		[kUpDataRankIndex] = 3,
@@ -419,7 +464,8 @@ kCombatUpgradeData =
 		[kUpDataCategoryIndex] = "Upgrades",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.Armor1, kTechId.Armor2 },
+		[kUpDataPrerequisiteIndex] = { kTechId.Armor2 },
 		[kUpDataIconTextureIndex] = "ui/combatui_marine_upgrade_icons.dds",
 		[kUpDataIconTextureOffsetIndex] = 2,
 		[kUpDataIconSizeIndex] = Vector(64, 64, 0),
@@ -430,6 +476,7 @@ kCombatUpgradeData =
 
 	[kTechId.Weapons1] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Passive,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 1,
 		[kUpDataRankIndex] = 1,
@@ -439,7 +486,8 @@ kCombatUpgradeData =
 		[kUpDataCategoryIndex] = "Upgrades",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.Weapons2, kTechId.Weapons3 },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataIconTextureIndex] = "ui/combatui_marine_upgrade_icons.dds",
 		[kUpDataIconTextureOffsetIndex] = 3,
 		[kUpDataIconSizeIndex] = Vector(64, 64, 0),
@@ -450,6 +498,7 @@ kCombatUpgradeData =
 
 	[kTechId.Weapons2] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Passive,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 1,
 		[kUpDataRankIndex] = 2,
@@ -459,7 +508,8 @@ kCombatUpgradeData =
 		[kUpDataCategoryIndex] = "Upgrades",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.Weapons1, kTechId.Weapons3 },
+		[kUpDataPrerequisiteIndex] = { kTechId.Weapons1 },
 		[kUpDataIconTextureIndex] = "ui/combatui_marine_upgrade_icons.dds",
 		[kUpDataIconTextureOffsetIndex] = 4,
 		[kUpDataIconSizeIndex] = Vector(64, 64, 0),
@@ -470,6 +520,7 @@ kCombatUpgradeData =
 
 	[kTechId.Weapons3] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Passive,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 1,
 		[kUpDataRankIndex] = 3,
@@ -479,7 +530,8 @@ kCombatUpgradeData =
 		[kUpDataCategoryIndex] = "Upgrades",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.Weapons1, kTechId.Weapons2 },
+		[kUpDataPrerequisiteIndex] = { kTechId.Weapons2 },
 		[kUpDataIconTextureIndex] = "ui/combatui_marine_upgrade_icons.dds",
 		[kUpDataIconTextureOffsetIndex] = 5,
 		[kUpDataIconSizeIndex] = Vector(64, 64, 0)
@@ -487,6 +539,7 @@ kCombatUpgradeData =
 
 	[kTechId.MedPack] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Special,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 1,
 		[kUpDataRankIndex] = 2,
@@ -498,6 +551,7 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataIconTextureIndex] = "ui/combatui_marine_upgrade_icons.dds",
 		[kUpDataIconTextureOffsetIndex] = 6,
 		[kUpDataIconSizeIndex] = Vector(64, 64, 0),
@@ -508,6 +562,7 @@ kCombatUpgradeData =
 
 	[kTechId.AmmoPack] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Special,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 1,
 		[kUpDataRankIndex] = 2,
@@ -519,6 +574,7 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataIconTextureIndex] = "ui/combatui_marine_upgrade_icons.dds",
 		[kUpDataIconTextureOffsetIndex] = 7,
 		[kUpDataIconSizeIndex] = Vector(64, 64, 0),
@@ -529,6 +585,7 @@ kCombatUpgradeData =
 
 	[kTechId.CatPack] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Special,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 1,
 		[kUpDataRankIndex] = 4,
@@ -540,6 +597,7 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataIconTextureIndex] = "ui/combatui_marine_upgrade_icons.dds",
 		[kUpDataIconTextureOffsetIndex] = 8,
 		[kUpDataIconSizeIndex] = Vector(64, 64, 0),
@@ -550,6 +608,7 @@ kCombatUpgradeData =
 
 	[kTechId.Scan] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Special,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 1,
 		[kUpDataRankIndex] = 5,
@@ -561,6 +620,7 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataIconTextureIndex] = "ui/combatui_marine_upgrade_icons.dds",
 		[kUpDataIconTextureOffsetIndex] = 9,
 		[kUpDataIconSizeIndex] = Vector(64, 64, 0),
@@ -571,8 +631,9 @@ kCombatUpgradeData =
 
 	[kTechId.Armory] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Structure,
 		[kUpDataPriorityIndex] = 1,
-		[kUpDataClassIndex] = "Armory",
+		[kUpDataStructClassIndex] = "Armory",
 		[kUpDataTeamIndex] = 1,
 		[kUpDataRankIndex] = 2,
 		[kUpDataCostIndex] = 1,
@@ -582,6 +643,7 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataIconTextureIndex] = "ui/combatui_marine_structure_icons.dds",
 		[kUpDataIconTextureOffsetIndex] = 0,
 		[kUpDataIconSizeIndex] = Vector(128, 192, 0),
@@ -592,8 +654,9 @@ kCombatUpgradeData =
 
 	[kTechId.PhaseGate] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Structure,
 		[kUpDataPriorityIndex] = 1,
-		[kUpDataClassIndex] = "PhaseGate",
+		[kUpDataStructClassIndex] = "PhaseGate",
 		[kUpDataTeamIndex] = 1,
 		[kUpDataRankIndex] = 3,
 		[kUpDataCostIndex] = 1,
@@ -603,6 +666,7 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataIconTextureIndex] = "ui/combatui_marine_structure_icons.dds",
 		[kUpDataIconTextureOffsetIndex] = 1,
 		[kUpDataIconSizeIndex] = Vector(128, 192, 0),
@@ -613,8 +677,9 @@ kCombatUpgradeData =
 
 	[kTechId.Observatory] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Structure,
 		[kUpDataPriorityIndex] = 1,
-		[kUpDataClassIndex] = "Observatory",
+		[kUpDataStructClassIndex] = "Observatory",
 		[kUpDataTeamIndex] = 1,
 		[kUpDataRankIndex] = 3,
 		[kUpDataCostIndex] = 2,
@@ -624,6 +689,7 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataIconTextureIndex] = "ui/combatui_marine_structure_icons.dds",
 		[kUpDataIconTextureOffsetIndex] = 2,
 		[kUpDataIconSizeIndex] = Vector(128, 192, 0),
@@ -634,8 +700,9 @@ kCombatUpgradeData =
 
 	[kTechId.Sentry] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Structure,
 		[kUpDataPriorityIndex] = 1,
-		[kUpDataClassIndex] = "Sentry",
+		[kUpDataStructClassIndex] = "Sentry",
 		[kUpDataTeamIndex] = 1,
 		[kUpDataRankIndex] = 4,
 		[kUpDataCostIndex] = 1,
@@ -646,6 +713,7 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataIconTextureIndex] = "ui/combatui_marine_structure_icons.dds",
 		[kUpDataIconTextureOffsetIndex] = 3,
 		[kUpDataIconSizeIndex] = Vector(128, 192, 0),
@@ -656,6 +724,7 @@ kCombatUpgradeData =
 
 	[kTechId.Skulk] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Class,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 2,
 		[kUpDataRankIndex] = 1,
@@ -666,11 +735,13 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { kTechId.Gorge, kTechId.Lerk, kTechId.Fade, kTechId.Onos },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataRequiresGestation] = true
 	},
 
 	[kTechId.Gorge] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Class,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 2,
 		[kUpDataRankIndex] = 1,
@@ -681,11 +752,13 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { kTechId.Skulk, kTechId.Lerk, kTechId.Fade, kTechId.Onos },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataRequiresGestation] = true
 	},
 
 	[kTechId.Lerk] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Class,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 2,
 		[kUpDataRankIndex] = 3,
@@ -696,11 +769,13 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { kTechId.Skulk, kTechId.Gorge, kTechId.Fade, kTechId.Onos },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataRequiresGestation] = true
 	},
 
 	[kTechId.Fade] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Class,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 2,
 		[kUpDataRankIndex] = 5,
@@ -711,11 +786,13 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { kTechId.Skulk, kTechId.Gorge, kTechId.Lerk, kTechId.Onos },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataRequiresGestation] = true
 	},
 
 	[kTechId.Onos] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Class,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 2,
 		[kUpDataRankIndex] = 6,
@@ -726,11 +803,13 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { kTechId.Skulk, kTechId.Gorge, kTechId.Lerk, kTechId.Fade },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataRequiresGestation] = true
 	},
 
 	[kTechId.Spur] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Passive,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 2,
 		[kUpDataRankIndex] = 1,
@@ -741,11 +820,13 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = true,
 		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataRequiresGestation] = false
 	},
 
 	[kTechId.Veil] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Passive,
 		[kUpDataPriorityIndex] = 2,
 		[kUpDataTeamIndex] = 2,
 		[kUpDataRankIndex] = 1,
@@ -756,11 +837,13 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = true,
 		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataRequiresGestation] = false
 	},
 
 	[kTechId.Shell] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Passive,
 		[kUpDataPriorityIndex] = 3,
 		[kUpDataTeamIndex] = 2,
 		[kUpDataRankIndex] = 1,
@@ -771,146 +854,166 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = true,
 		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataRequiresGestation] = false
 	},
 
 	[kTechId.Adrenaline] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Upgrade,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 2,
 		[kUpDataRankIndex] = 1,
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "adrenaline",
-		[kUpDataCategoryIndex] = "Upgrade",
+		[kUpDataCategoryIndex] = "SpurUpgrades",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { kTechId.Celerity, kTechId.Crush },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataRequiresGestation] = true
 	},
 
 	[kTechId.Celerity] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Upgrade,
 		[kUpDataPriorityIndex] = 2,
 		[kUpDataTeamIndex] = 2,
 		[kUpDataRankIndex] = 1,
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "celerity",
-		[kUpDataCategoryIndex] = "Upgrade",
+		[kUpDataCategoryIndex] = "SpurUpgrades",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { kTechId.Adrenaline, kTechId.Crush },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataRequiresGestation] = true
 	},
 
 	[kTechId.Crush] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Upgrade,
 		[kUpDataPriorityIndex] = 3,
 		[kUpDataTeamIndex] = 2,
 		[kUpDataRankIndex] = 1,
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "crush",
-		[kUpDataCategoryIndex] = "Upgrade",
+		[kUpDataCategoryIndex] = "SpurUpgrades",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { kTechId.Adrenaline, kTechId.Celerity },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataRequiresGestation] = true
 	},
 
 	[kTechId.Camouflage] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Upgrade,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 2,
 		[kUpDataRankIndex] = 1,
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "camouflage",
-		[kUpDataCategoryIndex] = "Upgrade",
+		[kUpDataCategoryIndex] = "VeilUpgrades",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { kTechId.Aura, kTechId.Focus },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataRequiresGestation] = true
 	},
 
 	[kTechId.Focus] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Upgrade,
 		[kUpDataPriorityIndex] = 2,
 		[kUpDataTeamIndex] = 2,
 		[kUpDataRankIndex] = 1,
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "focus",
-		[kUpDataCategoryIndex] = "Upgrade",
+		[kUpDataCategoryIndex] = "VeilUpgrades",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { kTechId.Aura, kTechId.Camouflage },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataRequiresGestation] = true
 	},
 
 	[kTechId.Aura] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Upgrade,
 		[kUpDataPriorityIndex] = 3,
 		[kUpDataTeamIndex] = 2,
 		[kUpDataRankIndex] = 1,
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "aura",
-		[kUpDataCategoryIndex] = "Upgrade",
+		[kUpDataCategoryIndex] = "VeilUpgrades",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { kTechId.Focus, kTechId.Camouflage },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataRequiresGestation] = true
 	},
 
 	[kTechId.Regeneration] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Upgrade,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 2,
 		[kUpDataRankIndex] = 1,
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "regeneration",
-		[kUpDataCategoryIndex] = "Upgrade",
+		[kUpDataCategoryIndex] = "ShellUpgrades",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { kTechId.Carapace, kTechId.Vampirism },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataRequiresGestation] = true
 	},
 
 	[kTechId.Carapace] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Upgrade,
 		[kUpDataPriorityIndex] = 2,
 		[kUpDataTeamIndex] = 2,
 		[kUpDataRankIndex] = 1,
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "carapace",
-		[kUpDataCategoryIndex] = "Upgrade",
+		[kUpDataCategoryIndex] = "ShellUpgrades",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { kTechId.Regeneration, kTechId.Vampirism },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataRequiresGestation] = true
 	},
 
 	[kTechId.Vampirism] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Upgrade,
 		[kUpDataPriorityIndex] = 3,
 		[kUpDataTeamIndex] = 2,
 		[kUpDataRankIndex] = 1,
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "vampirism",
-		[kUpDataCategoryIndex] = "Upgrade",
+		[kUpDataCategoryIndex] = "ShellUpgrades",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { kTechId.Regeneration, kTechId.Carapace },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataRequiresGestation] = true
 	},
 
 	[kTechId.BileBomb] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Upgrade,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 2,
 		[kUpDataRankIndex] = 4,
@@ -921,6 +1024,7 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataPrerequisiteIndex] = { kTechId.Gorge },
 		[kUpDataRequiresGestation] = false,
 		[kUpDataRequiresOneHiveIndex] = true,
 		[kUpDataRequiresTwoHivesIndex] = false,
@@ -929,6 +1033,7 @@ kCombatUpgradeData =
 
 	[kTechId.Leap] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Upgrade,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 2,
 		[kUpDataRankIndex] = 3,
@@ -939,6 +1044,7 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataPrerequisiteIndex] = { kTechId.Skulk },
 		[kUpDataRequiresGestation] = false,
 		[kUpDataRequiresOneHiveIndex] = true,
 		[kUpDataRequiresTwoHivesIndex] = true,
@@ -947,6 +1053,7 @@ kCombatUpgradeData =
 
 	[kTechId.Xenocide] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Upgrade,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 2,
 		[kUpDataRankIndex] = 7,
@@ -957,6 +1064,7 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataPrerequisiteIndex] = { kTechId.Skulk },
 		[kUpDataRequiresGestation] = false,
 		[kUpDataRequiresOneHiveIndex] = true,
 		[kUpDataRequiresTwoHivesIndex] = true,
@@ -965,6 +1073,7 @@ kCombatUpgradeData =
 
 	[kTechId.Spores] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Upgrade,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 2,
 		[kUpDataRankIndex] = 3,
@@ -975,6 +1084,7 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataPrerequisiteIndex] = { kTechId.Lerk },
 		[kUpDataRequiresGestation] = false,
 		[kUpDataRequiresOneHiveIndex] = true,
 		[kUpDataRequiresTwoHivesIndex] = true,
@@ -983,6 +1093,7 @@ kCombatUpgradeData =
 
 	[kTechId.Umbra] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Upgrade,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 2,
 		[kUpDataRankIndex] = 5,
@@ -993,6 +1104,7 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataPrerequisiteIndex] = { kTechId.Lerk },
 		[kUpDataRequiresGestation] = false,
 		[kUpDataRequiresOneHiveIndex] = true,
 		[kUpDataRequiresTwoHivesIndex] = false,
@@ -1001,6 +1113,7 @@ kCombatUpgradeData =
 
 	[kTechId.MetabolizeEnergy] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Upgrade,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 2,
 		[kUpDataRankIndex] = 5,
@@ -1011,6 +1124,7 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataPrerequisiteIndex] = { kTechId.Fade },
 		[kUpDataRequiresGestation] = false,
 		[kUpDataRequiresOneHiveIndex] = true,
 		[kUpDataRequiresTwoHivesIndex] = false,
@@ -1019,6 +1133,7 @@ kCombatUpgradeData =
 
 	[kTechId.MetabolizeHealth] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Upgrade,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 2,
 		[kUpDataRankIndex] = 6,
@@ -1029,6 +1144,7 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataPrerequisiteIndex] = { kTechId.Fade, kTechId.MetabolizeEnergy },
 		[kUpDataRequiresGestation] = false,
 		[kUpDataRequiresOneHiveIndex] = true,
 		[kUpDataRequiresTwoHivesIndex] = true,
@@ -1037,6 +1153,7 @@ kCombatUpgradeData =
 
 	[kTechId.Stab] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Upgrade,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 2,
 		[kUpDataRankIndex] = 7,
@@ -1047,6 +1164,7 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataPrerequisiteIndex] = { kTechId.Fade },
 		[kUpDataRequiresGestation] = false,
 		[kUpDataRequiresOneHiveIndex] = true,
 		[kUpDataRequiresTwoHivesIndex] = true,
@@ -1058,6 +1176,7 @@ kCombatUpgradeData =
 
 	[kTechId.Charge] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Upgrade,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 2,
 		[kUpDataRankIndex] = 6,
@@ -1067,7 +1186,8 @@ kCombatUpgradeData =
 		[kUpDataCategoryIndex] = "Ability",
 		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.Onos },
+		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataRequiresGestation] = false,
 		[kUpDataRequiresOneHiveIndex] = true,
 		[kUpDataRequiresTwoHivesIndex] = false,
@@ -1076,6 +1196,7 @@ kCombatUpgradeData =
 
 	[kTechId.BoneShield] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Upgrade,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 2,
 		[kUpDataRankIndex] = 7,
@@ -1086,6 +1207,7 @@ kCombatUpgradeData =
 		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataPrerequisiteIndex] = { kTechId.Onos },
 		[kUpDataRequiresGestation] = false,
 		[kUpDataRequiresOneHiveIndex] = true,
 		[kUpDataRequiresTwoHivesIndex] = true,
@@ -1094,6 +1216,7 @@ kCombatUpgradeData =
 
 	[kTechId.Stomp] =
 	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Upgrade,
 		[kUpDataPriorityIndex] = 1,
 		[kUpDataTeamIndex] = 2,
 		[kUpDataRankIndex] = 8,
@@ -1103,7 +1226,8 @@ kCombatUpgradeData =
 		[kUpDataCategoryIndex] = "Ability",
 		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataMutuallyExclusiveIndex] = {  },
+		[kUpDataPrerequisiteIndex] = { kTechId.Onos },
 		[kUpDataRequiresGestation] = false,
 		[kUpDataRequiresOneHiveIndex] = true,
 		[kUpDataRequiresTwoHivesIndex] = true,
@@ -1117,6 +1241,128 @@ function LookupUpgradeData(techId, index)
 	assert(index)
 
 	return kCombatUpgradeData[techId][index]
+
+end
+
+function LookupUpgradesByType(type, teamNumber)
+
+	local upsByType = { }
+
+	for techId, upgrade in pairs(kCombatUpgradeData) do
+
+		if (upgrade[kUpDataTypeIndex] and
+			upgrade[kUpDataTeamIndex] and
+			upgrade[kUpDataTypeIndex] == type and
+			upgrade[kUpDataTeamIndex] == teamNumber) then
+
+				table.insert(upsByType, techId)
+
+		end
+
+	end
+
+	table.sort(upsByType,
+        function(a,b)
+            local rankA = LookupUpgradeData(a, kUpDataRankIndex)
+            local rankB = LookupUpgradeData(b, kUpDataRankIndex)
+            return rankA < rankB
+        end)
+
+	return upsByType
+
+end
+
+function LookupUpgradesByCategory(category, teamNumber)
+
+	local upsByCategory = { }
+
+	for techId, upgrade in pairs(kCombatUpgradeData) do
+
+		if (upgrade[kUpDataCategoryIndex] and
+			upgrade[kUpDataTeamIndex] and
+			upgrade[kUpDataCategoryIndex] == category and
+			upgrade[kUpDataTeamIndex] == teamNumber) then
+
+				table.insert(upsByCategory, techId)
+
+		end
+
+	end
+
+	table.sort(upsByCategory,
+        function(a,b)
+            local rankA = LookupUpgradeData(a, kUpDataRankIndex)
+            local rankB = LookupUpgradeData(b, kUpDataRankIndex)
+            return rankA < rankB
+        end)
+
+	return upsByCategory
+
+end
+
+function LookupUpgradesByPrereq(prereqTechId, teamNumber)
+
+	local upgrades = { }
+
+	for techId, upgrade in pairs(kCombatUpgradeData) do
+
+		if (upgrade[kUpDataTeamIndex] and
+			upgrade[kUpDataTeamIndex] == teamNumber and
+			upgrade[kUpDataPrerequisiteIndex]) then
+
+				for _, prereqId in ipairs(upgrade[kUpDataPrerequisiteIndex]) do
+					if prereqId == prereqTechId then
+						table.insert(upgrades, techId)
+						break
+					end
+				end
+
+		end
+
+	end
+
+	table.sort(upgrades,
+        function(a,b)
+            local rankA = LookupUpgradeData(a, kUpDataRankIndex)
+            local rankB = LookupUpgradeData(b, kUpDataRankIndex)
+            return rankA < rankB
+		end)
+		
+	return upgrades
+
+end
+
+function LookupUpgradesByCategoryAndPrereq(category, prereqTechId, teamNumber)
+
+	local upsByCategory = { }
+
+	for techId, upgrade in pairs(kCombatUpgradeData) do
+
+		if (upgrade[kUpDataCategoryIndex] and
+			upgrade[kUpDataTeamIndex] and
+			upgrade[kUpDataCategoryIndex] == category and
+			upgrade[kUpDataTeamIndex] == teamNumber and
+			upgrade[kUpDataPrerequisiteIndex]) then
+
+				for _, prereqId in ipairs(upgrade[kUpDataPrerequisiteIndex]) do
+					if prereqId == prereqTechId then
+						table.insert(upsByCategory, techId)
+						break
+					end
+				end
+
+		end
+
+	end
+
+	table.sort(upsByCategory,
+        function(a,b)
+            local rankA = LookupUpgradeData(a, kUpDataRankIndex)
+            local rankB = LookupUpgradeData(b, kUpDataRankIndex)
+            return rankA < rankB
+        end)
+
+	return upsByCategory
 
 end
 
@@ -1143,7 +1389,7 @@ if Client then
 
 	function PrecacheUpgradeTextures()
 
-		for techId, values in ipairs(kCombatUpgradeData) do
+		for techId, values in pairs(kCombatUpgradeData) do
 
 			if values[kUpDataIconTextureIndex] then
 				PrecacheAsset(values[kUpDataIconTextureIndex])

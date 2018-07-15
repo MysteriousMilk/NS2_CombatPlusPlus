@@ -46,7 +46,16 @@ if Server then
         local player = client:GetControllingPlayer()
 
         if player then
+            
+            -- Kill any structures the player owns
             player:KillOwnedStructures()
+
+            -- If the disconnecting player is a marine, they may own a exosuit that
+            -- they are not currently in.  If so, destroy it.
+            if player:isa("Marine") and player.DestroyExosuit then
+                player:DestroyExosuit()
+            end
+
         end
 
     end
@@ -146,10 +155,6 @@ if Server then
         local success = false
         local newPlayer = nil
 
-        if oldTeamNumber ~= newTeamNumber and player.UpgradeManager then
-            player.UpgradeManager:Initialize()
-        end
-
         success, newPlayer = ns2_NS2GameRules_JoinTeam(self, player, newTeamNumber, force)
 
         if success then
@@ -160,19 +165,8 @@ if Server then
 
                 local oldRank = newPlayer:GetCombatRank()
 
-                -- reset the player's upgrades
-                if newPlayer.UpgradeManager then
-
-                    -- reset xp
-                    newPlayer:ResetCombatScores()
-                    
-                    -- reset upgrade manager
-                    newPlayer.UpgradeManager:SetPlayer(newPlayer)
-                    newPlayer.UpgradeManager:Reset()
-                    newPlayer.UpgradeManager:UpdateUnlocks(false)
-                    newPlayer.UpgradeManager:GetTree():SendFullTree(newPlayer)
-
-                end
+                -- reset xp
+                newPlayer:ResetCombatScores()
 
                 if oldTeamNumber ~= newTeamNumber then
 

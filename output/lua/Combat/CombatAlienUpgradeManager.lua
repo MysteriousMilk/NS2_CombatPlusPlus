@@ -1,57 +1,36 @@
 class 'CombatAlienUpgradeManager' (UpgradeManager)
 
-function CombatAlienUpgradeManager:CreateUpgradeTree()
+local function CheckHasPrerequisites(techId, lifeformTechId, player)
 
-    -- class upgrades
-    self.Upgrades:AddClassNode(kTechId.Skulk, kTechId.None, nil)
-    self.Upgrades:AddClassNode(kTechId.Gorge, kTechId.None, nil)
-    self.Upgrades:AddClassNode(kTechId.Lerk, kTechId.None, nil)
-    self.Upgrades:AddClassNode(kTechId.Fade, kTechId.None, nil)
-    self.Upgrades:AddClassNode(kTechId.Onos, kTechId.None, nil)
+    local hasPrereqs = true
 
-    -- spur upgrades
-    self.Upgrades:AddUpgradeNode(kTechId.Spur, kTechId.None, nil)
-    self.Upgrades:AddUpgradeNode(kTechId.Adrenaline, kTechId.Spur, nil)
-    self.Upgrades:AddUpgradeNode(kTechId.Celerity, kTechId.Spur, nil)
-    self.Upgrades:AddUpgradeNode(kTechId.Crush, kTechId.Spur, nil)
+    for _, prereqTechId in ipairs(LookupUpgradeData(techId, kUpDataPrerequisiteIndex)) do
 
-    -- veil upgrades
-    self.Upgrades:AddUpgradeNode(kTechId.Veil, kTechId.None, nil)
-    self.Upgrades:AddUpgradeNode(kTechId.Aura, kTechId.Veil, nil)
-    self.Upgrades:AddUpgradeNode(kTechId.Focus, kTechId.Veil, nil)
-    self.Upgrades:AddUpgradeNode(kTechId.Camouflage, kTechId.Veil, nil)
+        if LookupUpgradeData(prereqTechId, kUpDataTypeIndex) == kCombatUpgradeType.Class then
 
-    -- shell upgrades
-    self.Upgrades:AddUpgradeNode(kTechId.Shell, kTechId.None, nil)
-    self.Upgrades:AddUpgradeNode(kTechId.Regeneration, kTechId.Shell, nil)
-    self.Upgrades:AddUpgradeNode(kTechId.Carapace, kTechId.Shell, nil)
-    self.Upgrades:AddUpgradeNode(kTechId.Vampirism, kTechId.Shell, nil)
+            if prereqTechId ~= lifeformTechId then
+                hasPrereqs = false
+                break
+            end
 
-    -- skulk upgrades
-    self.Upgrades:AddUpgradeNode(kTechId.Leap, kTechId.Skulk, nil)
-    self.Upgrades:AddUpgradeNode(kTechId.Xenocide, kTechId.Skulk, nil)
+        else
 
-    -- gorge upgrades
-    self.Upgrades:AddUpgradeNode(kTechId.BileBomb, kTechId.Gorge, nil)
+            if not player:GetHasUpgrade(prereqTechId) then
+                hasPrereqs = false
+                break
+            end
 
-    -- lerk upgrades
-    self.Upgrades:AddUpgradeNode(kTechId.Spores, kTechId.Lerk, nil)
-    self.Upgrades:AddUpgradeNode(kTechId.Umbra, kTechId.Lerk, nil)
+        end
 
-    -- fade upgrades
-    self.Upgrades:AddUpgradeNode(kTechId.MetabolizeEnergy, kTechId.Fade, nil)
-    self.Upgrades:AddUpgradeNode(kTechId.MetabolizeHealth, kTechId.Fade, nil)
-    self.Upgrades:AddUpgradeNode(kTechId.Stab, kTechId.Fade, nil)
+    end
 
-    -- onos upgrades
-    self.Upgrades:AddUpgradeNode(kTechId.Charge, kTechId.Onos, nil)
-    self.Upgrades:AddUpgradeNode(kTechId.BoneShield, kTechId.Onos, nil)
-    self.Upgrades:AddUpgradeNode(kTechId.Stomp, kTechId.Onos, nil)
+    return hasPrereqs
 
-    self.Upgrades:SetIsUnlocked(kTechId.Skulk, true)
-    self.Upgrades:SetIsPurchased(kTechId.Skulk, true)
+end
 
-    self.Upgrades:SetIsUnlocked(kTechId.Gorge, true)
+local function CheckIsUnlocked(techId, player)
+
+    return LookupUpgradeData(techId, kUpDataRankIndex) <= player:GetCombatRank()
 
 end
 
@@ -60,7 +39,7 @@ function CombatAlienUpgradeManager:PreGiveUpgrades(techIdList, player, overrideC
     local totalCost = 0
     local success = true
     local hasNewLifeformUpgrade = false
-    local lifeformTechId = kTechId.None
+    local lifeformTechId = player:GetTechId()
 
     -- check to see if we have a new lifeform id
     for _, techId in ipairs(techIdList) do
@@ -79,27 +58,9 @@ function CombatAlienUpgradeManager:PreGiveUpgrades(techIdList, player, overrideC
         local teamForTechId = LookupUpgradeData(techId, kUpDataTeamIndex)
         assert(teamForTechId == player:GetTeamNumber())
 
-        local node = self.Upgrades:GetNode(techId)
-        local cost = LookupUpgradeData(techId, kUpDataCostIndex)
+        totalCost = totalCost + LookupUpgradeData(techId, kUpDataCostIndex)
 
-        totalCost = totalCost + cost
-            
-        if node then
-
-            -- If we have a lifeform upgrade, check prereqs against the new lifeform.
-            if hasNewLifeformUpgrade and LookupUpgradeData(techId, kUpDataCategoryIndex) == "Ability" then
-                success = success and node:GetIsUnlocked() and node.prereqTechId == lifeformTechId
-            else
-                -- node must be unlocked and meet all prereqs
-                success = success and node:GetIsUnlocked() and node:MeetsPreconditions(self.Upgrades)
-            end
-
-        else
-            
-            success = false
-            break
-
-        end
+        success = success and CheckIsUnlocked(techId, player) and CheckHasPrerequisites(techId, lifeformTechId, player)
 
     end
 
@@ -207,87 +168,124 @@ local function Gestate(gestateUpgrades, player)
 
 end
 
-function CombatAlienUpgradeManager:UpgradeLogic(techIdList, currNode, player, overrideCost)
+function CombatAlienUpgradeManager:UpgradeLogic(techIdList, classTechId, player)
 
+    local gestateUpgrades = {}
     local requiresGestation = false
+    local hasLifeformTechId = false
     local success = true
 
     for k, techId in ipairs(techIdList) do
-        if LookupUpgradeData(techId, kUpDataRequiresGestation) then
-            requiresGestation = true
-            break
-        end
-    end
 
-    if not requiresGestation then
-        success = UpgradeManager.UpgradeLogic(self, techIdList, currNode, player, overrideCost)
-    end
-
-    return success, nil
-
-end
-
-function CombatAlienUpgradeManager:PostGiveUpgrades(techIds, player, cost, overrideCost)
-
-    local gestateUpgrades = {}
-    local success = true
-    local hasLifeformTechId = false
-
-    local oldUpgradePointAmount = player:GetCombatUpgradePoints()
-
-    UpgradeManager.PostGiveUpgrades(self, techIds, player, cost, overrideCost)
-
-    -- build a table of upgrades that require gestation
-    for k, techId in ipairs(techIds) do
-
-        if LookupUpgradeData(techId, kUpDataRequiresGestation) then
+        if not LookupTechData(techId, kTechDataGestateName) and LookupUpgradeData(techId, kUpDataRequiresGestation) then
             table.insert(gestateUpgrades, techId)
+            requiresGestation = true
+        end
+        
+    end
+
+    if classTechId and classTechId ~= kTechId.None then
+        requiresGestation = true
+    end
+
+    if requiresGestation then
+
+        if classTechId == nil or classTechId == kTechId.None then
+            table.insert(gestateUpgrades, player:GetTechId())
+        else
+            table.insert(gestateUpgrades, classTechId)
         end
 
-        if LookupTechData(techId, kTechDataGestateName) then
-            hasLifeformTechId = true
-        end
+        local newLifeform
 
-    end
+        -- push lifeform techId to top
+        table.sort(gestateUpgrades, function(a,b) return LookupTechData(a, kTechDataGestateName) end)
 
-    -- if no new lifeform tech id, insert current lifeform tech id
-    if not hasLifeformTechId then
-        table.insert(gestateUpgrades, player:GetTechId())
-    end
+        success, newLifeform = Gestate(gestateUpgrades, player)
 
-    -- push lifeform techId to top
-    table.sort(gestateUpgrades, function(a,b) return LookupTechData(a, kTechDataGestateName) end)
+    else
 
-    -- if the player should gestate, make them do so
-    if table.icount(gestateUpgrades) > 0 then
-        success = Gestate(gestateUpgrades, player)
-    end
-
-    -- if we could not gestate, refund the upgrade points
-    if not success then
-        player:SetCombatUpgradePoints(oldUpgradePointAmount)
-    end
-
-end
-
-function CombatAlienUpgradeManager:ApplyAllUpgrades(player)
-
-    if player:GetTechId() ~= kTechId.Skulk then
-
-        for _, childTechId in ipairs(self.Upgrades:GetUpgradesByPrereq(kTechId.Skulk)) do
-
-            if LookupUpgradeData(childTechId, kUpDataPersistIndex) then
-                -- unpurchase
-                self.Upgrades:SetIsPurchased(childTechId, false)
-
-                -- refund
-                player:Refund(childTechId, false)
+        -- No gestation, so loop the tech id list and apply each upgrade
+        for _, techId in ipairs(techIdList) do
+            
+            -- run custom upgrade code for this upgrade
+            local upgradeFunc = LookupUpgradeData(techId, kUpDataUpgradeFuncIndex)
+            if upgradeFunc then
+                upgradeFunc(techId, player)
             end
 
         end
 
+        if player.classTech == kTechId.None then
+            player.classTech = player:GetTechId()
+        end
+
+        player:TriggerEffects("heal", { isalien = true })
+        player:TriggerEffects("upgrade_complete")
+
     end
 
-    UpgradeManager.ApplyAllUpgrades(self, player)
-
 end
+
+-- function CombatAlienUpgradeManager:UpgradeLogic(techIdList, currNode, player, overrideCost)
+
+--     local requiresGestation = false
+--     local success = true
+
+--     for k, techId in ipairs(techIdList) do
+--         if LookupUpgradeData(techId, kUpDataRequiresGestation) then
+--             requiresGestation = true
+--             break
+--         end
+--     end
+
+--     if not requiresGestation then
+--         success = UpgradeManager.UpgradeLogic(self, techIdList, currNode, player, overrideCost)
+--     end
+
+--     return success, nil
+
+-- end
+
+-- function CombatAlienUpgradeManager:PostGiveUpgrades(techIds, player, cost, overrideCost)
+
+--     local gestateUpgrades = {}
+--     local success = true
+--     local hasLifeformTechId = false
+
+--     local oldUpgradePointAmount = player:GetCombatUpgradePoints()
+
+--     UpgradeManager.PostGiveUpgrades(self, techIds, player, cost, overrideCost)
+
+--     -- build a table of upgrades that require gestation
+--     for k, techId in ipairs(techIds) do
+
+--         if LookupUpgradeData(techId, kUpDataRequiresGestation) then
+--             table.insert(gestateUpgrades, techId)
+--         end
+
+--         if LookupTechData(techId, kTechDataGestateName) then
+--             hasLifeformTechId = true
+--         end
+
+--     end
+
+--     -- if no new lifeform tech id, insert current lifeform tech id
+--     if not hasLifeformTechId then
+--         table.insert(gestateUpgrades, player:GetTechId())
+--     end
+
+--     -- push lifeform techId to top
+--     table.sort(gestateUpgrades, function(a,b) return LookupTechData(a, kTechDataGestateName) end)
+
+--     -- if the player should gestate, make them do so
+--     if table.icount(gestateUpgrades) > 0 then
+--         success = Gestate(gestateUpgrades, player)
+--     end
+
+--     -- if we could not gestate, refund the upgrade points
+--     if not success then
+--         player:SetCombatUpgradePoints(oldUpgradePointAmount)
+--     end
+
+-- end

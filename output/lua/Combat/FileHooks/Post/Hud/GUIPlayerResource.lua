@@ -1,5 +1,5 @@
-GUIPlayerResource.kPersonalTextPos = Vector(70,0,0)
-GUIPlayerResource.kPresDescriptionPos = Vector(80,0,0)
+GUIPlayerResource.kPersonalTextPos = Vector(74,0,0)
+GUIPlayerResource.kPresDescriptionPos = Vector(84,0,0)
 GUIPlayerResource.kFontSizePresDescription = 12
 GUIPlayerResource.kFontSizePersonal = 12
 GUIPlayerResource.kFontSizePersonalBig = 12
@@ -20,7 +20,7 @@ function GUIPlayerResource:Initialize(...)
 
     oldInitialize(self, ...)
 
-	self.pResDescription:SetText("Upgrade Points")
+    self.pResDescription:SetText("Upgrade Points")
 
 end
 

@@ -1,10 +1,6 @@
 local ns2_Alien_OnCreate = Alien.OnCreate
 function Alien:OnCreate()
 
-    if Server then
-        self.UpgradeManager = CombatAlienUpgradeManager()
-    end
-
     ns2_Alien_OnCreate(self)
 
 end
@@ -21,6 +17,8 @@ function Alien:SetHatched()
         self:PerformSpawnProtect()
     end
 
+    --self:GetTeam():GetUpgradeHelper():ApplyAllUpgrades(self, true)
+
 end
 
 function Alien:UpdateHealthAmount()
@@ -36,5 +34,11 @@ function Alien:UpdateHealthAmount()
         self:SetHealth(self.maxHealth * healthPercent)
     
     end
+
+end
+
+function Alien:OnLevelUp()
+
+    self:TriggerEffects("vortexed_end")
 
 end

@@ -10,6 +10,17 @@ MarineTeam.kSpawnArmoryMaxRetries = 200
 MarineTeam.kArmorySpawnMinDistance = 8
 MarineTeam.kArmorySpawnMaxDistance = 60
 
+local ns2_MarineTeam_OnInitialized = MarineTeam.OnInitialized
+function MarineTeam:OnInitialized()
+
+    if Server then
+        self.UpgradeHelper = MarineUpgradeManager()
+    end
+
+    ns2_MarineTeam_OnInitialized(self)
+
+end
+
 -- remove no-ip check
 function MarineTeam:Update(timePassed)
 
