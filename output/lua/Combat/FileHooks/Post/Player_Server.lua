@@ -61,6 +61,12 @@ function Player:ProcessBuyAction(techIds)
 
 end
 
+function Player:GetOwnedStructures()
+
+    return self.ownedStructures
+
+end
+
 --[[
     Call this function to destroy/kill any structures created by the player.
 ]]

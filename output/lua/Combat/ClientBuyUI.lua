@@ -24,3 +24,15 @@ function BuyUI_GetHasPrerequisites(techId)
     return hasPrereqs
 
 end
+
+function BuyUI_RefundAll()
+
+    Client.SendNetworkMessage("CombatRefundUpgrades", {}, true)
+
+end
+
+function BuyUI_RecycleAll()
+
+    Client.SendNetworkMessage("CombatRecycleStructures", {}, true)
+
+end

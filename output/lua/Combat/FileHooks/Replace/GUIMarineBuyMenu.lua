@@ -1182,6 +1182,16 @@ local function HandleItemClicked(self, mouseX, mouseY)
 
     end
 
+    if GetIsMouseOver(self, self.refundButton) then
+        BuyUI_RefundAll()
+        return true, false
+    end
+
+    if GetIsMouseOver(self, self.recycleButton) then
+        BuyUI_RecycleAll()
+        return true, false
+    end
+
     return false, false
 
 end

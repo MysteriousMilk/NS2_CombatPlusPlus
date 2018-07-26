@@ -179,6 +179,36 @@ function UpgradeManager:ApplyAllUpgrades(player, ignoreClassTech)
     
 end
 
+function UpgradeManager:RefundAllUpgrades(player)
+
+    local upgrades = player:GetUpgrades()
+    local refundAmount = 0
+
+    for _, techId in ipairs(upgrades) do
+
+        if techId ~= kTechId.None then
+
+            player:RemoveUpgrade(techId)
+
+            -- run custom remove code for given upgrade
+            local removeFunc = LookupUpgradeData(techId, kUpDataRemoveFuncIndex)
+            if removeFunc then
+                removeFunc(techId, player)
+            end
+
+            -- calculate refund amount
+            refundAmount = LookupUpgradeData(techId, kUpDataCostIndex) + refundAmount
+
+        end
+
+    end
+
+    if refundAmount > 0 then
+        player:GiveCombatUpgradePoints(kUpgradePointSourceType.Refund, refundAmount, false)
+    end
+
+end
+
 function UpgradeManager:RefundMutuallyExclusiveUpgrades(techId, player)
 
     -- Unpurchase any mutually exclusive upgrades for this upgrade and

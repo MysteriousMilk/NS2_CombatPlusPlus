@@ -316,3 +316,12 @@ function MarineUpgradeManager:UpgradeLogic(techIdList, classTechId, player)
     return true
 
 end
+
+function MarineUpgradeManager:RefundAllUpgrades(player)
+
+    UpgradeManager.RefundAllUpgrades(self, player)
+
+    local newPlayer = player:Replace(Marine.kMapName, player:GetTeamNumber(), false, Vector(player:GetOrigin()))
+    newPlayer:SetActiveWeapon(Rifle.kMapName)
+
+end
