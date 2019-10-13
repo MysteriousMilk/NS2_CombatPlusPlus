@@ -175,6 +175,7 @@ if Server then
 
                 end
 
+                newPlayer:ClearUpgrades()
                 newPlayer:CheckRejoinPenalty(newTeamNumber, oldRank)
                 newPlayer:SetLastTeam(newTeamNumber)
 

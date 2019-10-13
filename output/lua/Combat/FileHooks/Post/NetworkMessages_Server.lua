@@ -17,7 +17,7 @@ end
 
 Server.HookNetworkMessage("RequestSocketPowerPoint", OnRequestSocketPowerPoint)
 
-local function OnRefundUpgradesRequested(client, message)
+function OnRefundUpgradesRequested(client, message)
 
     local player = client:GetControllingPlayer()
 
@@ -36,7 +36,7 @@ end
 
 Server.HookNetworkMessage("CombatRefundUpgrades", OnRefundUpgradesRequested)
 
-local function OnRecycleStructures(client, message)
+function OnRecycleStructures(client, message)
 
     local player = client:GetControllingPlayer()
 

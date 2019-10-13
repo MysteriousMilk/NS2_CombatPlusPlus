@@ -376,6 +376,8 @@ end
 
 function UpgradableMixin:ClearUpgrades()
 
+    Shared.Message("Clearing upgrades.")
+
     self.classTech = kTechId.None
     self.upgrade1 = kTechId.None
     self.upgrade2 = kTechId.None
@@ -390,6 +392,17 @@ function UpgradableMixin:ClearUpgrades()
     self.passiveTech1 = kTechId.None
     self.passiveTech2 = kTechId.None
     self.passiveTech3 = kTechId.None
+
+    if self:isa("Marine") then
+        self.classTech = kTechId.Marine
+        Shared.Message("Marine Defaults Upgrades set.")
+    elseif self:isa("Alien") then
+        self.classTech = kTechId.Skulk
+        self.passiveTech1 = kTechId.Spur
+        self.passiveTech2 = kTechId.Veil
+        self.passiveTech3 = kTechId.Shell
+        Shared.Message("Alien Defaults Upgrades set.")
+    end
 
 end
 

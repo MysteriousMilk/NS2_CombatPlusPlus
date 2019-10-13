@@ -1,7 +1,6 @@
 --[[
  * Natural Selection 2 - Combat++ Mod
- * Authors:
- *          WhiteWizard
+ * Credit to Ghoul for the folder hooks.
  *
  * Hooks the base game files with the new Combat++ files.
 ]]
@@ -17,12 +16,13 @@ local function SetupFilehookFolder(folderPath, modPath, hookType)
     
 	Shared.GetMatchingFileNames(path, true, files)
 
-	--Log("Loading %s Filehooks: %s", hookType, files)
-
 	for i = 1, #files do
-		local filePath = files[i]
+    
+        local filePath = files[i]
 		local vanillaFilePath = string.gsub(filePath, modPath, "")
+    
 		ModLoader.SetupFileHook(vanillaFilePath, filePath, hookType)
+    
 	end
 
 end
@@ -31,11 +31,14 @@ local function SetupFilehookFolders(modPath)
 
     local folders = { "Halt", "Post", "Pre", "Replace" }
     
-	for i = 1, #folders do
-		local hookType = folders[i]
-		local modPath = string.format("%s/%s/", modPath, hookType)
-		local folderPath = string.format("lua/%s", modPath)
-		SetupFilehookFolder(folderPath, modPath, string.lower(hookType))
+    for i = 1, #folders do
+      
+        local hookType = folders[i]
+        local modPath = string.format("%s/%s/", modPath, hookType)
+        local folderPath = string.format("lua/%s", modPath)
+
+        SetupFilehookFolder(folderPath, modPath, string.lower(hookType))
+      
     end
     
 end

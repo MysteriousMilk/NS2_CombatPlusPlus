@@ -79,3 +79,5 @@ end
 
 Event.Hook("Console_cppgiverank", OnCommandCombatGiveRank)
 Event.Hook("Console_cppdebugupgrades", OnDebugUpgrades)
+Event.Hook("Console_cpprefund", OnRefundUpgradesRequested)
+Event.Hook("Console_cpprecycle", OnRecycleStructures)

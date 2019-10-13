@@ -82,21 +82,21 @@ end
 
 kCombatUpgradeData =
 {
-	-- [kTechId.Marine] =
-	-- {
-	-- 	[kUpDataTypeIndex] = kCombatUpgradeType.Class,
-	-- 	[kUpDataPriorityIndex] = 1,
-	-- 	[kUpDataTeamIndex] = 1,
-	-- 	[kUpDataRankIndex] = 1,
-	-- 	[kUpDataCostIndex] = 0,
-	-- 	[kUpDataHardCapIndex] = 0,
-	-- 	[kUpDataConsoleNameIndex] = "marine",
-	-- 	[kUpDataCategoryIndex] = "Root",
-	-- 	[kUpDataPersistIndex] = false,
-	-- 	[kUpDataPassiveIndex] = false,
-	-- 	[kUpDataMutuallyExclusiveIndex] = { },
-	-- 	[kUpDataPrerequisiteIndex] = { }
-	-- },
+	[kTechId.Marine] =
+	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Class,
+		[kUpDataPriorityIndex] = 1,
+		[kUpDataTeamIndex] = 1,
+		[kUpDataRankIndex] = 1,
+		[kUpDataCostIndex] = 0,
+		[kUpDataHardCapIndex] = 0,
+		[kUpDataConsoleNameIndex] = "marine",
+		[kUpDataCategoryIndex] = "Class",
+		[kUpDataPersistIndex] = true,
+		[kUpDataPassiveIndex] = false,
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.Jetpack, kTechId.DualMinigunExosuit, kTechId.DualRailgunExosuit  },
+		[kUpDataPrerequisiteIndex] = { }
+	},
 
 	[kTechId.Jetpack] =
 	{
@@ -110,7 +110,7 @@ kCombatUpgradeData =
 		[kUpDataCategoryIndex] = "Class",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { kTechId.DualMinigunExosuit, kTechId.DualRailgunExosuit },
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.Marine, kTechId.DualMinigunExosuit, kTechId.DualRailgunExosuit },
 		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataIconTextureIndex] = "ui/combatui_marine_tech_icons.dds",
 		[kUpDataIconTextureOffsetIndex] = 5,
@@ -133,7 +133,7 @@ kCombatUpgradeData =
 		[kUpDataDescIndex] = "An armored exosuit with a minigun equipped to each arm.",
 		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { kTechId.DualRailgunExosuit, kTechId.Jetpack },
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.Marine, kTechId.DualRailgunExosuit, kTechId.Jetpack },
 		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataIconTextureIndex] = "ui/combatui_marine_tech_icons.dds",
 		[kUpDataIconTextureOffsetIndex] = 6,
@@ -156,7 +156,7 @@ kCombatUpgradeData =
 		[kUpDataDescIndex] = "An armored exosuit with a railgun equipped to each arm.",
 		[kUpDataPersistIndex] = false,
 		[kUpDataPassiveIndex] = false,
-		[kUpDataMutuallyExclusiveIndex] = { kTechId.DualMinigunExosuit, kTechId.Jetpack },
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.Marine, kTechId.DualMinigunExosuit, kTechId.Jetpack },
 		[kUpDataPrerequisiteIndex] = { },
 		[kUpDataIconTextureIndex] = "ui/combatui_marine_tech_icons.dds",
 		[kUpDataIconTextureOffsetIndex] = 7,
@@ -810,51 +810,153 @@ kCombatUpgradeData =
 	[kTechId.Spur] =
 	{
 		[kUpDataTypeIndex] = kCombatUpgradeType.Passive,
-		[kUpDataPriorityIndex] = 1,
+		[kUpDataPriorityIndex] = 0,
 		[kUpDataTeamIndex] = 2,
 		[kUpDataRankIndex] = 1,
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "spur",
-		[kUpDataCategoryIndex] = "UpgradeType",
+		[kUpDataCategoryIndex] = "Shift",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = true,
-		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.TwoSpurs, kTechId.ThreeSpurs },
 		[kUpDataPrerequisiteIndex] = { },
+		[kUpDataRequiresGestation] = false
+	},
+
+	[kTechId.TwoSpurs] =
+	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Passive,
+		[kUpDataPriorityIndex] = 0,
+		[kUpDataTeamIndex] = 2,
+		[kUpDataRankIndex] = 1,
+		[kUpDataCostIndex] = 1,
+		[kUpDataHardCapIndex] = 0,
+		[kUpDataConsoleNameIndex] = "twospurs",
+		[kUpDataCategoryIndex] = "Shift",
+		[kUpDataPersistIndex] = true,
+		[kUpDataPassiveIndex] = true,
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.Spur, kTechId.ThreeSpurs },
+		[kUpDataPrerequisiteIndex] = { kTechId.Spur },
+		[kUpDataRequiresGestation] = false
+	},
+
+	[kTechId.ThreeSpurs] =
+	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Passive,
+		[kUpDataPriorityIndex] = 0,
+		[kUpDataTeamIndex] = 2,
+		[kUpDataRankIndex] = 1,
+		[kUpDataCostIndex] = 1,
+		[kUpDataHardCapIndex] = 0,
+		[kUpDataConsoleNameIndex] = "threespurs",
+		[kUpDataCategoryIndex] = "Shift",
+		[kUpDataPersistIndex] = true,
+		[kUpDataPassiveIndex] = true,
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.Spur, kTechId.TwoSpurs },
+		[kUpDataPrerequisiteIndex] = { kTechId.TwoSpurs },
 		[kUpDataRequiresGestation] = false
 	},
 
 	[kTechId.Veil] =
 	{
 		[kUpDataTypeIndex] = kCombatUpgradeType.Passive,
-		[kUpDataPriorityIndex] = 2,
+		[kUpDataPriorityIndex] = 0,
 		[kUpDataTeamIndex] = 2,
 		[kUpDataRankIndex] = 1,
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "veil",
-		[kUpDataCategoryIndex] = "UpgradeType",
+		[kUpDataCategoryIndex] = "Shade",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = true,
-		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.TwoVeils, kTechId.ThreeVeils },
 		[kUpDataPrerequisiteIndex] = { },
+		[kUpDataRequiresGestation] = false
+	},
+
+	[kTechId.TwoVeils] =
+	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Passive,
+		[kUpDataPriorityIndex] = 0,
+		[kUpDataTeamIndex] = 2,
+		[kUpDataRankIndex] = 1,
+		[kUpDataCostIndex] = 1,
+		[kUpDataHardCapIndex] = 0,
+		[kUpDataConsoleNameIndex] = "twoveils",
+		[kUpDataCategoryIndex] = "Shade",
+		[kUpDataPersistIndex] = true,
+		[kUpDataPassiveIndex] = true,
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.Veil, kTechId.ThreeVeils },
+		[kUpDataPrerequisiteIndex] = { kTechId.Veil },
+		[kUpDataRequiresGestation] = false
+	},
+
+	[kTechId.ThreeVeils] =
+	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Passive,
+		[kUpDataPriorityIndex] = 0,
+		[kUpDataTeamIndex] = 2,
+		[kUpDataRankIndex] = 1,
+		[kUpDataCostIndex] = 1,
+		[kUpDataHardCapIndex] = 0,
+		[kUpDataConsoleNameIndex] = "threeveils",
+		[kUpDataCategoryIndex] = "Shade",
+		[kUpDataPersistIndex] = true,
+		[kUpDataPassiveIndex] = true,
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.Veil, kTechId.TwoVeils },
+		[kUpDataPrerequisiteIndex] = { kTechId.TwoVeils },
 		[kUpDataRequiresGestation] = false
 	},
 
 	[kTechId.Shell] =
 	{
 		[kUpDataTypeIndex] = kCombatUpgradeType.Passive,
-		[kUpDataPriorityIndex] = 3,
+		[kUpDataPriorityIndex] = 0,
 		[kUpDataTeamIndex] = 2,
 		[kUpDataRankIndex] = 1,
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "shell",
-		[kUpDataCategoryIndex] = "UpgradeType",
+		[kUpDataCategoryIndex] = "Crag",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = true,
-		[kUpDataMutuallyExclusiveIndex] = { },
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.TwoShells, kTechId.ThreeShells },
 		[kUpDataPrerequisiteIndex] = { },
+		[kUpDataRequiresGestation] = false
+	},
+
+	[kTechId.TwoShells] =
+	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Passive,
+		[kUpDataPriorityIndex] = 0,
+		[kUpDataTeamIndex] = 2,
+		[kUpDataRankIndex] = 1,
+		[kUpDataCostIndex] = 1,
+		[kUpDataHardCapIndex] = 0,
+		[kUpDataConsoleNameIndex] = "twoshells",
+		[kUpDataCategoryIndex] = "Crag",
+		[kUpDataPersistIndex] = true,
+		[kUpDataPassiveIndex] = true,
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.Shell, kTechId.ThreeShells },
+		[kUpDataPrerequisiteIndex] = { kTechId.Shell },
+		[kUpDataRequiresGestation] = false
+	},
+
+	[kTechId.ThreeShells] =
+	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Passive,
+		[kUpDataPriorityIndex] = 0,
+		[kUpDataTeamIndex] = 2,
+		[kUpDataRankIndex] = 1,
+		[kUpDataCostIndex] = 1,
+		[kUpDataHardCapIndex] = 0,
+		[kUpDataConsoleNameIndex] = "threeshells",
+		[kUpDataCategoryIndex] = "Crag",
+		[kUpDataPersistIndex] = true,
+		[kUpDataPassiveIndex] = true,
+		[kUpDataMutuallyExclusiveIndex] = { kTechId.Shell, kTechId.TwoShells },
+		[kUpDataPrerequisiteIndex] = { kTechId.TwoShells },
 		[kUpDataRequiresGestation] = false
 	},
 
@@ -867,7 +969,7 @@ kCombatUpgradeData =
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "adrenaline",
-		[kUpDataCategoryIndex] = "SpurUpgrades",
+		[kUpDataCategoryIndex] = "Shift",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { kTechId.Celerity, kTechId.Crush },
@@ -884,7 +986,7 @@ kCombatUpgradeData =
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "celerity",
-		[kUpDataCategoryIndex] = "SpurUpgrades",
+		[kUpDataCategoryIndex] = "Shift",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { kTechId.Adrenaline, kTechId.Crush },
@@ -901,7 +1003,7 @@ kCombatUpgradeData =
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "crush",
-		[kUpDataCategoryIndex] = "SpurUpgrades",
+		[kUpDataCategoryIndex] = "Shift",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { kTechId.Adrenaline, kTechId.Celerity },
@@ -918,7 +1020,7 @@ kCombatUpgradeData =
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "camouflage",
-		[kUpDataCategoryIndex] = "VeilUpgrades",
+		[kUpDataCategoryIndex] = "Shade",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { kTechId.Aura, kTechId.Focus },
@@ -935,7 +1037,7 @@ kCombatUpgradeData =
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "focus",
-		[kUpDataCategoryIndex] = "VeilUpgrades",
+		[kUpDataCategoryIndex] = "Shade",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { kTechId.Aura, kTechId.Camouflage },
@@ -952,7 +1054,7 @@ kCombatUpgradeData =
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "aura",
-		[kUpDataCategoryIndex] = "VeilUpgrades",
+		[kUpDataCategoryIndex] = "Shade",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { kTechId.Focus, kTechId.Camouflage },
@@ -969,7 +1071,7 @@ kCombatUpgradeData =
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "regeneration",
-		[kUpDataCategoryIndex] = "ShellUpgrades",
+		[kUpDataCategoryIndex] = "Crag",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { kTechId.Carapace, kTechId.Vampirism },
@@ -986,7 +1088,7 @@ kCombatUpgradeData =
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "carapace",
-		[kUpDataCategoryIndex] = "ShellUpgrades",
+		[kUpDataCategoryIndex] = "Crag",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { kTechId.Regeneration, kTechId.Vampirism },
@@ -1003,7 +1105,7 @@ kCombatUpgradeData =
 		[kUpDataCostIndex] = 1,
 		[kUpDataHardCapIndex] = 0,
 		[kUpDataConsoleNameIndex] = "vampirism",
-		[kUpDataCategoryIndex] = "ShellUpgrades",
+		[kUpDataCategoryIndex] = "Crag",
 		[kUpDataPersistIndex] = true,
 		[kUpDataPassiveIndex] = false,
 		[kUpDataMutuallyExclusiveIndex] = { kTechId.Regeneration, kTechId.Carapace },
@@ -1232,6 +1334,66 @@ kCombatUpgradeData =
 		[kUpDataRequiresOneHiveIndex] = true,
 		[kUpDataRequiresTwoHivesIndex] = true,
 		[kUpDataRequiresThreeHivesIndex] = true
+	},
+
+	[kTechId.EnzymeCloud] =
+	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Special,
+		[kUpDataPriorityIndex] = 1,
+		[kUpDataTeamIndex] = 2,
+		[kUpDataRankIndex] = 2,
+		[kUpDataCostIndex] = 1,
+		[kUpDataHardCapIndex] = 0,
+		[kUpDataConsoleNameIndex] = "enzyme",
+		[kUpDataCategoryIndex] = "Special",
+		[kUpDataPersistIndex] = false,
+		[kUpDataPassiveIndex] = false,
+		[kUpDataMutuallyExclusiveIndex] = {  },
+		[kUpDataPrerequisiteIndex] = { },
+		[kUpDataRequiresGestation] = false,
+		[kUpDataRequiresOneHiveIndex] = false,
+		[kUpDataRequiresTwoHivesIndex] = false,
+		[kUpDataRequiresThreeHivesIndex] = false
+	},
+
+	[kTechId.ShadeInk] =
+	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Special,
+		[kUpDataPriorityIndex] = 1,
+		[kUpDataTeamIndex] = 2,
+		[kUpDataRankIndex] = 2,
+		[kUpDataCostIndex] = 1,
+		[kUpDataHardCapIndex] = 0,
+		[kUpDataConsoleNameIndex] = "ink",
+		[kUpDataCategoryIndex] = "Special",
+		[kUpDataPersistIndex] = false,
+		[kUpDataPassiveIndex] = false,
+		[kUpDataMutuallyExclusiveIndex] = {  },
+		[kUpDataPrerequisiteIndex] = { },
+		[kUpDataRequiresGestation] = false,
+		[kUpDataRequiresOneHiveIndex] = false,
+		[kUpDataRequiresTwoHivesIndex] = false,
+		[kUpDataRequiresThreeHivesIndex] = false
+	},
+
+	[kTechId.Hallucinate] =
+	{
+		[kUpDataTypeIndex] = kCombatUpgradeType.Special,
+		[kUpDataPriorityIndex] = 1,
+		[kUpDataTeamIndex] = 2,
+		[kUpDataRankIndex] = 3,
+		[kUpDataCostIndex] = 1,
+		[kUpDataHardCapIndex] = 0,
+		[kUpDataConsoleNameIndex] = "hallucinate",
+		[kUpDataCategoryIndex] = "Special",
+		[kUpDataPersistIndex] = false,
+		[kUpDataPassiveIndex] = false,
+		[kUpDataMutuallyExclusiveIndex] = {  },
+		[kUpDataPrerequisiteIndex] = { },
+		[kUpDataRequiresGestation] = false,
+		[kUpDataRequiresOneHiveIndex] = false,
+		[kUpDataRequiresTwoHivesIndex] = false,
+		[kUpDataRequiresThreeHivesIndex] = false
 	}
 }
 
@@ -1382,6 +1544,31 @@ function GetUpgradeTechIdByConsoleName(consoleName)
 	end
 
 	return upgradeTechId
+
+end
+
+function GetFirstUpgradeByPrereq(prereqTechId, teamNumber)
+
+	local firstTechId = kTechId.None
+
+	for techId, upgrade in pairs(kCombatUpgradeData) do
+
+		if (upgrade[kUpDataTeamIndex] and
+			upgrade[kUpDataTeamIndex] == teamNumber and
+			upgrade[kUpDataPrerequisiteIndex]) then
+
+				for _, prereqId in ipairs(upgrade[kUpDataPrerequisiteIndex]) do
+					if prereqId == prereqTechId then
+						firstTechId = techId
+						break
+					end
+				end
+
+		end
+
+	end
+
+	return firstTechId
 
 end
 

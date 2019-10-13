@@ -511,30 +511,34 @@ local function InitClassButtons(self, player)
 
     for k, itemTechId in ipairs(LookupUpgradesByType(kCombatUpgradeType.Class, player:GetTeamNumber())) do
 
-        local x = startOffset.x + (columnIndex * (GUIMarineBuyMenu.kButtonSize.x + GUIMarineBuyMenu.kButtonPadding.x))
-        local y = startOffset.y + (rowIndex * (GUIMarineBuyMenu.kButtonSize.y + GUIMarineBuyMenu.kButtonPadding.y))
+        if itemTechId ~= kTechId.Marine then
+            
+            local x = startOffset.x + (columnIndex * (GUIMarineBuyMenu.kButtonSize.x + GUIMarineBuyMenu.kButtonPadding.x))
+            local y = startOffset.y + (rowIndex * (GUIMarineBuyMenu.kButtonSize.y + GUIMarineBuyMenu.kButtonPadding.y))
 
-        local cost = LookupUpgradeData(itemTechId, kUpDataCostIndex)
-        local rankRequired = LookupUpgradeData(itemTechId, kUpDataRankIndex)
-        local equipped = player:GetHasUpgrade(itemTechId)
-        local canAfford = cost <= player.combatUpgradePoints
-        local hasRequiredRank = rankRequired <= player.combatRank
+            local cost = LookupUpgradeData(itemTechId, kUpDataCostIndex)
+            local rankRequired = LookupUpgradeData(itemTechId, kUpDataRankIndex)
+            local equipped = player:GetHasUpgrade(itemTechId)
+            local canAfford = cost <= player.combatUpgradePoints
+            local hasRequiredRank = rankRequired <= player.combatRank
 
-        local enabled = canAfford and hasRequiredRank and not equipped
-        local iconColor = Color(1, 1, 1, 1)
+            local enabled = canAfford and hasRequiredRank and not equipped
+            local iconColor = Color(1, 1, 1, 1)
 
-        if equipped then
-            iconColor = GUIMarineBuyMenu.kGreenHighlight
-        elseif hasRequiredRank and not canAfford then
-            iconColor = GUIMarineBuyMenu.kRedHighlight
+            if equipped then
+                iconColor = GUIMarineBuyMenu.kGreenHighlight
+            elseif hasRequiredRank and not canAfford then
+                iconColor = GUIMarineBuyMenu.kRedHighlight
+            end
+
+            local buttonGraphic = CreateButton(x, y, iconColor, itemTechId, enabled, canAfford, hasRequiredRank)
+            self.backgroundCenteredArea:AddChild(buttonGraphic)
+
+            rowIndex = rowIndex + 1
+
+            table.insert(self.itemButtons, { Button = buttonGraphic, TechId = itemTechId } )
+
         end
-
-        local buttonGraphic = CreateButton(x, y, iconColor, itemTechId, enabled, canAfford, hasRequiredRank)
-        self.backgroundCenteredArea:AddChild(buttonGraphic)
-
-        rowIndex = rowIndex + 1
-
-        table.insert(self.itemButtons, { Button = buttonGraphic, TechId = itemTechId } )
 
     end
 
